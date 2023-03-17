@@ -1,18 +1,6 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
-//#include <glad/glad.h>
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
-#include <GL/gl3w.h>    // Initialize with gl3wInit()
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-#include <GL/glew.h>    // Initialize with glewInit()
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
-#include <glad/glad.h>  // Initialize with gladLoadGL()
-#else
-#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#endif
+#include <glad/glad.h>
 
 //For now I keep those functions in here
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
