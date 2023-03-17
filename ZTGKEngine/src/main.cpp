@@ -1,6 +1,9 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //For now I keep those functions in here
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
