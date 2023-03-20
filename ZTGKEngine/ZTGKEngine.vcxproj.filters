@@ -24,23 +24,5 @@
     <ClCompile Include="libraries\stb_image\include\stb_image\stb_image.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\VBO.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EBO.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\VBO.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EBO.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\basic.vert" />
-    <None Include="res\shaders\basic.frag" />
   </ItemGroup>
 </Project>
