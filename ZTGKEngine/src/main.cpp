@@ -7,6 +7,8 @@
 #include <stb_image/stb_image.h>
 #include <assimp/Importer.hpp>
 
+#include "Shader.h"
+
 //For now I keep those functions in here
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -45,12 +47,14 @@ int main(void)
         return -1;
     }
 
+    Shader testShader("res/shaders/basic.vert", "res/shaders/basic.frag");
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         //Processing input here
         processInput(window);
-
+        testShader.use();
         glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
         /* Render here */
