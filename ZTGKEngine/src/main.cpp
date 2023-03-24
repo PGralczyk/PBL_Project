@@ -95,12 +95,11 @@ int main(void)
     world->AddChild(brickNode);
     world->AddChild(bulbNode);
 
-    brickNode->Translate(glm::vec3(-1.0f, -1.0f, -1.0f));
+    brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
     brickNode->Scale(0.5f);
     brickNode->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    bulbNode->setTranslate(&pointLight.position);
-    bulbNode->Scale(0.1);
+    bulbNode->Scale(0.3);
 
     world->RenderTransform();
     world->Update();
@@ -118,13 +117,15 @@ int main(void)
         lightShader.use();
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
+
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
         lightShader.setVec3("viewPos", camera.Position);
         lightShader.setVec3("pointLightPos", pointLight.position);
         lightShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
         lightShader.setFloat("LightConstant", 1.0f);
         lightShader.setFloat("LightLinear", 0.09f);
         lightShader.setFloat("LightQuadratic", 0.032f);
-        lightShader.setInt("texture_diffuse1", 0);
 
         bulbShader.use();
         bulbShader.setMat4("projection", projection);
