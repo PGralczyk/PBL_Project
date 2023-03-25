@@ -30,7 +30,7 @@ float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 struct PLight {
-    glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+    glm::vec3 position = { -2.0f, -0.8f, -1.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
 
     float constant;
@@ -100,6 +100,7 @@ int main(void)
     brickNode->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
 
     bulbNode->Scale(0.3);
+    bulbNode->Translate(pointLight.position);
 
     world->RenderTransform();
     world->Update();
