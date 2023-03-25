@@ -23,21 +23,33 @@ using namespace std;
 
 unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
 
+//What is this class?
+//It holds a model (graphical representation(not necessary) and position of an object)
+
 class Model
 {
 public:
     // Model data 
+    //transformation matrix(translation, scaling, rotation)
     glm::mat4* Transform;
+    //textures
     vector<Texture> textures_loaded;
+    //meshes
     vector<Mesh> meshes;
     string directory;
+    //pointer to shader program used for this model
     Shader* shader;
+    //For now we don't instantiate objects but it's very helpful for optimization
     bool instanced;
+    //Some objects may use gamma correction
     bool gammaCorrection;
-
+    
+    //Simple setters for whole transformation matrix and shader program
     void setTransform(glm::mat4* matrix) { Transform = matrix; }
     void SetShader(Shader* s) { shader = s; }
 
+    //Constructor. We have to specify path to main object file(obj, fbx...) and can set optional stuff
+    //like instantiation or gamma correction
     Model(string const& path, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
     {
         instanced = instance;
@@ -45,6 +57,7 @@ public:
         Transform = new glm::mat4(1);
     }
 
+    //We simply draw every mesh using Mesh class functionality
     void Draw()
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
@@ -52,6 +65,7 @@ public:
     }
 
 private:
+    //This function uses Assimp library to load model from given file
     void loadModel(string const& path)
     {
         Assimp::Importer importer;
@@ -68,6 +82,9 @@ private:
         processNode(scene->mRootNode, scene);
     }
 
+    //Objects are stored in hierarchy. We look for all the nodes in that object tree and
+    //process every mesh in every single one,then we look it that node has children and use
+    //this function on them as well
     void processNode(aiNode* node, const aiScene* scene)
     {
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -83,6 +100,7 @@ private:
 
     }
 
+    //Finally a function that allows as to create mesh from this spot
     Mesh processMesh(aiMesh* mesh, const aiScene* scene)
     {
         // Data to fill
@@ -160,6 +178,7 @@ private:
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+        //We create mesh from loaded data 
         return Mesh(vertices, indices, textures, instanced);
     }
 

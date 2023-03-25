@@ -9,11 +9,18 @@
 #include <sstream>
 #include <iostream>
 
+//What is this class?
+//This is a class that loads shaders as text files, compiles them and prepares them
+//for usage when rendering models. Shaders are small programs that are used for
+//calculating how to display stuff. We use vertex shader that calculates position
+//of fragments and then fragment shader to calculate color(involves light).
+
 class Shader
 {
 public:
+    //Unsigned ints often used in GL as some kind of reference as ID
     unsigned int ID;
-    // Constructor generates the shader on the fly
+    // Constructor generates the shader on the fly, we pass path to vertex shader and fragment shader
     Shader(const char* vertexPath, const char* fragmentPath)
     {
         // 1. retrieve the vertex/fragment source code from filePath
@@ -59,11 +66,12 @@ public:
         glCompileShader(fragment);
         checkCompileErrors(fragment, "FRAGMENT");
 
-        // Shader Program
+        // Shader Program (shaders stored in a form, that is redy for usage)
         ID = glCreateProgram();
+        //We attach both shaders to one shader program (we won't use them separately anyway)
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
-
+        
         glLinkProgram(ID);
         checkCompileErrors(ID, "PROGRAM");
         // Delete the shaders as they're linked into our program now and no longer necessery
@@ -74,8 +82,14 @@ public:
     // Activate the shader
     void use() const
     {
+        //We use this whenever we want to draw something while using this shader
         glUseProgram(ID);
     }
+
+    //UNIFORM SETTING FUNCTIONS
+    //uniforms are global variables available in shaders
+    //Below we have multiple functions for setting 
+    //multiple types of uniforms
     void setBool(const std::string& name, bool value) const
     {
         glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
