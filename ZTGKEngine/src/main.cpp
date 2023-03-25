@@ -53,7 +53,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -73,8 +73,6 @@ int main(void)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
-    stbi_set_flip_vertically_on_load(true);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -116,9 +114,6 @@ int main(void)
         glm::mat4 view = camera.GetViewMatrix();
 
         lightShader.use();
-        lightShader.setMat4("projection", projection);
-        lightShader.setMat4("view", view);
-
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
         lightShader.setVec3("viewPos", camera.Position);

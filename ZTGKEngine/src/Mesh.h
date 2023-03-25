@@ -74,7 +74,6 @@ public:
         //we can transform it, but we would still have to use just one chunk of data
         //instead of creating multiple meshes
         if (!instanced) {
-            // Bind appropriate textures(important attributes for textures)
             unsigned int diffuseNr = 1;
             unsigned int specularNr = 1;
             unsigned int normalNr = 1;
@@ -142,8 +141,6 @@ public:
             glBindVertexArray(VAO);
             glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0, 40000);
             glBindVertexArray(0);
-
-
         }
     }
 
@@ -203,7 +200,7 @@ private:
 
         glEnableVertexAttribArray(6);
         glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
-        //We bind the array when we are done
+        //Unbinding
         glBindVertexArray(0);
     }
 };
