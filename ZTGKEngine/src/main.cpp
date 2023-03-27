@@ -16,6 +16,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
+
 int oldMouseButtonState = GLFW_RELEASE;
 bool isMouseActive = false;
 
@@ -28,6 +30,8 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+
+glm::vec3 castedRay = glm::vec3(1);
 
 struct PLight {
     glm::vec3 position = { -2.0f, -0.8f, -1.0f };
@@ -112,6 +116,15 @@ int main(void)
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
+
+        glm::vec3 newCastedRay = rayCast(window, projection, view);
+        if (castedRay != newCastedRay)
+        {
+            castedRay = newCastedRay;
+            std::cout << "X: " << castedRay.x << "   ";
+            std::cout << "Y: " << castedRay.y << "   ";
+            std::cout << "Z: " << castedRay.y << std::endl;
+        }
 
         lightShader.use();
         lightShader.setMat4("projection", projection);
@@ -212,4 +225,35 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view)
+{
+    //GETTING MOUSE POSITION
+    double mouseXd;
+    double mouseYd;
+    glfwGetCursorPos(window, &mouseXd, &mouseYd);
+    float mouseX = (float)mouseXd;
+    float mouseY = (float)mouseYd;
+
+    //NORMALIZING THEM
+    float normalizedX = (2.0f * mouseX) / SCR_WIDTH - 1.0f;
+    float normalizedY = 1.0f - (2.0f * mouseY) / SCR_HEIGHT;
+    glm::vec2 normalizedCoords = glm::vec2(normalizedX, normalizedY);
+
+    //CONVERTING TO CLIP SPACE(we just add 1 at z, so that our ray faces into the screen)
+    glm::vec4 clipCoords = glm::vec4(normalizedCoords.x, normalizedCoords.y, 1.0f, 1.0f);
+
+    //CONVERTING TO EYE SPACE (by using inverse projection matrix)
+    glm::mat4 invProjection = glm::inverse(projection);
+    glm::vec4 eyeCoords = invProjection * clipCoords;
+
+    //CONVERTING TO WORLD SPACE
+    glm::mat4 invView = glm::inverse(view);
+    glm::vec4 worldCoords = invView * eyeCoords;
+
+    //CONVERTING 4D VECTOR TO 3D(since we no longer need it to be in 4D)
+    glm::vec3 castedRay = glm::vec3(worldCoords.x, worldCoords.y, worldCoords.z);
+    castedRay = glm::normalize(castedRay);
+    return castedRay;
 }
