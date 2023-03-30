@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "GraphNode.h"
 #include "RealtimeScript.h"
+#include "ApTime.h"
 
 class GraphNode;
 //WHAT IS THIS CLASS?
@@ -26,6 +27,8 @@ public:
 
 	void Update()
 	{
-		node->Rotate(0.1f, glm::vec3(1.0f, 0.0f, 0.0f));
+		node->Rotate(0.1f * ApTime::instance().deltaTime, glm::vec3(1.0f, 0.0f, 0.0f));
+		//Uncomment below to get a nice slowdown effect!
+		//ApTime::instance().SetTimeRatio(ApTime::instance().GetTimeRatio() * 0.9999f);
 	}
 };
