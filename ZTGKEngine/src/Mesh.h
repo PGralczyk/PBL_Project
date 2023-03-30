@@ -56,6 +56,7 @@ public:
     //For now we don't instantiate objects but it's very helpful for optimization
     bool instanced;
     // Constructor used in Model class
+
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, bool instance = false)
     {
         instanced = instance;

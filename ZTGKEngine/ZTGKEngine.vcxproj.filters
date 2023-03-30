@@ -41,5 +41,11 @@
     <ClInclude Include="src\Camera.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\RealtimeScript.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestRealtimeScript.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

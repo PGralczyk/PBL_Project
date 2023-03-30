@@ -11,6 +11,7 @@
 #include "Model.h"
 #include "GraphNode.h"
 #include "Camera.h"
+#include "TestRealtimeScript.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -34,7 +35,7 @@ bool firstMouse = true;
 glm::vec3 castedRay = glm::vec3(1);
 
 struct PLight {
-    glm::vec3 position = { -2.0f, -0.8f, -1.0f };
+    glm::vec3 position = { -2.0f, -0.8f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
 
     float constant;
@@ -94,19 +95,24 @@ int main(void)
     GraphNode* bulbNode = new GraphNode(&bulb);
     GraphNode* world = new GraphNode();
 
+    //Adding script here
+    brickNode->AddScript(new TestRealtimeScript(brickNode));
+
     world->AddChild(brickNode);
     world->AddChild(bulbNode);
 
-    brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
-    brickNode->Scale(0.5f);
-    brickNode->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
+    //brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
+    //brickNode->Scale(0.5f);
+    //brickNode->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    bulbNode->Scale(0.3);
+    bulbNode->Scale(0.1f);
     bulbNode->Translate(pointLight.position);
 
     world->RenderTransform();
     world->Update();
 
+    //Before entering the loop we activate setup functions in all the scripts
+    world->ExecuteStartScripts();
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -121,9 +127,9 @@ int main(void)
         if (castedRay != newCastedRay)
         {
             castedRay = newCastedRay;
-            std::cout << "X: " << castedRay.x << "   ";
-            std::cout << "Y: " << castedRay.y << "   ";
-            std::cout << "Z: " << castedRay.y << std::endl;
+            //std::cout << "X: " << castedRay.x << "   ";
+            //std::cout << "Y: " << castedRay.y << "   ";
+            //std::cout << "Z: " << castedRay.y << std::endl;
         }
 
         lightShader.use();
@@ -148,6 +154,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        world->Update();
         world->Draw();
         //bulbNode->Draw();
 

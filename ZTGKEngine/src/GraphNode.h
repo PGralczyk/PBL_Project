@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "RealtimeScript.h"
 
 class GraphNode
 {
@@ -23,6 +24,9 @@ protected:
 	float x;
 	float y;
 	float z;
+
+	std::vector<RealtimeScript*> realtimeScripts;
+
 public:
 	GraphNode(Model* m = NULL)
 	{
@@ -31,7 +35,6 @@ public:
 		transform = new glm::mat4(1);
 		worldTransform = new glm::mat4(1);
 		transformOnStart = new glm::mat4(1);
-
 	}
 	~GraphNode(void)
 	{
@@ -39,6 +42,9 @@ public:
 		delete worldTransform;
 		for (unsigned int i = 0; i < children.size(); ++i) {
 			delete children[i];
+		}
+		for (unsigned int i = 0; i < realtimeScripts.size(); ++i) {
+			delete realtimeScripts[i];
 		}
 	}
 
@@ -76,6 +82,12 @@ public:
 				model->setTransform(worldTransform);
 			}
 		}
+		//With every call to Update in node we also execute updates in scripts
+		for (RealtimeScript* script : realtimeScripts)
+		{
+			script->Update();
+		}
+
 		for (GraphNode* node : children)
 		{
 			node->Update();
@@ -126,5 +138,24 @@ public:
 	void Scale(float scale) {
 		m_scale = scale;
 		RenderTransform();
+	}
+
+	//We add scripts to object represented by this node(it's added only to this particular node)
+	void AddScript(RealtimeScript* script)
+	{
+		realtimeScripts.push_back(script);
+	}
+
+	//We execute start functions in all scripts(should be done right after finishing adding scripts)
+	void ExecuteStartScripts()
+	{
+		for (unsigned int i = 0; i < realtimeScripts.size(); ++i) {
+			realtimeScripts[i]->Start();
+		}
+		//We execute those start functions in children as well
+		for (GraphNode* node : children)
+		{
+			node->ExecuteStartScripts();
+		}
 	}
 };
