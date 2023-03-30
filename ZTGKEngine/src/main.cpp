@@ -173,13 +173,13 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime * 0.005);
+        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime * 5);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime * 0.005);
+        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime * 5);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime * 0.005);
+        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime * 5);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime * 0.005);
+        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime * 5);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS && oldMouseButtonState == GLFW_RELEASE) {
         if (isMouseActive) {

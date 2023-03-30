@@ -16,7 +16,7 @@ private:
 	void UpdateDeltaTime()
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
-		deltaTime = (currentFrame - lastFrame) * 1000 * timeRatio;
+		deltaTime = (currentFrame - lastFrame) * timeRatio;
 		lastFrame = currentFrame;
 	}
 
