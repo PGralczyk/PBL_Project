@@ -112,6 +112,7 @@ int main(void)
 
     //Before entering the loop we activate setup functions in all the scripts
     world->ExecuteStartScripts();
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {

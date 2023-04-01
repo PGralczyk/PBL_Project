@@ -27,6 +27,8 @@ protected:
 
 	std::vector<RealtimeScript*> realtimeScripts;
 
+	bool isActive = true;
+
 public:
 	GraphNode(Model* m = NULL)
 	{
@@ -82,26 +84,32 @@ public:
 				model->setTransform(worldTransform);
 			}
 		}
-		//With every call to Update in node we also execute updates in scripts
-		for (RealtimeScript* script : realtimeScripts)
+		if (isActive)
 		{
-			script->Update();
-		}
+			//With every call to Update in node we also execute updates in scripts
+			for (RealtimeScript* script : realtimeScripts)
+			{
+				script->Update();
+			}
 
-		for (GraphNode* node : children)
-		{
-			node->Update();
+			for (GraphNode* node : children)
+			{
+				node->Update();
+			}
 		}
 	}
 	void Draw()
 	{
-		if (model) { 
-			model->Draw(); 
-		}
-
-		for (GraphNode* node : children)
+		if (isActive)
 		{
-			node->Draw();
+			if (model) {
+				model->Draw();
+			}
+
+			for (GraphNode* node : children)
+			{
+				node->Draw();
+			}
 		}
 	}
 
@@ -157,5 +165,10 @@ public:
 		{
 			node->ExecuteStartScripts();
 		}
+	}
+
+	void SetActive(bool active)
+	{
+		isActive = active;
 	}
 };

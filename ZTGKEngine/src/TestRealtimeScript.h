@@ -15,7 +15,7 @@ public:
 	//Constructor, here assign all the fields from the private section
 	TestRealtimeScript(GraphNode* nodePointer) : RealtimeScript(nodePointer)
 	{
-
+		
 	}
 
 	~TestRealtimeScript() = default;
