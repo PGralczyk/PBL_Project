@@ -151,6 +151,7 @@
     <ClInclude Include="src\GraphNode.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\OtherTestRealtimeScript.h" />
     <ClInclude Include="src\RealtimeScript.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\TestRealtimeScript.h" />

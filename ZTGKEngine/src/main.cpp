@@ -12,6 +12,7 @@
 #include "GraphNode.h"
 #include "Camera.h"
 #include "TestRealtimeScript.h"
+#include "OtherTestRealtimeScript.h"
 #include "ApTime.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -96,6 +97,7 @@ int main(void)
 
     //Adding script here
     brickNode->AddScript(new TestRealtimeScript(brickNode));
+    brickNode->AddScript(new OtherTestRealtimeScript(brickNode));
 
     world->AddChild(brickNode);
     world->AddChild(bulbNode);
