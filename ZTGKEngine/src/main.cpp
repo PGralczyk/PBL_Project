@@ -85,7 +85,7 @@ int main(void)
     Shader lightShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
 
-    Model brick("res/models/House.obj");
+    Model brick("res/models/krzeselko.fbx");
     Model bulb("res/models/House.obj");
 
     brick.SetShader(&lightShader);
@@ -103,7 +103,7 @@ int main(void)
     world->AddChild(bulbNode);
 
     //brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
-    //brickNode->Scale(0.5f);
+    brickNode->Scale(0.005f);
     //brickNode->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
 
     bulbNode->Scale(0.1f);

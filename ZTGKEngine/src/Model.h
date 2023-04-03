@@ -69,7 +69,30 @@ private:
     void loadModel(string const& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+        unsigned int processFlags =
+            aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+            aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
+            //aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
+            aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
+            //aiProcess_ConvertToLeftHanded | // convert everything to D3D left handed space (by default right-handed, for OpenGL)
+            //aiProcess_SortByPType | // ?
+            //aiProcess_ImproveCacheLocality | // improve the cache locality of the output vertices
+            //aiProcess_RemoveRedundantMaterials | // remove redundant materials
+            //aiProcess_FindDegenerates | // remove degenerated polygons from the import
+            //aiProcess_FindInvalidData | // detect invalid model data, such as invalid normal vectors
+            //aiProcess_GenUVCoords | // convert spherical, cylindrical, box and planar mapping to proper UVs
+            //aiProcess_TransformUVCoords | // preprocess UV transformations (scaling, translation ...)
+            //aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
+            //aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
+            //aiProcess_OptimizeMeshes | // join small meshes, if possible;
+            aiProcess_PreTransformVertices | //-- fixes the transformation issue.
+            //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
+            aiProcess_GenSmoothNormals | // ?
+            aiProcess_FlipUVs | // flip texture vertically
+            0;
+
+        const aiScene* scene = importer.ReadFile(path, processFlags);
         // Check for errors
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
