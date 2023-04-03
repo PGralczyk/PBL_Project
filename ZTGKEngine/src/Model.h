@@ -19,9 +19,11 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <regex>
 using namespace std;
 
 unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
+unsigned int TextureFromMemory(const aiTexture* texture);
 
 //What is this class?
 //It holds a model (graphical representation(not necessary) and position of an object)
@@ -188,49 +190,68 @@ private:
         // Process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+
         // 1. Diffuse maps
-        vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         // 2. Specular maps
-        vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", scene);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         // 3. Normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", scene);
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. Height maps
-        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height", scene);
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
         //We create mesh from loaded data 
         return Mesh(vertices, indices, textures, instanced);
     }
 
-    vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
+    vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName, const aiScene* scene)
     {
         vector<Texture> textures;
+        bool isEmbedded = false;
+
         for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
         {
             aiString str;
-            mat->GetTexture(type, i, &str);
+            if (mat->Get(AI_MATKEY_TEXTURE(type, i), str) == AI_SUCCESS) {
 
-            bool skip = false;
-            for (unsigned int j = 0; j < textures_loaded.size(); j++)
-            {
-                if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+
+                bool skip = false;
+                for (unsigned int j = 0; j < textures_loaded.size(); j++)
                 {
-                    textures.push_back(textures_loaded[j]);
-                    skip = true;
-                    break;
+                    if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+                    {
+                        textures.push_back(textures_loaded[j]);
+                        skip = true;
+                        break;
+                    }
                 }
-            }
-            if (!skip)
-            {
-                Texture texture;
-                texture.id = TextureFromFile(str.C_Str(), this->directory);
-                texture.type = typeName;
-                texture.path = str.C_Str();
-                textures.push_back(texture);
-                textures_loaded.push_back(texture);
+                if (!skip)
+                {
+                    Texture texture;
+                    //std::cout << str.C_Str() << std::endl;
+
+                    if (auto embedded = scene->GetEmbeddedTexture(str.C_Str())) {
+                        //aiTexture* embedded = scene->mTextures[index];
+
+                        texture.id = TextureFromMemory(embedded);
+                        isEmbedded = true;
+                    }
+                    else
+                    {     
+                        texture.id = TextureFromFile(str.C_Str(), this->directory);
+                    }
+
+                    
+                    texture.type = typeName;
+                    texture.path = str.C_Str();
+                    texture.isEmbedded = isEmbedded;
+                    textures.push_back(texture);
+                    textures_loaded.push_back(texture);
+                }
             }
         }
         return textures;
@@ -274,6 +295,51 @@ unsigned int TextureFromFile(const char* path, const string& directory, bool gam
         std::cout << "Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);
     }
+
+    return textureID;
+}
+
+unsigned int TextureFromMemory(const aiTexture* texture)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    
+
+    unsigned char* data = nullptr;
+    int width, height, nrComponents;
+
+    data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth, &width, &height, &nrComponents, 0);
+    
+    if (data)
+    {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Embedded texture failed to load !" << std::endl;
+        stbi_image_free(data);
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     return textureID;
 }
