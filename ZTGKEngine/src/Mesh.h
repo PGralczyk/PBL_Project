@@ -38,6 +38,7 @@ struct Texture {
     unsigned int id;
     string type;
     string path;
+    bool isEmbedded;
 };
 
 class Mesh {
