@@ -35,7 +35,6 @@ public:
 
 	void Start()
 	{
-		node->Translate(glm::vec3(-4.0f, 0.0f, 0.0f));
 		darkWorld->SetActive(false);
 	}
 

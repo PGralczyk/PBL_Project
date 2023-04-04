@@ -40,7 +40,7 @@ bool lightVersion = true;
 struct PLight {
     glm::vec3 position = { -2.0f, -0.8f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
-    float color2[3] = { 0.0f, 0.5f, 0.5f };
+    float color2[3] = { 0.70f, 1.0f, 1.0f };
 
     float constant;
     float linear;
@@ -89,8 +89,8 @@ int main(void)
     Shader lightShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
 
-    Model brick("res/models/House.obj");
-    Model brick2("res/models/House.obj");
+    Model brick("res/models/krzeselko.fbx");
+    Model brick2("res/models/krzeselko.fbx");
     Model bulb("res/models/House.obj");
 
     brick.SetShader(&lightShader);
@@ -113,18 +113,21 @@ int main(void)
     //Adding script here
     brickNode->AddScript(new TestRealtimeScript(brickNode));
     brickNode->AddScript(new OtherTestRealtimeScript(brickNode));
+    brickNode2->AddScript(new TestRealtimeScript(brickNode2));
     Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, &lightVersion));
 
     world->AddChild(Scene1);
     Scene1->AddChild(Scene1Bright);
     Scene1->AddChild(Scene1Dark);
+    Scene1->AddChild(bulbNode);
     Scene1Bright->AddChild(brickNode);
-    Scene1Bright->AddChild(bulbNode);
     Scene1Dark->AddChild(brickNode2);
 
     //brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
-    brickNode2->Scale(0.5f);
-    brickNode2->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
+    brickNode2->Scale(0.005f);
+    brickNode->Scale(0.005f);
+    //brickNode2->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
+    brickNode2->Translate(glm::vec3(2.0f, -2.0f, 0.0f));
 
     bulbNode->Scale(0.1f);
     bulbNode->Translate(pointLight.position);
