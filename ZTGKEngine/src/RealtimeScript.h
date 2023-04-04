@@ -20,13 +20,13 @@ public:
 	//This bool is used to check if the script is active before calling it's
 	//Update() function each frame. It's public because we want to have an
 	//easy access to enabling/disabling realtime scripts from other scripts ect.
-	bool isActive;
+	bool enabled;
 
 	//Constructor, here assign all the fields from the private section
 	RealtimeScript(GraphNode* nodePointer)
 	{
 		node = nodePointer;
-		isActive = true;
+		enabled = true;
 	}
 
 	virtual ~RealtimeScript() = default;

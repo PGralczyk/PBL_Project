@@ -14,6 +14,7 @@
 #include "TestRealtimeScript.h"
 #include "OtherTestRealtimeScript.h"
 #include "ApTime.h"
+#include "RoomSwapManager.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -34,9 +35,12 @@ bool firstMouse = true;
 
 glm::vec3 castedRay = glm::vec3(1);
 
+bool lightVersion = true;
+
 struct PLight {
     glm::vec3 position = { -2.0f, -0.8f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
+    float color2[3] = { 0.0f, 0.5f, 0.5f };
 
     float constant;
     float linear;
@@ -86,25 +90,41 @@ int main(void)
     Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
 
     Model brick("res/models/House.obj");
+    Model brick2("res/models/House.obj");
     Model bulb("res/models/House.obj");
 
     brick.SetShader(&lightShader);
+    brick2.SetShader(&lightShader);
     bulb.SetShader(&bulbShader);
     
+    //Handles the whole game world
+    GraphNode* world = new GraphNode();
+    //------SCENE-1------
+    //Each location is presented as scene
+    GraphNode* Scene1 = new GraphNode();
+    //Bright
+    GraphNode* Scene1Bright = new GraphNode();
     GraphNode* brickNode = new GraphNode(&brick);
     GraphNode* bulbNode = new GraphNode(&bulb);
-    GraphNode* world = new GraphNode();
+    //Dark
+    GraphNode* Scene1Dark = new GraphNode();
+    GraphNode* brickNode2 = new GraphNode(&brick2);
 
     //Adding script here
     brickNode->AddScript(new TestRealtimeScript(brickNode));
     brickNode->AddScript(new OtherTestRealtimeScript(brickNode));
+    Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, &lightVersion));
 
-    world->AddChild(brickNode);
-    world->AddChild(bulbNode);
+    world->AddChild(Scene1);
+    Scene1->AddChild(Scene1Bright);
+    Scene1->AddChild(Scene1Dark);
+    Scene1Bright->AddChild(brickNode);
+    Scene1Bright->AddChild(bulbNode);
+    Scene1Dark->AddChild(brickNode2);
 
     //brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
-    //brickNode->Scale(0.5f);
-    //brickNode->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
+    brickNode2->Scale(0.5f);
+    brickNode2->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
 
     bulbNode->Scale(0.1f);
     bulbNode->Translate(pointLight.position);
@@ -115,6 +135,7 @@ int main(void)
     //Before entering the loop we activate setup functions in all the scripts
     world->ExecuteStartScripts();
 
+    //Scene1Dark->SetActive(false);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -138,7 +159,10 @@ int main(void)
         lightShader.setMat4("view", view);
         lightShader.setVec3("viewPos", camera.Position);
         lightShader.setVec3("pointLightPos", pointLight.position);
-        lightShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
+        if(lightVersion)
+            lightShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
+        else
+            lightShader.setVec3("pointLightColor", glm::vec3({ pointLight.color2[0], pointLight.color2[1], pointLight.color2[2] }));
         lightShader.setFloat("LightConstant", 1.0f);
         lightShader.setFloat("LightLinear", 0.09f);
         lightShader.setFloat("LightQuadratic", 0.032f);

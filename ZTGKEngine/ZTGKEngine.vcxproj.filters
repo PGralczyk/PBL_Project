@@ -53,5 +53,8 @@
     <ClInclude Include="src\OtherTestRealtimeScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\RoomSwapManager.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

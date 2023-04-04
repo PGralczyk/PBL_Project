@@ -171,4 +171,9 @@ public:
 	{
 		isActive = active;
 	}
+
+	bool GetActive()
+	{
+		return isActive;
+	}
 };
