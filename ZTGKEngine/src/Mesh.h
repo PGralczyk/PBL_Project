@@ -69,7 +69,7 @@ public:
     }
 
     // Render the mesh
-    void Draw(Shader& shader, glm::mat4* model)
+    void Draw(Shader& shader, glm::mat4* model, int* objectID, bool picking = false)
     {
         //For now we only use this part, because we don't instantiate objects
         //(instantiate is about having a single object reused multiple times),
@@ -85,6 +85,10 @@ public:
             shader.use();
             //We set our model matrix (used for transformations) as uniform for shader program
             shader.setMat4("model", *model);
+
+            if (picking) {
+                shader.setInt("gObjectIndex", *objectID);
+            }
 
             //We apply every texture that is in our object
             for (unsigned int i = 0; i < textures.size(); i++)

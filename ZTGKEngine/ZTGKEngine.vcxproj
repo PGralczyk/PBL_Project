@@ -143,11 +143,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libraries\stb_image\include\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\ClickPicker.cpp" />
+    <ClCompile Include="src\clickPickUtils.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\ClickPicker.h" />
     <ClInclude Include="src\GraphNode.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />

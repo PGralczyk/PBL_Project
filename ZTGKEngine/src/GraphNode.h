@@ -113,6 +113,20 @@ public:
 		}
 	}
 
+	void nPickDraw(Shader& pickShader) {
+		if (isActive)
+		{
+			if (model) {
+				model->pickDraw(pickShader);
+			}
+
+			for (GraphNode* node : children)
+			{
+				node->nPickDraw(pickShader);
+			}
+		}
+	}
+
 	void Rotate(float angle, glm::vec3 axis) {
 		*transform = glm::rotate(*transform, glm::radians(angle), axis);
 	}
