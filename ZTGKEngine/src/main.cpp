@@ -15,6 +15,7 @@
 #include "OtherTestRealtimeScript.h"
 #include "ApTime.h"
 #include "RoomSwapManager.h"
+#include "ClickPicker.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -47,6 +48,10 @@ struct PLight {
     float quadratic;
 
 } pointLight;
+
+ClickPicker picker = ClickPicker();
+
+int objectID = 1;
 
 int main(void)
 {
@@ -88,10 +93,17 @@ int main(void)
     //Resource and scene setup
     Shader lightShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
+    Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
 
+<<<<<<< Updated upstream
     Model brick("res/models/krzeselko.fbx");
     Model brick2("res/models/krzeselko.fbx");
     Model bulb("res/models/House.obj");
+=======
+    Model brick("res/models/House.obj", objectID++);
+    Model brick2("res/models/House.obj", objectID++);
+    Model bulb("res/models/House.obj", objectID++);
+>>>>>>> Stashed changes
 
     brick.SetShader(&lightShader);
     brick2.SetShader(&lightShader);
@@ -137,7 +149,7 @@ int main(void)
 
     //Before entering the loop we activate setup functions in all the scripts
     world->ExecuteStartScripts();
-
+    glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
     //Scene1Dark->SetActive(false);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -173,17 +185,30 @@ int main(void)
         bulbShader.use();
         bulbShader.setMat4("projection", projection);
         bulbShader.setMat4("view", view);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        picker.Enable();
+        pickShader.use();
+        pickShader.setMat4("projection", projection);
+        pickShader.setMat4("view", view);
+        world->nPickDraw(pickShader);
+
+        double mouseXd;
+        double mouseYd;
+        glfwGetCursorPos(window, &mouseXd, &mouseYd);
+
+        ClickPicker::PixelData pixel = picker.Read(mouseXd, 600 - mouseYd);
+        picker.Disable();
+        
+        //std::cout << pixel.ObjectID << pixel.DrawID << pixel.PrimID << std::endl;
 
         //Processing input here
         processInput(window);
 
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         world->Update();
-        world->Draw();
+        //world->Draw();
         //bulbNode->Draw();
 
         /* Swap front and back buffers */

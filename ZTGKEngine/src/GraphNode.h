@@ -98,6 +98,7 @@ public:
 			}
 		}
 	}
+
 	void Draw()
 	{
 		if (isActive)
@@ -109,6 +110,20 @@ public:
 			for (GraphNode* node : children)
 			{
 				node->Draw();
+			}
+		}
+	}
+
+	void nPickDraw(Shader& pickShader) {
+		if (isActive)
+		{
+			if (model) {
+				model->pickDraw(pickShader);
+			}
+
+			for (GraphNode* node : children)
+			{
+				node->nPickDraw(pickShader);
 			}
 		}
 	}

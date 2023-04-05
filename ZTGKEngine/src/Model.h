@@ -45,25 +45,33 @@ public:
     bool instanced;
     //Some objects may use gamma correction
     bool gammaCorrection;
-    
+
+    int objectID;
     //Simple setters for whole transformation matrix and shader program
     void setTransform(glm::mat4* matrix) { Transform = matrix; }
     void SetShader(Shader* s) { shader = s; }
 
     //Constructor. We have to specify path to main object file(obj, fbx...) and can set optional stuff
     //like instantiation or gamma correction
-    Model(string const& path, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
+    Model(string const& path, int objectId, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
     {
         instanced = instance;
         loadModel(path);
         Transform = new glm::mat4(1);
+        this->objectID = objectId;
+        //*objectId += 0.1f;
     }
 
     //We simply draw every mesh using Mesh class functionality
     void Draw()
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(*shader, Transform);
+            meshes[i].Draw(*shader, Transform, &objectID);
+    }
+
+    void pickDraw(Shader& pickShader) {
+        for (unsigned int i = 0; i < meshes.size(); i++)
+            meshes[i].Draw(pickShader, Transform, &objectID, true);
     }
 
 private:

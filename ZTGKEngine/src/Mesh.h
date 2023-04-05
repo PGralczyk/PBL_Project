@@ -69,7 +69,7 @@ public:
     }
 
     // Render the mesh
-    void Draw(Shader& shader, glm::mat4* model)
+    void Draw(Shader& shader, glm::mat4* model, int* objectID, bool picking = false)
     {
         //For now we only use this part, because we don't instantiate objects
         //(instantiate is about having a single object reused multiple times),
@@ -85,12 +85,16 @@ public:
             shader.use();
             //We set our model matrix (used for transformations) as uniform for shader program
             shader.setMat4("model", *model);
+            if (picking) {
+                std::cout << *objectID << std::endl;
+                shader.setInt("gObjectIndex", *objectID);
+            }
 
             //We apply every texture that is in our object
             for (unsigned int i = 0; i < textures.size(); i++)
             {
                 //We have to activate the texture we are currently working with
-                glActiveTexture(GL_TEXTURE0 + i);
+                //glActiveTexture(GL_TEXTURE0 + i);
 
                 string number;
                 string name = textures[i].type;
@@ -104,8 +108,8 @@ public:
                     number = std::to_string(heightNr++);
 
                 //Specyfify the value of a uniform variable for the current program object
-                glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-                glBindTexture(GL_TEXTURE_2D, textures[i].id);
+                //glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+                //glBindTexture(GL_TEXTURE_2D, textures[i].id);
             }
 
             //We finally bind the vertex array and draw the mesh using triangles
@@ -113,7 +117,7 @@ public:
             glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
 
-            glActiveTexture(GL_TEXTURE0);
+            //glActiveTexture(GL_TEXTURE0);
         }
         //ONLY FOR INSTANTIONING:
         else {
