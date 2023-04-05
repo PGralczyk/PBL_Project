@@ -183,28 +183,31 @@ int main(void)
         bulbShader.setMat4("view", view);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        picker.Enable();
-        pickShader.use();
-        pickShader.setMat4("projection", projection);
-        pickShader.setMat4("view", view);
-        world->nPickDraw(pickShader);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+        {
+            picker.Enable();
+            pickShader.use();
+            pickShader.setMat4("projection", projection);
+            pickShader.setMat4("view", view);
+            world->nPickDraw(pickShader);
+            double mouseXd;
+            double mouseYd;
+            glfwGetCursorPos(window, &mouseXd, &mouseYd);
+            glFlush();
+            glFinish();
+            ClickPicker::PixelData pixel = picker.Read(mouseXd, 600 - mouseYd);
+            picker.Disable();
+        }
 
-        double mouseXd;
-        double mouseYd;
-        glfwGetCursorPos(window, &mouseXd, &mouseYd);
-        glFlush();
-        glFinish();
-        ClickPicker::PixelData pixel = picker.Read(mouseXd, 600 - mouseYd);
-        picker.Disable();
 
         //Processing input here
         processInput(window);
 
         /* Render here */
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         world->Update();
-        //world->Draw();
+        world->Draw();
         //bulbNode->Draw();
 
         /* Swap front and back buffers */
