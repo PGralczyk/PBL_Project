@@ -21,13 +21,10 @@ public:
 
 	~OtherTestRealtimeScript() = default;
 
-	void Update()
+	void OnMouseClicked()
 	{
-		//With current deltaTime implementation it will rotate the object by 90* in one second
-		//If you do something within update function, then if you multiply by deltaTime, it will do
-		//it in one second, whatever it is
-		node->Rotate(45.0f * ApTime::instance().deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
-		//Uncomment below to get a nice slowdown effect!
-		//ApTime::instance().SetTimeRatio(ApTime::instance().GetTimeRatio() * 0.9999f);
+		std::cout << "Clicked" << std::endl;
+		node->Rotate(45.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
+
 };

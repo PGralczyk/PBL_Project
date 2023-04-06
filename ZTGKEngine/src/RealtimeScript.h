@@ -40,4 +40,14 @@ public:
 	{
 
 	}
+
+	virtual void OnMouseClicked()
+	{
+
+	}
+
+	virtual void OnMouseDragged()
+	{
+
+	}
 };

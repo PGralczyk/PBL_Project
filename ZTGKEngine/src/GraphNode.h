@@ -64,7 +64,7 @@ public:
 		node->parent = this;
 	}
 
-	void Update()
+	void Update(unsigned int currentlyPicked = 0, bool singleClick = false)
 	{
 		if (parent)
 		{
@@ -92,9 +92,28 @@ public:
 				script->Update();
 			}
 
+			bool getIds = false;
+
+			if (model && currentlyPicked == model->objectID)
+			{
+				if (singleClick)
+				{
+					for (RealtimeScript* script : realtimeScripts)
+					{
+						script->OnMouseClicked();
+					}
+				}
+
+				for (RealtimeScript* script : realtimeScripts)
+				{
+					script->OnMouseDragged();
+				}
+
+			}
+
 			for (GraphNode* node : children)
 			{
-				node->Update();
+				node->Update(currentlyPicked, singleClick);
 			}
 		}
 	}

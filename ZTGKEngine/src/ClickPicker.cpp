@@ -72,7 +72,6 @@ ClickPicker::PixelData ClickPicker::Read(unsigned int x, unsigned int y)
     PixelData Pixel;
 
     glReadPixels(x, y, 1, 1, GL_RGB, GL_BYTE, &Pixel);
-    std::cout << Pixel.ObjectID << std::endl;
     //glReadBuffer(GL_NONE);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

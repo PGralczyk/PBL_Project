@@ -22,6 +22,11 @@ public:
 
 	~TestRealtimeScript() = default;
 
+	void OnMouseDragged()
+	{
+		node->Rotate(180.0f * ApTime::instance().deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+
 	void Start()
 	{
 		node->Translate(glm::vec3(-4.0f, 0.0f, 0.0f));

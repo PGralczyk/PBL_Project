@@ -42,6 +42,9 @@ ClickPicker picker = ClickPicker();
 
 int objectID = 1;
 
+unsigned int currentlyPicked = 0;
+bool singleClick = true;
+
 struct PLight {
     glm::vec3 position = { -2.0f, -0.8f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
@@ -118,8 +121,7 @@ int main(void)
 
     //Adding script here
     brickNode->AddScript(new TestRealtimeScript(brickNode));
-    brickNode->AddScript(new OtherTestRealtimeScript(brickNode));
-    brickNode2->AddScript(new TestRealtimeScript(brickNode2));
+    brickNode2->AddScript(new OtherTestRealtimeScript(brickNode2));
     Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, &lightVersion));
 
     world->AddChild(Scene1);
@@ -197,6 +199,13 @@ int main(void)
             glFinish();
             ClickPicker::PixelData pixel = picker.Read(mouseXd, 600 - mouseYd);
             picker.Disable();
+            currentlyPicked = pixel.ObjectID;
+            //std::cout << currentlyPicked << std::endl;
+        }
+        else
+        {
+            currentlyPicked = 0;
+            singleClick = true;
         }
 
 
@@ -206,7 +215,11 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        world->Update();
+        world->Update(currentlyPicked, singleClick);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+        {
+            singleClick = false;
+        }
         world->Draw();
         //bulbNode->Draw();
 
