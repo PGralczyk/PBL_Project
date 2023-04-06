@@ -208,7 +208,6 @@ int main(void)
             singleClick = true;
         }
 
-
         //Processing input here
         processInput(window);
 
