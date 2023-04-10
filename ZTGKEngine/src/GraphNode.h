@@ -13,6 +13,7 @@ protected:
 
 	glm::mat4 staticTransform;
 	glm::vec3 translation = glm::vec3(0.0f);
+	glm::mat4 rotationMatrix = glm::mat4(1.0f);
 	float zRotationAngle = 0.0f;
 	float staticRotateX = 0.0f;
 	float staticRotateZ = 0.0f;
@@ -147,13 +148,13 @@ public:
 	}
 
 	void Rotate(float angle, glm::vec3 axis) {
-		*transform = glm::rotate(*transform, glm::radians(angle), axis);
+		rotationMatrix = glm::rotate(rotationMatrix, glm::radians(angle), axis);
+		RenderTransform();
 	}
 
 	void RenderTransform() {
 		*transform = glm::translate(glm::mat4(1.0f), translation) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(staticRotateX), glm::vec3(-1, 0, 0)) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(staticRotateZ), glm::vec3(0, -1, 0)) *
+			rotationMatrix *
 			glm::scale(glm::mat4(1.0f), glm::vec3(m_scale));
 	}
 
