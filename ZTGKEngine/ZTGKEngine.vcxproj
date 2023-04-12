@@ -149,6 +149,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AssimpHelper.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ClickPicker.h" />
     <ClInclude Include="src\GraphNode.h" />
