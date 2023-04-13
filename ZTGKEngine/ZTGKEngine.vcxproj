@@ -149,7 +149,10 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation.h" />
+    <ClInclude Include="src\Animator.h" />
     <ClInclude Include="src\AssimpHelper.h" />
+    <ClInclude Include="src\Bone.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ClickPicker.h" />
     <ClInclude Include="src\GraphNode.h" />

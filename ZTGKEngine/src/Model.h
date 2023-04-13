@@ -63,6 +63,9 @@ public:
     void setTransform(glm::mat4* matrix) { Transform = matrix; }
     void SetShader(Shader* s) { shader = s; }
 
+    auto& GetBoneInfoMap() { return m_BoneInfoMap; }
+    int& GetBoneCount() { return m_BoneCounter; }
+
     //Constructor. We have to specify path to main object file(obj, fbx...) and can set optional stuff
     //like instantiation or gamma correction
     Model(string const& path, int objectId, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
@@ -147,8 +150,6 @@ private:
     //BONE STUFF
     std::map<string, BoneInfo> m_BoneInfoMap; //
     int m_BoneCounter = 0;
-    auto& GetBoneInfoMap() { return m_BoneInfoMap; }
-    int& GetBoneCount() { return m_BoneCounter; }
     
 
         void SetVertexBoneDataToDefault(Vertex& vertex)
@@ -176,7 +177,6 @@ private:
             SetVertexBoneDataToDefault(vertex);
 
             glm::vec3 vector;
-            std::cout << mesh->mNumBones;
             // Positions
             vector.x = mesh->mVertices[i].x;
             vector.y = mesh->mVertices[i].y;

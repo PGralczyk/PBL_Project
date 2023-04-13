@@ -16,6 +16,8 @@
 #include "ApTime.h"
 #include "RoomSwapManager.h"
 #include "ClickPicker.h"
+#include "Animation.h"
+#include "Animator.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -44,6 +46,10 @@ int objectID = 1;
 
 unsigned int currentlyPicked = 0;
 bool singleClick = true;
+
+// timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 struct PLight {
     glm::vec3 position = { -2.0f, -0.8f, 0.0f };
@@ -97,14 +103,20 @@ int main(void)
     Shader lightShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
     Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
+    Shader animationShader("res/shaders/skinner.vert", "res/shaders/skinner.frag");
 
     Model brick("res/models/krzeselko.fbx", objectID++);
     Model brick2("res/models/krzeselko.fbx", objectID++);
     Model bulb("res/models/House.obj", objectID++);
+    Model animated("res/models/Defeated.dae", objectID++);
 
     brick.SetShader(&lightShader);
     brick2.SetShader(&lightShader);
     bulb.SetShader(&bulbShader);
+    animated.SetShader(&animationShader);
+
+    Animation animation("res/models/Defeated.dae", &animated);
+    Animator animator(&animation);
     
     //Handles the whole game world
     GraphNode* world = new GraphNode();
@@ -119,6 +131,9 @@ int main(void)
     GraphNode* Scene1Dark = new GraphNode();
     GraphNode* brickNode2 = new GraphNode(&brick2);
 
+    //Animated model node
+    GraphNode* animationNode = new GraphNode(&animated);
+
     //Adding script here
     brickNode->AddScript(new TestRealtimeScript(brickNode));
     brickNode2->AddScript(new OtherTestRealtimeScript(brickNode2));
@@ -128,6 +143,7 @@ int main(void)
     Scene1->AddChild(Scene1Bright);
     Scene1->AddChild(Scene1Dark);
     Scene1->AddChild(bulbNode);
+    Scene1->AddChild(animationNode);
     Scene1Bright->AddChild(brickNode);
     Scene1Dark->AddChild(brickNode2);
 
@@ -152,6 +168,11 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        //Animation stuff
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         //Counting new deltaTime
         ApTime::instance().Update();
 
@@ -210,9 +231,19 @@ int main(void)
 
         //Processing input here
         processInput(window);
-
+        //Animation update
+        animator.UpdateAnimation(deltaTime);
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        animationShader.use();
+        animationShader.setMat4("projection", projection);
+        animationShader.setMat4("view", view);
+
+        //auto transforms = animator.GetFinalBoneMatrices();
+        //for (int i = 0; i < transforms.size(); ++i) {
+        //    animationShader.setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
+        //}
 
         world->Update(currentlyPicked, singleClick);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
