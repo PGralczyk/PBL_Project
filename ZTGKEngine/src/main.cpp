@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image/stb_image.h>
 #include <assimp/Importer.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "Shader.h"
 #include "Model.h"
@@ -108,7 +109,7 @@ int main(void)
     Model brick("res/models/krzeselko.fbx", objectID++);
     Model brick2("res/models/krzeselko.fbx", objectID++);
     Model bulb("res/models/House.obj", objectID++);
-    Model animated("res/models/Defeated.dae", objectID++);
+    Model animated("res/models/thezelda3.fbx", objectID++);
 
     brick.SetShader(&lightShader);
     brick2.SetShader(&lightShader);
@@ -240,10 +241,11 @@ int main(void)
         animationShader.setMat4("projection", projection);
         animationShader.setMat4("view", view);
 
-        //auto transforms = animator.GetFinalBoneMatrices();
-        //for (int i = 0; i < transforms.size(); ++i) {
-        //    animationShader.setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
-        //}
+        auto transforms = animator.GetFinalBoneMatrices();
+        for (int i = 0; i < transforms.size(); ++i) {
+            animationShader.setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
+            //std::cout << glm::to_string(transforms[i]) <<std::endl;
+        }
 
         world->Update(currentlyPicked, singleClick);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))

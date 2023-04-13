@@ -263,6 +263,7 @@ private:
 
     void ExtractBoneWeightForVertices(vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
     {
+        cout << mesh->mNumBones << endl;
         for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
         {
             int boneID = -1;
@@ -283,6 +284,7 @@ private:
             }
             assert(boneID != -1);
             auto weights = mesh->mBones[boneIndex]->mWeights;
+            cout << weights << endl;
             int numWeights = mesh->mBones[boneIndex]->mNumWeights;
 
             for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
