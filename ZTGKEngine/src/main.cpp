@@ -16,6 +16,7 @@
 #include "ApTime.h"
 #include "RoomSwapManager.h"
 #include "ClickPicker.h"
+#include "ApRectangle.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -32,7 +33,16 @@ const unsigned int SCR_HEIGHT = 600;
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
+float texOffset = 0;
 bool firstMouse = true;
+
+//rainbow anim----
+float r = 1.0f, g = 0.0f, b = 0.0f;
+float animSpeed = 1.5f;
+int animStage = 1;
+bool isRunning = true;
+glm::vec3 rainbowColor = { 1.0, 0.0, 0.0 };
+//----------------
 
 glm::vec3 castedRay = glm::vec3(1);
 
@@ -91,20 +101,37 @@ int main(void)
         return -1;
     }
 
+    //glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
 
     //Resource and scene setup
     Shader lightShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
     Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
+    Shader primitiveColorShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveColor.frag");
+    Shader primitiveAnimTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveAnimTexture.frag");
+    Shader primitiveTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveTexture.frag");
+    Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
+
 
     Model brick("res/models/krzeselko.fbx", objectID++);
     Model brick2("res/models/krzeselko.fbx", objectID++);
+    Model krzeslo("res/models/krzeselko.fbx", objectID++);
     Model bulb("res/models/House.obj", objectID++);
+    ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
+    ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
+    ApRectangle bottomPanel(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/gui_panel.png");
+    ApRectangle rainbowSquare(35, SCR_HEIGHT - 75, 300, 50, rainbowColor);
 
     brick.SetShader(&lightShader);
     brick2.SetShader(&lightShader);
     bulb.SetShader(&bulbShader);
+    rec.SetShader(&primitiveColorShader);
+    recTex.SetShader(&primitiveAnimTextureShader);
+    bottomPanel.SetShader(&primitiveTextureShader);
+    rainbowSquare.SetShader(&rainbowPrimitiveShader);
+    krzeslo.SetShader(&lightShader);
     
     //Handles the whole game world
     GraphNode* world = new GraphNode();
@@ -114,6 +141,7 @@ int main(void)
     //Bright
     GraphNode* Scene1Bright = new GraphNode();
     GraphNode* brickNode = new GraphNode(&brick);
+    GraphNode* krzesloNode = new GraphNode(&krzeslo);
     GraphNode* bulbNode = new GraphNode(&bulb);
     //Dark
     GraphNode* Scene1Dark = new GraphNode();
@@ -122,6 +150,7 @@ int main(void)
     //Adding script here
     brickNode->AddScript(new TestRealtimeScript(brickNode));
     brickNode2->AddScript(new OtherTestRealtimeScript(brickNode2));
+    krzesloNode->AddScript(new OtherTestRealtimeScript(krzesloNode));
     Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, &lightVersion));
 
     world->AddChild(Scene1);
@@ -130,10 +159,13 @@ int main(void)
     Scene1->AddChild(bulbNode);
     Scene1Bright->AddChild(brickNode);
     Scene1Dark->AddChild(brickNode2);
+    Scene1Dark->AddChild(krzesloNode);
+
 
     //brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
     brickNode2->Scale(0.005f);
     brickNode->Scale(0.005f);
+    krzesloNode->Scale(0.005f);
     //brickNode2->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
     brickNode2->Translate(glm::vec3(2.0f, -2.0f, 0.0f));
 
@@ -158,6 +190,9 @@ int main(void)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
+        glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
+        glm::mat4 viewPrimitive = glm::mat4(1.0);
+
         glm::vec3 newCastedRay = rayCast(window, projection, view);
         if (castedRay != newCastedRay)
         {
@@ -166,6 +201,23 @@ int main(void)
             //std::cout << "Y: " << castedRay.y << "   ";
             //std::cout << "Z: " << castedRay.y << std::endl;
         }
+
+        primitiveColorShader.use();
+        primitiveColorShader.setMat4("projection", projectionPrimitive);
+        primitiveColorShader.setMat4("view", viewPrimitive);
+
+        primitiveAnimTextureShader.use();
+        primitiveAnimTextureShader.setMat4("projection", projectionPrimitive);
+        primitiveAnimTextureShader.setMat4("view", viewPrimitive);
+        primitiveAnimTextureShader.setFloat("texOffset", texOffset);
+
+        primitiveTextureShader.use();
+        primitiveTextureShader.setMat4("projection", projectionPrimitive);
+        primitiveTextureShader.setMat4("view", viewPrimitive);
+
+        rainbowPrimitiveShader.use();
+        rainbowPrimitiveShader.setMat4("projection", projectionPrimitive);
+        rainbowPrimitiveShader.setMat4("view", viewPrimitive);
 
         lightShader.use();
         lightShader.setMat4("projection", projection);
@@ -219,9 +271,77 @@ int main(void)
         {
             singleClick = false;
         }
+        glEnable(GL_BLEND);
         world->Draw();
         //bulbNode->Draw();
+        //rec.Draw();
+        recTex.Draw();
+        texOffset += 0.1 * ApTime::instance().deltaTime;
+        glDepthFunc(GL_ALWAYS);
+        rainbowSquare.Draw();
 
+        //Rainbow animation-----
+        if (isRunning)
+        {
+            switch (animStage)
+            {
+            case 1:
+                g += animSpeed * ApTime::instance().deltaTime;
+                if (g >= 1.0f)
+                {
+                    g = 1.0f;
+                    animStage++;
+                }
+                break;
+            case 2:
+                r -= animSpeed * ApTime::instance().deltaTime;
+                if (r <= 0.0f)
+                {
+                    r = 0.0f;
+                    animStage++;
+                }
+                break;
+            case 3:
+                b += animSpeed * ApTime::instance().deltaTime;
+                if (b >= 1.0f)
+                {
+                    b = 1.0f;
+                    animStage++;
+                }
+                break;
+            case 4:
+                g -= animSpeed * ApTime::instance().deltaTime;
+                if (g <= 0.0f)
+                {
+                    g = 0.0f;
+                    animStage++;
+                }
+                break;
+            case 5:
+                r += animSpeed * ApTime::instance().deltaTime;
+                if (r >= 1.0f)
+                {
+                    r = 1.0f;
+                    animStage++;
+                }
+                break;
+            case 6:
+                b -= animSpeed * ApTime::instance().deltaTime;
+                if (b <= 0.0f)
+                {
+                    b = 0.0f;
+                    animStage = 1;
+                }
+                break;
+            }
+
+            rainbowSquare.SetColor(glm::vec3(r,g,b));
+        }
+        //----------------------
+
+        bottomPanel.Draw();
+        glDepthFunc(GL_LESS);
+        glDisable(GL_BLEND);
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

@@ -37,8 +37,8 @@ public:
 		//With current deltaTime implementation it will rotate the object by 90* in one second
 		//If you do something within update function, then if you multiply by deltaTime, it will do
 		//it in one second, whatever it is
-		node->Rotate(90.0f , glm::vec3(1.0f, 0.0f, 0.0f));
-		node->Translate(glm::vec3(1.0f, 0.0f, 0.0f) * ApTime::instance().deltaTime);
+		node->Rotate(90.0f * ApTime::instance().deltaTime, glm::vec3(1.0f, 0.0f, 0.0f));
+		//node->Translate(glm::vec3(1.0f, 0.0f, 0.0f) * ApTime::instance().deltaTime);
 		//node->Scale(1.0f);
 		
 		

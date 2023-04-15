@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -147,8 +147,11 @@
     <ClCompile Include="src\clickPickUtils.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\textureUtilscpp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ApRectangle.h" />
+    <ClInclude Include="src\Primitive.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ClickPicker.h" />
     <ClInclude Include="src\GraphNode.h" />
