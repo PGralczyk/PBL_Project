@@ -17,6 +17,7 @@
 #include "RoomSwapManager.h"
 #include "ClickPicker.h"
 #include "ApRectangle.h"
+#include "Text.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -43,6 +44,7 @@ int animStage = 1;
 bool isRunning = true;
 glm::vec3 rainbowColor = { 1.0, 0.0, 0.0 };
 //----------------
+Text text;
 
 glm::vec3 castedRay = glm::vec3(1);
 
@@ -113,7 +115,7 @@ int main(void)
     Shader primitiveAnimTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveAnimTexture.frag");
     Shader primitiveTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveTexture.frag");
     Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
-
+    Shader textShader("res/shaders/text.vert", "res/shaders/text.frag");
 
     Model brick("res/models/krzeselko.fbx", objectID++);
     Model brick2("res/models/krzeselko.fbx", objectID++);
@@ -123,6 +125,7 @@ int main(void)
     ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
     ApRectangle bottomPanel(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/gui_panel.png");
     ApRectangle rainbowSquare(35, SCR_HEIGHT - 75, 300, 50, rainbowColor);
+    text.init("res/fonts/arial/arial.ttf");
 
     brick.SetShader(&lightShader);
     brick2.SetShader(&lightShader);
@@ -180,10 +183,14 @@ int main(void)
 
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
+    float time = 0;
+
     //Scene1Dark->SetActive(false);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        time += ApTime::instance().deltaTime;
+
         //Counting new deltaTime
         ApTime::instance().Update();
 
@@ -218,6 +225,9 @@ int main(void)
         rainbowPrimitiveShader.use();
         rainbowPrimitiveShader.setMat4("projection", projectionPrimitive);
         rainbowPrimitiveShader.setMat4("view", viewPrimitive);
+
+        textShader.use();
+        textShader.setMat4("projection", projectionPrimitive);
 
         lightShader.use();
         lightShader.setMat4("projection", projection);
@@ -340,6 +350,7 @@ int main(void)
         //----------------------
 
         bottomPanel.Draw();
+        text.RenderText(textShader, to_string(time), float(SCR_WIDTH) - 200, float(SCR_HEIGHT) - 75, 0.5, glm::vec3(0.9, 0.1f, 0.1f));
         glDepthFunc(GL_LESS);
         glDisable(GL_BLEND);
         /* Swap front and back buffers */

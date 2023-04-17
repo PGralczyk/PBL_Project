@@ -113,13 +113,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,6 +163,7 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\TestRealtimeScript.h" />
     <ClInclude Include="src\ApTime.h" />
+    <ClInclude Include="src\Text.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
