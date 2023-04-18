@@ -1,23 +1,4 @@
-#include <iostream>
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <stb_image/stb_image.h>
-#include <assimp/Importer.hpp>
-
-#include "Shader.h"
-#include "Model.h"
-#include "GraphNode.h"
-#include "Camera.h"
-#include "TestRealtimeScript.h"
-#include "OtherTestRealtimeScript.h"
-#include "ApTime.h"
-#include "RoomSwapManager.h"
-#include "ClickPicker.h"
-#include "ApRectangle.h"
-#include "Text.h"
+#include "SceneManager.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -37,6 +18,8 @@ float lastY = SCR_HEIGHT / 2.0f;
 float texOffset = 0;
 bool firstMouse = true;
 
+bool lightVersion = true;
+
 //rainbow anim----
 float r = 1.0f, g = 0.0f, b = 0.0f;
 float animSpeed = 1.5f;
@@ -48,14 +31,14 @@ Text text;
 
 glm::vec3 castedRay = glm::vec3(1);
 
-bool lightVersion = true;
-
 ClickPicker picker = ClickPicker();
 
 int objectID = 1;
 
 unsigned int currentlyPicked = 0;
 bool singleClick = true;
+
+SceneManager sceneManager;
 
 struct PLight {
     glm::vec3 position = { -2.0f, -0.8f, 0.0f };
@@ -108,8 +91,8 @@ int main(void)
     glEnable(GL_DEPTH_TEST);
 
     //Resource and scene setup
-    Shader lightShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
-    Shader bulbShader("res/shaders/light.vert", "res/shaders/light.frag");
+    Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
+    Shader lightShader("res/shaders/light.vert", "res/shaders/light.frag");
     Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
     Shader primitiveColorShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveColor.frag");
     Shader primitiveAnimTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveAnimTexture.frag");
@@ -117,69 +100,26 @@ int main(void)
     Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
     Shader textShader("res/shaders/text.vert", "res/shaders/text.frag");
 
-    Model brick("res/models/krzeselko.fbx", objectID++);
-    Model brick2("res/models/krzeselko.fbx", objectID++);
-    Model krzeslo("res/models/krzeselko.fbx", objectID++);
-    Model bulb("res/models/House.obj", objectID++);
     ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
     ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
     ApRectangle bottomPanel(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/gui_panel.png");
     ApRectangle rainbowSquare(35, SCR_HEIGHT - 75, 300, 50, rainbowColor);
     text.init("res/fonts/arial/arial.ttf");
 
-    brick.SetShader(&lightShader);
-    brick2.SetShader(&lightShader);
-    bulb.SetShader(&bulbShader);
     rec.SetShader(&primitiveColorShader);
     recTex.SetShader(&primitiveAnimTextureShader);
     bottomPanel.SetShader(&primitiveTextureShader);
     rainbowSquare.SetShader(&rainbowPrimitiveShader);
-    krzeslo.SetShader(&lightShader);
-    
-    //Handles the whole game world
-    GraphNode* world = new GraphNode();
-    //------SCENE-1------
-    //Each location is presented as scene
-    GraphNode* Scene1 = new GraphNode();
-    //Bright
-    GraphNode* Scene1Bright = new GraphNode();
-    GraphNode* brickNode = new GraphNode(&brick);
-    GraphNode* krzesloNode = new GraphNode(&krzeslo);
-    GraphNode* bulbNode = new GraphNode(&bulb);
-    //Dark
-    GraphNode* Scene1Dark = new GraphNode();
-    GraphNode* brickNode2 = new GraphNode(&brick2);
 
-    //Adding script here
-    brickNode->AddScript(new TestRealtimeScript(brickNode));
-    brickNode2->AddScript(new OtherTestRealtimeScript(brickNode2));
-    krzesloNode->AddScript(new OtherTestRealtimeScript(krzesloNode));
-    Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, &lightVersion));
+    sceneManager.defaultShader = &defaultShader;
+    sceneManager.lightShader = &lightShader;
 
-    world->AddChild(Scene1);
-    Scene1->AddChild(Scene1Bright);
-    Scene1->AddChild(Scene1Dark);
-    Scene1->AddChild(bulbNode);
-    Scene1Bright->AddChild(brickNode);
-    Scene1Dark->AddChild(brickNode2);
-    Scene1Dark->AddChild(krzesloNode);
+    sceneManager.Setup( window, &lightVersion);
 
-
-    //brickNode->Translate(glm::vec3(-2.0f, -2.0f, -2.0f));
-    brickNode2->Scale(0.005f);
-    brickNode->Scale(0.005f);
-    krzesloNode->Scale(0.005f);
-    //brickNode2->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
-    brickNode2->Translate(glm::vec3(2.0f, -2.0f, 0.0f));
-
-    bulbNode->Scale(0.1f);
-    bulbNode->Translate(pointLight.position);
-
-    world->RenderTransform();
-    world->Update();
+    sceneManager.Update();
 
     //Before entering the loop we activate setup functions in all the scripts
-    world->ExecuteStartScripts();
+    sceneManager.ExecuteStartScripts();
 
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -209,6 +149,23 @@ int main(void)
             //std::cout << "Z: " << castedRay.y << std::endl;
         }
 
+        defaultShader.use();
+        defaultShader.setMat4("projection", projection);
+        defaultShader.setMat4("view", view);
+        defaultShader.setVec3("viewPos", camera.Position);
+        defaultShader.setVec3("pointLightPos", pointLight.position);
+        if (lightVersion)
+            defaultShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
+        else
+            defaultShader.setVec3("pointLightColor", glm::vec3({ pointLight.color2[0], pointLight.color2[1], pointLight.color2[2] }));
+        defaultShader.setFloat("LightConstant", 1.0f);
+        defaultShader.setFloat("LightLinear", 0.09f);
+        defaultShader.setFloat("LightQuadratic", 0.032f);
+
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+
         primitiveColorShader.use();
         primitiveColorShader.setMat4("projection", projectionPrimitive);
         primitiveColorShader.setMat4("view", viewPrimitive);
@@ -229,22 +186,6 @@ int main(void)
         textShader.use();
         textShader.setMat4("projection", projectionPrimitive);
 
-        lightShader.use();
-        lightShader.setMat4("projection", projection);
-        lightShader.setMat4("view", view);
-        lightShader.setVec3("viewPos", camera.Position);
-        lightShader.setVec3("pointLightPos", pointLight.position);
-        if(lightVersion)
-            lightShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
-        else
-            lightShader.setVec3("pointLightColor", glm::vec3({ pointLight.color2[0], pointLight.color2[1], pointLight.color2[2] }));
-        lightShader.setFloat("LightConstant", 1.0f);
-        lightShader.setFloat("LightLinear", 0.09f);
-        lightShader.setFloat("LightQuadratic", 0.032f);
-
-        bulbShader.use();
-        bulbShader.setMat4("projection", projection);
-        bulbShader.setMat4("view", view);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
@@ -253,7 +194,7 @@ int main(void)
             pickShader.use();
             pickShader.setMat4("projection", projection);
             pickShader.setMat4("view", view);
-            world->nPickDraw(pickShader);
+            sceneManager.RenderMousePicking(pickShader);
             double mouseXd;
             double mouseYd;
             glfwGetCursorPos(window, &mouseXd, &mouseYd);
@@ -262,7 +203,6 @@ int main(void)
             ClickPicker::PixelData pixel = picker.Read(mouseXd, 600 - mouseYd);
             picker.Disable();
             currentlyPicked = pixel.ObjectID;
-            //std::cout << currentlyPicked << std::endl;
         }
         else
         {
@@ -276,15 +216,15 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        world->Update(currentlyPicked, singleClick);
+        sceneManager.Update(currentlyPicked, singleClick);
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
         {
             singleClick = false;
         }
         glEnable(GL_BLEND);
-        world->Draw();
-        //bulbNode->Draw();
-        //rec.Draw();
+        sceneManager.Render();
+
         recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);
@@ -355,7 +295,6 @@ int main(void)
         glDisable(GL_BLEND);
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
         /* Poll for and process events */
         glfwPollEvents();
     }

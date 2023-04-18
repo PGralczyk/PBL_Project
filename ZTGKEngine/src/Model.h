@@ -44,7 +44,10 @@ public:
 
     //Simple setters for whole transformation matrix and shader program
     void setTransform(glm::mat4* matrix) { Transform = matrix; }
-    void SetShader(Shader* s) { shader = s; }
+    void SetShader(Shader* s) 
+    { 
+        shader = s; 
+    }
 
     //Constructor. We have to specify path to main object file(obj, fbx...) and can set optional stuff
     //like instantiation or gamma correction
@@ -59,6 +62,7 @@ public:
     //We simply draw every mesh using Mesh class functionality
     void Draw()
     {
+        //std::cout << (shader != NULL) << std::endl;
         for (unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(*shader, Transform, &objectID);
     }

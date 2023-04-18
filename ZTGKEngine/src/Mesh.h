@@ -73,6 +73,7 @@ public:
     // Render the mesh
     void Draw(Shader& shader, glm::mat4* model, int* objectID = nullptr, bool picking = false)
     {
+        //std::cout << (&shader != NULL) << std::endl;
         //For now we only use this part, because we don't instantiate objects
         //(instantiate is about having a single object reused multiple times),
         //we can transform it, but we would still have to use just one chunk of data
