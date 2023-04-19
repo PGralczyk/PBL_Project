@@ -143,7 +143,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libraries\stb_image\include\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\ClickPicker.cpp" />
     <ClCompile Include="src\clickPickUtils.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -151,6 +150,7 @@
     <ClCompile Include="src\textureUtilscpp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ChessBoardPuzzle.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\ApRectangle.h" />
     <ClInclude Include="src\Primitive.h" />
@@ -166,6 +166,7 @@
     <ClInclude Include="src\TestRealtimeScript.h" />
     <ClInclude Include="src\ApTime.h" />
     <ClInclude Include="src\Text.h" />
+    <ClInclude Include="src\TileScript.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

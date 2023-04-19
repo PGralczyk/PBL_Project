@@ -97,7 +97,6 @@ public:
 
 			if (model && currentlyPicked == model->objectID)
 			{
-				std::cout << "Here" << std::endl;
 				if (singleClick)
 				{
 					for (RealtimeScript* script : realtimeScripts)

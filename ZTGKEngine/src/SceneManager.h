@@ -19,6 +19,8 @@
 #include "ClickPicker.h"
 #include "ApRectangle.h"
 #include "Text.h"
+#include "ChessBoardPuzzle.h";
+#include "TileScript.h";
 
 class SceneManager
 {
@@ -78,6 +80,40 @@ public:
 		//DARK_WORLD:
 		GraphNode* Scene1Dark = new GraphNode();
 		GraphNode* chair3 = CreateNode("res/models/krzeselko.fbx", defaultShader);
+		////CHESS_BOARD_LOADING
+		GraphNode* ChessMainObject = new GraphNode();
+		//GraphNode* drawer1 = CreateNode("path/to/drawer", defaultShader);
+		//GraphNode* drawer2 = CreateNode("path/to/drawer", defaultShader);
+		//GraphNode* drawer3 = CreateNode("path/to/drawer", defaultShader);
+		//GraphNode* chessBody = CreateNode("path/to/body", defaultShader);
+		//ChessMainObject->AddChild(drawer1);
+		//ChessMainObject->AddChild(drawer2);
+		//ChessMainObject->AddChild(drawer3);
+		//ChessMainObject->AddChild(chessBody);
+		GraphNode* chessTiles[64];
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				//CHANGE KRZESELKO FOR WHITE AND BLACK BOARD PIECES!!!
+				chessTiles[i * 8 + 2 * j] = CreateNode("res/models/krzeselko.fbx", defaultShader);
+				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j]);
+				chessTiles[i * 8 + 2 * j]->Translate(glm::vec3(600 * j, 0, 300 * i));
+				std::cout << 8 * i + 2 * j << std::endl;;
+
+				chessTiles[i * 8 + 2 * j + 1] = CreateNode("res/models/krzeselko.fbx", defaultShader);
+				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j + 1]);
+				chessTiles[i * 8 + 2 * j + 1]->Translate(glm::vec3(600 * j + 300, 0, 300 * i));
+				std::cout << 8 * i + 2 * j + 1 << std::endl;;
+			}
+		}
+		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles);
+		ChessMainObject->AddScript(puzzle);
+		for (int i = 0; i < 64; i++)
+		{
+			chessTiles[i]->AddScript(new TileScript(chessTiles[i], puzzle, i));
+		}
+		ChessMainObject->Scale(0.1);
 
 		//SETTING_INHERITANCE
 		world->AddChild(Scene1);
@@ -85,7 +121,12 @@ public:
 		Scene1->AddChild(Scene1Dark);
 		Scene1->AddChild(bulb);
 
+		//BrightWorld
 		Scene1Bright->AddChild(chair1);
+		Scene1Bright->AddChild(ChessMainObject);
+		
+
+		//DarkWorld
 		Scene1Dark->AddChild(chair3);
 
 		Scene1Bright->Scale(0.005f);
