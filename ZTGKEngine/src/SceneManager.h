@@ -42,10 +42,16 @@ public:
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference)
 	{
+		std::cout << "----------------------------------------------" << std::endl;
+		std::cout << "-----------------LOADING-GAME-----------------" << std::endl;
+		std::cout << "----------------------------------------------" << std::endl;
 		window = givenWindow;
 		isBright = brightReference;
 		world = new GraphNode();
 		Scene1Setup();
+		std::cout << "----------------------------------------------" << std::endl;
+		std::cout << "-----------------LOADING-DONE-----------------" << std::endl;
+		std::cout << "----------------------------------------------" << std::endl;
 	}
 
 	void Update(int currentlyPicked = 0, bool singleMouse = false)
@@ -70,9 +76,11 @@ public:
 
 	void Scene1Setup()
 	{
+		std::cout << "***Scene1***" << std::endl;
 		GraphNode* Scene1 = new GraphNode();
 
 		//BRIGHT_WORLD:
+		std::cout << "LOADING: scene structure" << std::endl;
 		GraphNode* Scene1Bright = new GraphNode();
 		GraphNode* bulb =  CreateNode("res/models/House.obj", lightShader);
 		GraphNode* chair1 = CreateNode("res/models/krzeselko.fbx", defaultShader);
@@ -81,6 +89,7 @@ public:
 		GraphNode* Scene1Dark = new GraphNode();
 		GraphNode* chair3 = CreateNode("res/models/krzeselko.fbx", defaultShader);
 		////CHESS_BOARD_LOADING
+		std::cout << "LOADING: chess board" << std::endl;
 		GraphNode* ChessMainObject = new GraphNode();
 		//GraphNode* drawer1 = CreateNode("path/to/drawer", defaultShader);
 		//GraphNode* drawer2 = CreateNode("path/to/drawer", defaultShader);
@@ -99,12 +108,12 @@ public:
 				chessTiles[i * 8 + 2 * j] = CreateNode("res/models/krzeselko.fbx", defaultShader);
 				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j]);
 				chessTiles[i * 8 + 2 * j]->Translate(glm::vec3(600 * j, 0, 300 * i));
-				std::cout << 8 * i + 2 * j << std::endl;;
+				std::cout << "LOADING: chess tile nr. " << 8 * i + 2 * j << std::endl;;
 
 				chessTiles[i * 8 + 2 * j + 1] = CreateNode("res/models/krzeselko.fbx", defaultShader);
 				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j + 1]);
 				chessTiles[i * 8 + 2 * j + 1]->Translate(glm::vec3(600 * j + 300, 0, 300 * i));
-				std::cout << 8 * i + 2 * j + 1 << std::endl;;
+				std::cout << "LOADING: chess tile nr. " << 8 * i + 2 * j + 1 << std::endl;;
 			}
 		}
 		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles);
