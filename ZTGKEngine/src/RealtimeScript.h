@@ -9,11 +9,11 @@ class GraphNode;
 //We can then create a bunch of scripts that inherit from this script and override
 //it's functions. The idea is to attach such scripts to the node of desired object.
 class RealtimeScript {
-
 protected:
 	//Here we want to store all the things that we would want to experiment with.
 	//For instance we might want to transform our object, hence the mandatory
 	//reference to the graph node.
+
 	GraphNode* node;
 
 public:
@@ -49,5 +49,10 @@ public:
 	virtual void OnMouseDragged()
 	{
 
+	}
+
+	GraphNode* GetNode()
+	{
+		return node;
 	}
 };

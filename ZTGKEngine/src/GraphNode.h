@@ -177,6 +177,10 @@ public:
 		RenderTransform();
 	}
 
+	glm::vec3 getTranslation() {
+		return translation;
+	}
+
 	void Scale(float scale) {
 		m_scale = scale;
 		RenderTransform();

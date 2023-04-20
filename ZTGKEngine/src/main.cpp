@@ -41,7 +41,7 @@ bool singleClick = true;
 SceneManager sceneManager;
 
 struct PLight {
-    glm::vec3 position = { -2.0f, -0.8f, 0.0f };
+    glm::vec3 position = { 0.0f, 0.0f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
     float color2[3] = { 0.70f, 1.0f, 1.0f };
 

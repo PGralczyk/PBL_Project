@@ -151,6 +151,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ChessBoardPuzzle.h" />
+    <ClInclude Include="src\ChessPieceScript.h" />
+    <ClInclude Include="src\OneTimeActivatorScript.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\ApRectangle.h" />
     <ClInclude Include="src\Primitive.h" />
