@@ -9,8 +9,8 @@ glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
 int oldMouseButtonState = GLFW_RELEASE;
 bool isMouseActive = false;
 
-const unsigned int SCR_WIDTH = 1000;
-const unsigned int SCR_HEIGHT = 600;
+unsigned int SCR_WIDTH = 1900;
+unsigned int SCR_HEIGHT = 1000;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
@@ -200,7 +200,7 @@ int main(void)
             glfwGetCursorPos(window, &mouseXd, &mouseYd);
             glFlush();
             glFinish();
-            ClickPicker::PixelData pixel = picker.Read(mouseXd, 600 - mouseYd);
+            ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
             picker.Disable();
             currentlyPicked = pixel.ObjectID;
         }
@@ -335,6 +335,8 @@ void processInput(GLFWwindow* window)
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+    SCR_WIDTH= width;
+    SCR_HEIGHT = height;
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);

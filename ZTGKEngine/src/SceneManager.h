@@ -218,9 +218,6 @@ public:
 		Scene1->AddChild(bulb);
 
 		Scene1Bright->AddChild(ChessMainObject);
-		
-
-
 
 		Scene1Bright->Scale(0.005f);
 		Scene1Dark->Scale(0.005f);
