@@ -41,7 +41,7 @@ bool singleClick = true;
 SceneManager sceneManager;
 
 struct PLight {
-    glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+    glm::vec3 position = { 0.4f, 0.5f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
     float color2[3] = { 0.70f, 1.0f, 1.0f };
 
@@ -309,13 +309,13 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime * 5);
+        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime * 5);
+        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime * 5);
+        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime * 5);
+        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS && oldMouseButtonState == GLFW_RELEASE) {
         if (isMouseActive) {
