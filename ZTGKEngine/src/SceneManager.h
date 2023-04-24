@@ -27,29 +27,38 @@ class SceneManager
 {
 private:
 	GraphNode* world;
+	GraphNode* UI;
 	GLFWwindow* window;
 	bool* isBright;
 	int objectId = 1;
+	unsigned int* SCR_HEIGHT;
+	unsigned int* SCR_WIDTH;
 
 public:
 	Shader *lightShader;
 	Shader *defaultShader;
+	Shader* textureShader;
 
 	SceneManager() {};
 	~SceneManager()
 	{
 		delete(world);
+		delete(UI);
 	}
 
-	void Setup(GLFWwindow* givenWindow, bool *brightReference)
+	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT)
 	{
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-GAME-----------------" << std::endl;
 		std::cout << "----------------------------------------------" << std::endl;
 		window = givenWindow;
+		this->SCR_HEIGHT = SCR_HEIGHT;
+		this->SCR_WIDTH = SCR_WIDTH;
 		isBright = brightReference;
 		world = new GraphNode();
+		UI = new GraphNode();
 		Scene1Setup();
+		UiSetup();
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-DONE-----------------" << std::endl;
 		std::cout << "----------------------------------------------" << std::endl;
@@ -58,21 +67,44 @@ public:
 	void Update(int currentlyPicked = 0, bool singleMouse = false)
 	{
 		world->Update(currentlyPicked, singleMouse);
+		UI->Update(currentlyPicked, singleMouse);
 	}
 
 	void ExecuteStartScripts()
 	{
 		world->ExecuteStartScripts();
+		UI->ExecuteStartScripts();
 	}
 
 	void RenderMousePicking(Shader& pickShader)
 	{
 		world->nPickDraw(pickShader);
+		glDepthFunc(GL_ALWAYS);
+		//glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(*SCR_WIDTH), 0.0f, float(*SCR_HEIGHT));
+		//glm::mat4 viewPrimitive = glm::mat4(1.0);
+		//pickShader.use();
+		//pickShader.setMat4("projection", projectionPrimitive);
+		//pickShader.setMat4("view", viewPrimitive);
+		UI->nPickDraw(pickShader);
+		glDepthFunc(GL_LESS);
 	}
 
 	void Render()
 	{
 		world->Draw();
+		glDepthFunc(GL_ALWAYS);
+		UI->Draw();
+		glDepthFunc(GL_LESS);
+	}
+
+	void UiSetup()
+	{
+		//ApRectangle bottomPanel(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/gui_panel.png");
+		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, 
+			"res/models/gui_panel.png", textureShader);
+		UI->AddChild(bottomPanel);
+		bottomPanel->AddScript(new OtherTestRealtimeScript(bottomPanel));
+
 	}
 
 	void Scene1Setup()
@@ -244,6 +276,44 @@ private:
 	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
 	{
 		Model *model = new Model(pathToModel, objectId++);
+		model->SetShader(shader);
+		return new GraphNode(model);
+	}
+
+	GraphNode* CreateUiElement(int xPos, int yPos, int width, int height, string path, Shader* shader)
+	{
+		//glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, yPos, 0));
+		glm::mat4 *Transform = new glm::mat4(1.0);
+		glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+
+		/*vector<Vertex> vertices =
+		{
+			{{ -0.5f, -0.5f, -0.9f}, { 0, 0, 0}, { 0, 0}, { 0, 0, 0}, { 0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} },
+			{{ -0.5f, 0.5f, -0.9f}, { 0, 0, 0}, { 0, 1}, { 0, 0, 0}, { 0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} },
+			{{ 0.5f, 0.5f, -0.9f}, { 0, 0, 0}, { 1, 1}, { 0, 0, 0}, { 0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} },
+			{{0.5, -0.5, -0.9f}, {0, 0, 0}, {1, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} }
+		};*/
+
+		vector<Vertex> vertices =
+		{
+			{{ xPos, yPos, -0.999}, { 0, 0, 0}, { 0, 1}, { 0, 0, 0}, { 0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} },
+			{{ xPos, yPos + height, -0.999}, { 0, 0, 0}, { 0, 0}, { 0, 0, 0}, { 0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} },
+			{{ xPos + width, yPos + height, -0.999}, { 0, 0, 0}, { 1, 0}, { 0, 0, 0}, { 0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} },
+			{{xPos + width, yPos, -0.999}, {0, 0, 0}, {1, 1}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} }
+		};
+
+		vector<unsigned int> indices = { 0, 1, 2, 2, 3, 0 };
+
+		Texture texture;
+		texture.id = TextureFromFile(path.c_str());
+		texture.isEmbedded = false;
+		texture.type = "texture_diffuse";
+		vector<Texture> textures;
+		textures.push_back(texture);
+
+		Mesh* mesh = new Mesh(vertices, indices, textures);
+
+		Model* model = new Model(mesh, objectId);
 		model->SetShader(shader);
 		return new GraphNode(model);
 	}

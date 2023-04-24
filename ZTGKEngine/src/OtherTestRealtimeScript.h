@@ -24,7 +24,6 @@ public:
 	void OnMouseClicked()
 	{
 		std::cout << "Clicked" << std::endl;
-		node->Rotate(45.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
 };

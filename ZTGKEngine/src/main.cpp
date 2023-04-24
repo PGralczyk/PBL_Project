@@ -102,19 +102,20 @@ int main(void)
 
     ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
     ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
-    ApRectangle bottomPanel(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/gui_panel.png");
+    //ApRectangle bottomPanel(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/gui_panel.png");
     ApRectangle rainbowSquare(35, SCR_HEIGHT - 75, 300, 50, rainbowColor);
     text.init("res/fonts/arial/arial.ttf");
 
     rec.SetShader(&primitiveColorShader);
     recTex.SetShader(&primitiveAnimTextureShader);
-    bottomPanel.SetShader(&primitiveTextureShader);
+    //bottomPanel.SetShader(&primitiveTextureShader);
     rainbowSquare.SetShader(&rainbowPrimitiveShader);
 
     sceneManager.defaultShader = &defaultShader;
     sceneManager.lightShader = &lightShader;
+    sceneManager.textureShader = &primitiveTextureShader;
 
-    sceneManager.Setup( window, &lightVersion);
+    sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT);
 
     sceneManager.Update();
 
@@ -289,7 +290,7 @@ int main(void)
         }
         //----------------------
 
-        bottomPanel.Draw();
+        //bottomPanel.Draw();
         text.RenderText(textShader, to_string(time), float(SCR_WIDTH) - 200, float(SCR_HEIGHT) - 75, 0.5, glm::vec3(0.9, 0.1f, 0.1f));
         glDepthFunc(GL_LESS);
         glDisable(GL_BLEND);

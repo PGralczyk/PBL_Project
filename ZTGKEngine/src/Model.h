@@ -59,6 +59,14 @@ public:
         this->objectID = objectId;
     }
 
+    Model(Mesh* mesh, int objectID, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
+    {
+        meshes.push_back(*mesh);
+        this->objectID = objectID;
+        Transform = new glm::mat4(1);
+
+    }
+
     //We simply draw every mesh using Mesh class functionality
     void Draw()
     {

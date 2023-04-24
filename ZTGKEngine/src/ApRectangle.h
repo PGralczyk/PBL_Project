@@ -94,8 +94,13 @@ public:
         //std::cout << "Draw Rect!\n";
     }
     
-
-
+    
+    GraphNode* CreateNode(int objectId)
+    {
+        Model* model = new Model(&mesh, objectId);
+        model->SetShader(shader);
+        return new GraphNode(model);
+    }
 };
 
 #endif
