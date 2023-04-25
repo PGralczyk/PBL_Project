@@ -76,7 +76,7 @@ public:
 		UI->ExecuteStartScripts();
 	}
 
-	void RenderMousePicking(Shader& pickShader)
+	void RenderMousePicking(Shader& pickShader, Shader& texturePickShader)
 	{
 		world->nPickDraw(pickShader);
 		glDepthFunc(GL_ALWAYS);
@@ -85,7 +85,7 @@ public:
 		//pickShader.use();
 		//pickShader.setMat4("projection", projectionPrimitive);
 		//pickShader.setMat4("view", viewPrimitive);
-		UI->nPickDraw(pickShader);
+		UI->nPickDraw(texturePickShader);
 		glDepthFunc(GL_LESS);
 	}
 

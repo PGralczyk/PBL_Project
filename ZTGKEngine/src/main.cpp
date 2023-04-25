@@ -94,6 +94,7 @@ int main(void)
     Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader lightShader("res/shaders/light.vert", "res/shaders/light.frag");
     Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
+    Shader texturePickShader("res/shaders/primitiveTexture.vert", "res/shaders/texturePickShader.frag");
     Shader primitiveColorShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveColor.frag");
     Shader primitiveAnimTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveAnimTexture.frag");
     Shader primitiveTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveTexture.frag");
@@ -195,7 +196,10 @@ int main(void)
             pickShader.use();
             pickShader.setMat4("projection", projection);
             pickShader.setMat4("view", view);
-            sceneManager.RenderMousePicking(pickShader);
+            texturePickShader.use();
+            texturePickShader.setMat4("projection", projectionPrimitive);
+            texturePickShader.setMat4("view", viewPrimitive);
+            sceneManager.RenderMousePicking(pickShader,texturePickShader);
             double mouseXd;
             double mouseYd;
             glfwGetCursorPos(window, &mouseXd, &mouseYd);
@@ -226,10 +230,10 @@ int main(void)
         glEnable(GL_BLEND);
         sceneManager.Render();
 
-        recTex.Draw();
+        //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);
-        rainbowSquare.Draw();
+        //rainbowSquare.Draw();
 
         //Rainbow animation-----
         if (isRunning)
@@ -291,7 +295,7 @@ int main(void)
         //----------------------
 
         //bottomPanel.Draw();
-        text.RenderText(textShader, to_string(time), float(SCR_WIDTH) - 200, float(SCR_HEIGHT) - 75, 0.5, glm::vec3(0.9, 0.1f, 0.1f));
+        //text.RenderText(textShader, to_string(time), float(SCR_WIDTH) - 200, float(SCR_HEIGHT) - 75, 0.5, glm::vec3(0.9, 0.1f, 0.1f));
         glDepthFunc(GL_LESS);
         glDisable(GL_BLEND);
         /* Swap front and back buffers */
