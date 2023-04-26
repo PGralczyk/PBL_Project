@@ -30,6 +30,7 @@ public:
 	//ApTime::instance().lastFrame
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
+	string pickedElementId = "";
 
 	//Updates each frame
 	void Update()

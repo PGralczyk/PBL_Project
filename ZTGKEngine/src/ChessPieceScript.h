@@ -36,5 +36,17 @@ public:
 			node->Translate(glm::vec3(0.0f, 300.0f, 0.0f));
 			isBeingMoved = true;
 		}
+
+		if (ApTime::instance().pickedElementId == "rose")
+		{
+			ApTime::instance().pickedElementId = "";
+			std::cout << "Used rose on chess piece\n";
+		}
+
+		if (ApTime::instance().pickedElementId == "rose2")
+		{
+			ApTime::instance().pickedElementId = "";
+			std::cout << "Used rose2 on chess piece\n";
+		}
 	}
 };
