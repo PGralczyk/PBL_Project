@@ -23,7 +23,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		std::cout << "Clicked" << std::endl;
+
 	}
 
 };

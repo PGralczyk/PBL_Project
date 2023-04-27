@@ -69,4 +69,27 @@ public:
 		}
 	}
 
+	void Update()
+	{
+		int pickedPieces = 0;
+		for (ChessPieceScript* piece : pieces)
+		{
+			if (piece->isBeingMoved)
+			{
+				pickedPieces++;
+			}
+		}
+		if (pickedPieces > 1)
+		{
+			for (ChessPieceScript* piece : pieces)
+			{
+				if (piece->isBeingMoved)
+				{
+					piece->isBeingMoved = false;
+					piece->GetNode()->Translate(glm::vec3(0.0f, -300.0f, 0.0f));
+				}
+			}
+		}
+	}
+
 };

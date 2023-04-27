@@ -257,10 +257,6 @@ public:
 		{
 			chessTiles[i]->AddScript(new TileScript(chessTiles[i], puzzle, i));
 		}
-		for (int i = 0; i < 10; i++)
-		{
-			pieces[i]->puzzleReference = puzzle;
-		}
 		ChessMainObject->Scale(0.015);
 		ChessMainObject->Translate(glm::vec3(0.0f, 20.0f, 0.0f));
 		std::cout << "LOADING: mainScene1 object " << std::endl;

@@ -5,6 +5,7 @@
 #include "RealtimeScript.h"
 #include "ApTime.h"
 #include "OtherTestRealtimeScript.h"
+#include "ChessBoardPuzzle.h"
 
 class GraphNode;
 class OtherTestRealtimeScript;
@@ -16,14 +17,12 @@ class ChessPieceScript : public RealtimeScript {
 private:
 
 public:
-	ChessBoardPuzzle* puzzleReference;
 	bool isBeingMoved = false;
 	int tileId = 100;
 
 	//Constructor, here assign all the fields from the private section
 	ChessPieceScript(GraphNode* nodePointer) : RealtimeScript(nodePointer)
 	{
-
 
 	}
 
