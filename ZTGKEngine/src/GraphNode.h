@@ -65,7 +65,7 @@ public:
 		node->parent = this;
 	}
 
-	void Update(unsigned int currentlyPicked = 0, bool singleClick = false)
+	void Update(unsigned int currentlyPicked, bool singleClick, GLFWwindow* window)
 	{
 		if (parent)
 		{
@@ -85,6 +85,7 @@ public:
 				model->setTransform(worldTransform);
 			}
 		}
+		
 		if (isActive)
 		{
 			//With every call to Update in node we also execute updates in scripts
@@ -94,27 +95,36 @@ public:
 			}
 
 			bool getIds = false;
-
 			if (model && currentlyPicked == model->objectID)
 			{
-				if (singleClick)
+				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+				{
+					if (singleClick)
+					{
+						for (RealtimeScript* script : realtimeScripts)
+						{
+							script->OnMouseClicked();
+						}
+					}
+
+					for (RealtimeScript* script : realtimeScripts)
+					{
+						script->OnMouseDragged();
+					}
+				}
+				else
 				{
 					for (RealtimeScript* script : realtimeScripts)
 					{
-						script->OnMouseClicked();
+						script->OnMouseHover();
 					}
 				}
-
-				for (RealtimeScript* script : realtimeScripts)
-				{
-					script->OnMouseDragged();
-				}
-
 			}
+
 
 			for (GraphNode* node : children)
 			{
-				node->Update(currentlyPicked, singleClick);
+				node->Update(currentlyPicked, singleClick, window);
 			}
 		}
 	}

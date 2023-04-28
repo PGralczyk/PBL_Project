@@ -20,6 +20,8 @@ bool firstMouse = true;
 
 bool lightVersion = true;
 
+bool isHoldingMouseButton = false;
+
 //rainbow anim----
 float r = 1.0f, g = 0.0f, b = 0.0f;
 float animSpeed = 1.5f;
@@ -118,7 +120,7 @@ int main(void)
 
     sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT);
 
-    sceneManager.Update();
+    sceneManager.Update(0, false, false);
 
     //Before entering the loop we activate setup functions in all the scripts
     sceneManager.ExecuteStartScripts();
@@ -188,30 +190,42 @@ int main(void)
         textShader.use();
         textShader.setMat4("projection", projectionPrimitive);
 
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //RENDER FOR MOUSE PICKING
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
         {
-            picker.Enable();
-            pickShader.use();
-            pickShader.setMat4("projection", projection);
-            pickShader.setMat4("view", view);
-            texturePickShader.use();
-            texturePickShader.setMat4("projection", projectionPrimitive);
-            texturePickShader.setMat4("view", viewPrimitive);
-            sceneManager.RenderMousePicking(pickShader,texturePickShader);
-            double mouseXd;
-            double mouseYd;
-            glfwGetCursorPos(window, &mouseXd, &mouseYd);
-            glFlush();
-            glFinish();
-            ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
-            picker.Disable();
-            currentlyPicked = pixel.ObjectID;
+            isHoldingMouseButton = true;
         }
         else
         {
-            currentlyPicked = 0;
+            isHoldingMouseButton = false;
+        }
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        picker.Enable();
+        //Setting shaders for picking models and textures
+        pickShader.use();
+        pickShader.setMat4("projection", projection);
+        pickShader.setMat4("view", view);
+        texturePickShader.use();
+        texturePickShader.setMat4("projection", projectionPrimitive);
+        texturePickShader.setMat4("view", viewPrimitive);
+        //Performing mouse picking render
+        sceneManager.RenderMousePicking(pickShader,texturePickShader);
+        //Checking mouse position
+        double mouseXd;
+        double mouseYd;
+        glfwGetCursorPos(window, &mouseXd, &mouseYd);
+        //Reading ObjectId fo pixel below the mouse
+        ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
+        picker.Disable();
+        //Saving id of the currently picked object
+        currentlyPicked = pixel.ObjectID;
+
+        //Whenever mouse i button isn't pressed we make sure that the next frame it's pressed
+        //it will be a single click. Later on, after that dirst frame singleClick is set to false,
+        //and it will be mouseDragging, not clicking. Player will have to release the button and press
+        //again for that to be click.
+        if(!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)))
+        {
             singleClick = true;
         }
 
@@ -221,12 +235,15 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        sceneManager.Update(currentlyPicked, singleClick);
+        sceneManager.Update(currentlyPicked, singleClick, isHoldingMouseButton);
 
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+        //After the first frame singleClick is set to false(mouse clicking function won't be used,
+        //only the dragging function. It will be set to true again after te button is released.
+        if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)))
         {
             singleClick = false;
         }
+
         glEnable(GL_BLEND);
         sceneManager.Render();
 

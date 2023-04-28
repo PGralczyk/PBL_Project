@@ -43,4 +43,9 @@ public:
 		ApTime::instance().pickedElementId = this->elementId;
 		node->Scale(0.6);
 	}
+
+	void OnMouseHover()
+	{
+		//Do something when hovered over an item
+	}
 };

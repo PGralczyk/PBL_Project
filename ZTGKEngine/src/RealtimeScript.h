@@ -51,6 +51,11 @@ public:
 
 	}
 
+	virtual void OnMouseHover()
+	{
+
+	}
+
 	GraphNode* GetNode()
 	{
 		return node;

@@ -65,10 +65,10 @@ public:
 		std::cout << "----------------------------------------------" << std::endl;
 	}
 
-	void Update(int currentlyPicked = 0, bool singleMouse = false)
+	void Update(int currentlyPicked, bool singleMouse, bool isHoldingMouseButton)
 	{
-		world->Update(currentlyPicked, singleMouse);
-		UI->Update(currentlyPicked, singleMouse);
+		world->Update(currentlyPicked, singleMouse, window);
+		UI->Update(currentlyPicked, singleMouse, window);
 	}
 
 	void ExecuteStartScripts()
