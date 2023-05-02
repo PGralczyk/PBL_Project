@@ -35,7 +35,7 @@ public:
             {{xPos + width, yPos, -0.999}, {0, 0, 0}, {1, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} }
         };
 
-        vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
+        vector<unsigned int> indices = {0, 2, 1, 0, 3, 2};
 
         Mesh m(vertices, indices, this->textures);
 
@@ -65,7 +65,7 @@ public:
             {{xPos + width, yPos, -0.999}, {0, 0, 0}, {1, 1}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0, 0}, {0.0f, 0.0f, 0.0f, 0.0f} }
         };
 
-        vector<unsigned int> indices = { 0, 1, 2, 2, 3, 0 };
+        vector<unsigned int> indices = { 0, 2, 1, 0, 3, 2 };
 
         Texture texture;
         texture.id = TextureFromFile(path.c_str());
