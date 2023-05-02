@@ -122,8 +122,6 @@ int main(void)
 
     sceneManager.Update(0, false, false);
 
-    //Before entering the loop we activate setup functions in all the scripts
-    sceneManager.ExecuteStartScripts();
 
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 

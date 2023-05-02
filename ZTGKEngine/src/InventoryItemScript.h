@@ -13,9 +13,16 @@ class InventoryItemScript : public RealtimeScript {
 private:
 	string elementId = "";
 	GLFWwindow* window;	
+	glm::vec3 oryginalPosition;
 
 public:
-
+	void Start()
+	{
+		std::cout << node->getTranslation().y << std::endl;
+		oryginalPosition.x = node->getTranslation().x;
+		oryginalPosition.y = node->getTranslation().y;
+		oryginalPosition.z = node->getTranslation().z;
+	}
 
 	InventoryItemScript(GraphNode* nodePointer, string elementId_, GLFWwindow* windowNode) : RealtimeScript(nodePointer)
 	{
@@ -28,11 +35,10 @@ public:
 		if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_RIGHT))
 		{
 			ApTime::instance().pickedElementId = "";
-			node->Scale(0.5);
-			//node->setTranslate(&this->startPosition);
+			node->setTranslate(oryginalPosition);
 		}
 		else if (ApTime::instance().pickedElementId != elementId) {
-			node->Scale(0.5);
+			node->setTranslate(oryginalPosition);
 		}
 	}
 
@@ -40,8 +46,11 @@ public:
 
 	void OnMouseClicked()
 	{
-		ApTime::instance().pickedElementId = this->elementId;
-		node->Scale(0.6);
+		if (!(ApTime::instance().pickedElementId == this->elementId))
+		{
+			ApTime::instance().pickedElementId = this->elementId;
+			node->Translate(glm::vec3(0.0f, 100.0f, 0.0f));
+		}
 	}
 
 	void OnMouseHover()

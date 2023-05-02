@@ -63,6 +63,7 @@ public:
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-DONE-----------------" << std::endl;
 		std::cout << "----------------------------------------------" << std::endl;
+		ExecuteStartScripts();
 	}
 
 	void Update(int currentlyPicked, bool singleMouse, bool isHoldingMouseButton)
@@ -109,16 +110,16 @@ public:
 		GraphNode* rose = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		UI->AddChild(rose);
-		rose->AddScript(new InventoryItemScript(rose, "rose", window));	
 		rose->Scale(0.5);
 		rose->Translate(glm::vec3(150, -200, 0));
+		rose->AddScript(new InventoryItemScript(rose, "rose", window));	
 
 		GraphNode* rose2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		UI->AddChild(rose2);
-		rose2->AddScript(new InventoryItemScript(rose2, "rose2", window));
 		rose2->Scale(0.5);
 		rose2->Translate(glm::vec3(300, -200, 0));
+		UI->AddChild(rose2);
+		rose2->AddScript(new InventoryItemScript(rose2, "rose2", window));
 	}
 
 	void Scene1Setup()
