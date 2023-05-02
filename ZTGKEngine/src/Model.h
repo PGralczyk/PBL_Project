@@ -280,6 +280,4 @@ private:
     }
 };
 
-
-
 #endif

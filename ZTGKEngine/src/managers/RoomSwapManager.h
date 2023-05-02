@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 #include "GraphNode.h"
-#include "RealtimeScript.h"
+#include "../scripts/RealtimeScript.h"
 #include "ApTime.h"
-#include "OtherTestRealtimeScript.h"
+#include "../scripts/OtherTestRealtimeScript.h"
 
 class GraphNode;
 

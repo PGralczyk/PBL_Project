@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Model.h"
-#include "RealtimeScript.h"
+#include "./scripts/RealtimeScript.h"
 
 class GraphNode
 {

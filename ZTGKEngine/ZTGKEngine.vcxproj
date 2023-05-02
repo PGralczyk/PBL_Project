@@ -144,32 +144,32 @@
   <ItemGroup>
     <ClCompile Include="libraries\stb_image\include\stb_image\stb_image.cpp" />
     <ClCompile Include="src\ClickPicker.cpp" />
-    <ClCompile Include="src\clickPickUtils.cpp" />
+    <ClCompile Include="src\utils\clickPickUtils.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\textureUtilscpp.cpp" />
+    <ClCompile Include="src\utils\textureUtilscpp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ChessBoardPuzzle.h" />
-    <ClInclude Include="src\ChessPieceScript.h" />
-    <ClInclude Include="src\InventoryItemScript.h" />
-    <ClInclude Include="src\OneTimeActivatorScript.h" />
-    <ClInclude Include="src\SceneManager.h" />
-    <ClInclude Include="src\ApRectangle.h" />
-    <ClInclude Include="src\Primitive.h" />
+    <ClInclude Include="src\scripts\ChessBoardPuzzle.h" />
+    <ClInclude Include="src\scripts\ChessPieceScript.h" />
+    <ClInclude Include="src\scripts\InventoryItemScript.h" />
+    <ClInclude Include="src\scripts\OneTimeActivatorScript.h" />
+    <ClInclude Include="src\managers\SceneManager.h" />
+    <ClInclude Include="src\UI\ApRectangle.h" />
+    <ClInclude Include="src\UI\Primitive.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ClickPicker.h" />
     <ClInclude Include="src\GraphNode.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
-    <ClInclude Include="src\OtherTestRealtimeScript.h" />
-    <ClInclude Include="src\RealtimeScript.h" />
-    <ClInclude Include="src\RoomSwapManager.h" />
+    <ClInclude Include="src\scripts\OtherTestRealtimeScript.h" />
+    <ClInclude Include="src\scripts\RealtimeScript.h" />
+    <ClInclude Include="src\managers\RoomSwapManager.h" />
     <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\TestRealtimeScript.h" />
+    <ClInclude Include="src\scripts\TestRealtimeScript.h" />
     <ClInclude Include="src\ApTime.h" />
-    <ClInclude Include="src\Text.h" />
-    <ClInclude Include="src\TileScript.h" />
+    <ClInclude Include="src\UI\Text.h" />
+    <ClInclude Include="src\scripts\TileScript.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

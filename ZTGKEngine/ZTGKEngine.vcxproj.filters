@@ -27,10 +27,10 @@
     <ClCompile Include="src\ClickPicker.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\clickPickUtils.cpp">
+    <ClCompile Include="src\utils\clickPickUtils.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\textureUtilscpp.cpp">
+    <ClCompile Include="src\utils\textureUtilscpp.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,46 +50,49 @@
     <ClInclude Include="src\Camera.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\RealtimeScript.h">
+    <ClInclude Include="src\scripts\RealtimeScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\TestRealtimeScript.h">
+    <ClInclude Include="src\scripts\TestRealtimeScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="src\ApTime.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\OtherTestRealtimeScript.h">
+    <ClInclude Include="src\scripts\OtherTestRealtimeScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\RoomSwapManager.h">
+    <ClInclude Include="src\managers\RoomSwapManager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="src\ClickPicker.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Primitive.h">
+    <ClInclude Include="src\UI\Primitive.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\ApRectangle.h">
+    <ClInclude Include="src\UI\ApRectangle.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Text.h">
+    <ClInclude Include="src\UI\Text.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneManager.h">
+    <ClInclude Include="src\managers\SceneManager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\ChessBoardPuzzle.h">
+    <ClInclude Include="src\scripts\ChessBoardPuzzle.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\TileScript.h">
+    <ClInclude Include="src\scripts\TileScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\ChessPieceScript.h">
+    <ClInclude Include="src\scripts\ChessPieceScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\OneTimeActivatorScript.h">
+    <ClInclude Include="src\scripts\OneTimeActivatorScript.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\InventoryItemScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

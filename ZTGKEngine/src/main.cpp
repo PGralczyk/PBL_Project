@@ -1,4 +1,6 @@
-#include "SceneManager.h"
+#include "./managers/SceneManager.h"
+#include "./UI/Text.h"
+#include "./UI/ApRectangle.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);

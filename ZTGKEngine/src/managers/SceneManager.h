@@ -12,17 +12,17 @@
 #include "Model.h"
 #include "GraphNode.h"
 #include "Camera.h"
-#include "TestRealtimeScript.h"
-#include "OtherTestRealtimeScript.h"
+#include "../scripts/TestRealtimeScript.h"
+#include "../scripts/OtherTestRealtimeScript.h"
 #include "ApTime.h"
 #include "RoomSwapManager.h"
 #include "ClickPicker.h"
-#include "ApRectangle.h"
-#include "Text.h"
-#include "ChessBoardPuzzle.h";
-#include "TileScript.h";
-#include "OneTimeActivatorScript.h";
-#include "InventoryItemScript.h"
+#include "../UI/ApRectangle.h"
+#include "../UI/Text.h"
+#include "../scripts/ChessBoardPuzzle.h";
+#include "../scripts/TileScript.h";
+#include "../scripts/OneTimeActivatorScript.h";
+#include "../scripts/InventoryItemScript.h"
 
 class SceneManager
 {

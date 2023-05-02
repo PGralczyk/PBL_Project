@@ -1,4 +1,4 @@
-#include "ClickPicker.h"
+#include "../ClickPicker.h"
 
 ClickPicker texturePicker;
 

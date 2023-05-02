@@ -2,7 +2,7 @@
 #define PRIMITIVE_H
 
 
-#include "Mesh.h"
+#include "../Mesh.h"
 
 
 class Primitive 
