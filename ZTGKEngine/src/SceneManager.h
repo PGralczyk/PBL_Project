@@ -91,11 +91,11 @@ public:
 		glDepthFunc(GL_LESS);
 	}
 
-	void Render()
+	void Render(unsigned int currentlyPicked)
 	{
-		world->Draw();
+		world->Draw(currentlyPicked);
 		glDepthFunc(GL_ALWAYS);
-		UI->Draw();
+		UI->Draw(currentlyPicked);
 		glDepthFunc(GL_LESS);
 	}
 

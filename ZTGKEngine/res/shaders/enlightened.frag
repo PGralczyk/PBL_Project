@@ -15,6 +15,8 @@ uniform float LightConstant;
 uniform float LightLinear;
 uniform float LightQuadratic;
 
+uniform bool isHoovered;
+
 
 void main()
 {
@@ -44,6 +46,13 @@ void main()
         diffuse  *= attenuation;
 
     	vec3 result = (ambient + specular) + (diffuse);
-
-    	FragColor = texture(texture_diffuse1, TexCoords) * vec4(result, 1.0);
+        if(isHoovered)
+        {
+            FragColor = texture(texture_diffuse1, TexCoords) * vec4(result, 1.0) + vec4(0.2, 0.2, 0.2, 0.0);
+        }
+        else
+        {
+            FragColor = texture(texture_diffuse1, TexCoords) * vec4(result, 1.0);
+        }
+    	
 }

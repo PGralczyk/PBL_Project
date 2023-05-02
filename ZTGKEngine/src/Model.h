@@ -68,9 +68,17 @@ public:
     }
 
     //We simply draw every mesh using Mesh class functionality
-    void Draw()
+    void Draw(unsigned int currentlyPicked)
     {
-        //std::cout << (shader != NULL) << std::endl;
+        shader->use();
+        if (currentlyPicked == objectID)
+        {
+            shader->setBool("isHoovered", true);
+        }
+        else
+        {
+            shader->setBool("isHoovered", false);
+        }
         for (unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(*shader, Transform, &objectID);
     }

@@ -18,7 +18,6 @@ private:
 public:
 	void Start()
 	{
-		std::cout << node->getTranslation().y << std::endl;
 		oryginalPosition.x = node->getTranslation().x;
 		oryginalPosition.y = node->getTranslation().y;
 		oryginalPosition.z = node->getTranslation().z;

@@ -95,7 +95,7 @@ public:
 			}
 
 			bool getIds = false;
-			if (model && currentlyPicked == model->objectID)
+			if (model && this->realtimeScripts.size() > 0 && currentlyPicked == model->objectID)
 			{
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 				{
@@ -128,17 +128,17 @@ public:
 			}
 		}
 	}
-	void Draw()
+	void Draw(unsigned int currentlyPicked)
 	{
 		if (isActive)
 		{
 			if (model) {
-				model->Draw();
+				model->Draw(currentlyPicked);
 			}
 
 			for (GraphNode* node : children)
 			{
-				node->Draw();
+				node->Draw(currentlyPicked);
 			}
 		}
 	}
@@ -146,7 +146,7 @@ public:
 	void nPickDraw(Shader& pickShader) {
 		if (isActive)
 		{
-			if (model) {
+			if (model && this->realtimeScripts.size() > 0) {
 				model->pickDraw(pickShader);
 			}
 

@@ -243,7 +243,7 @@ int main(void)
         }
 
         glEnable(GL_BLEND);
-        sceneManager.Render();
+        sceneManager.Render(currentlyPicked);
 
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
