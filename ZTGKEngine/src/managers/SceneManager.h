@@ -137,20 +137,44 @@ public:
 		////CHESS_BOARD_LOADING
 		std::cout << "LOADING: chess board" << std::endl;
 		GraphNode* ChessMainObject = new GraphNode();
-		//GraphNode* drawer1 = CreateNode("path/to/drawer", defaultShader);
-		//GraphNode* drawer2 = CreateNode("path/to/drawer", defaultShader);
-		//GraphNode* drawer3 = CreateNode("path/to/drawer", defaultShader);
-		//GraphNode* chessBody = CreateNode("path/to/body", defaultShader);
-		//ChessMainObject->AddChild(drawer1);
-		//ChessMainObject->AddChild(drawer2);
-		//ChessMainObject->AddChild(drawer3);
-		//ChessMainObject->AddChild(chessBody);
+		GraphNode* DrawerMainObject = new GraphNode();
+		ChessMainObject->AddChild(DrawerMainObject);
+		std::cout << "LOADING: chess board base" << std::endl;
+		GraphNode* ChessBoardBottom = CreateNode("res/models/szachownica_spod.fbx", defaultShader);
+		DrawerMainObject->AddChild(ChessBoardBottom);
+		std::cout << "LOADING: chess drawer" << std::endl;
+		Model* drawerBase = new Model("res/models/szuflada.fbx");
+		std::cout << "LOADING: chess drawer frame" << std::endl;
+		Model* drawerFrame = new Model("res/models/szuflada_obudowa.fbx");
+		drawerBase->SetShader(defaultShader);
+		drawerFrame->SetShader(defaultShader);
+		GraphNode* drawer1 = new GraphNode(drawerFrame);
+		GraphNode* drawer1MovableSegment = new GraphNode(drawerBase);
+		drawer1->AddChild(drawer1MovableSegment);
+		GraphNode* drawer2 = new GraphNode(drawerFrame);
+		GraphNode* drawer2MovableSegment = new GraphNode(drawerBase);
+		drawer2->AddChild(drawer2MovableSegment);
+		GraphNode* drawer3 = new GraphNode(drawerFrame);
+		GraphNode* drawer3MovableSegment = new GraphNode(drawerBase);
+		drawer3->AddChild(drawer3MovableSegment);
+		DrawerMainObject->AddChild(drawer1);
+		DrawerMainObject->AddChild(drawer2);
+		DrawerMainObject->AddChild(drawer3);
+		DrawerMainObject->Scale(3.0);
+		DrawerMainObject->Translate(glm::vec3(900, -600, 800));
+		drawer2->Translate(glm::vec3(0, -240, 0));
+		drawer3->Translate(glm::vec3(0, -480, 0));
+		ChessMainObject->Translate(glm::vec3(0, 20, 0));
+		
+
 		//--------------------------Setting-chess-fields--------------------------
+		GraphNode* ChessTiles = new GraphNode();
+		ChessMainObject->AddChild(ChessTiles);
 		GraphNode* chessTiles[64];
 		int distance = 260;
-		string firstTilePath = "res/models/pole_biale.fbx";
-		string secondTilePath = "res/models/pole_czarne.fbx";
+		std::cout << "LOADING: white chess tile" << std::endl;
 		Model* model_white = new Model("res/models/pole_biale.fbx");
+		std::cout << "LOADING: black chess tile" << std::endl;
 		Model* model_black = new Model("res/models/pole_czarne.fbx");
 		model_white->SetShader(defaultShader);
 		model_black->SetShader(defaultShader);
@@ -158,22 +182,18 @@ public:
 		{
 			for (int j = 0; j < 4; j++)
 			{
-				//CHANGE KRZESELKO FOR WHITE AND BLACK BOARD PIECES!!!
-				std::cout << "LOADING: chess tile nr. " << 8 * i + 2 * j << std::endl;
 				if (i % 2 == 0)
 					chessTiles[i * 8 + 2 * j] = new GraphNode(model_white, objectId++);
 				else
 					chessTiles[i * 8 + 2 * j] = new GraphNode(model_black, objectId++);
-				
-				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j]);
+				ChessTiles->AddChild(chessTiles[i * 8 + 2 * j]);
 				chessTiles[i * 8 + 2 * j]->Translate(glm::vec3(distance * 2 * j, 0, distance * i));
 				
-				std::cout << "LOADING: chess tile nr. " << 8 * i + 2 * j + 1 << std::endl;
 				if (i % 2 == 0)
 					chessTiles[i * 8 + 2 * j + 1] = new GraphNode(model_black, objectId++);
 				else
 					chessTiles[i * 8 + 2 * j + 1] = new GraphNode(model_white, objectId++);
-				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j + 1]);
+				ChessTiles->AddChild(chessTiles[i * 8 + 2 * j + 1]);
 				chessTiles[i * 8 + 2 * j + 1]->Translate(glm::vec3(distance * 2 * j + distance, 0, distance * i));
 			}
 		}
@@ -185,77 +205,77 @@ public:
 			GraphNode* whitePawn = CreateNode("res/models/pionek_bialy.fbx", defaultShader);
 			pieces[0] = new ChessPieceScript(whitePawn);
 			whitePawn->AddScript(pieces[0]);
-			whitePawn->Translate(glm::vec3(300.0f, 100.0f, -500.0f));
+			whitePawn->Translate(glm::vec3(100.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whitePawn);
 			//****************
 			std::cout << "LOADING: whitePawnActivator " << std::endl;
 			GraphNode* whitePawnActivator = CreateNode("res/models/pionek_bialy.fbx", defaultShader);
 			whitePawnActivator->AddScript(new OneTimeActivatorScript(whitePawnActivator, whitePawn));
 			whitePawn->SetActive(false);
-			whitePawnActivator->Translate(glm::vec3(300.0f, 1000.0f, -500.0f));
+			whitePawnActivator->Translate(glm::vec3(100.0f, 1000.0f, -500.0f));
 			ChessMainObject->AddChild(whitePawnActivator);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackPawn " << std::endl;
 			GraphNode* blackPawn = CreateNode("res/models/pionek_czarny.fbx", defaultShader);
 			pieces[1] = new ChessPieceScript(blackPawn);
 			blackPawn->AddScript(pieces[1]);
-			blackPawn->Translate(glm::vec3(600.0f, 100.0f, -500.0f));
+			blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackPawn);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteKing " << std::endl;
 			GraphNode* whiteKing = CreateNode("res/models/krol_bialy.fbx", defaultShader);
 			pieces[2] = new ChessPieceScript(whiteKing);
 			whiteKing->AddScript(pieces[2]);
-			whiteKing->Translate(glm::vec3(900.0f, 100.0f, -500.0f));
+			whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKing);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackKing " << std::endl;
 			GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
 			pieces[3] = new ChessPieceScript(blackKing);
 			blackKing->AddScript(pieces[3]);
-			blackKing->Translate(glm::vec3(1200.0f, 100.0f, -500.0f));
+			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackKing);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteQueen " << std::endl;
 			GraphNode* whiteQueen = CreateNode("res/models/krolowa_biala.fbx", defaultShader);
 			pieces[4] = new ChessPieceScript(whiteQueen);
 			whiteQueen->AddScript(pieces[4]);
-			whiteQueen->Translate(glm::vec3(1500.0f, 100.0f, -500.0f));
+			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteQueen);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackQueen " << std::endl;
 			GraphNode* blackQueen = CreateNode("res/models/krolowa_czarna.fbx", defaultShader);
 			pieces[5] = new ChessPieceScript(blackQueen);
 			blackQueen->AddScript(pieces[5]);
-			blackQueen->Translate(glm::vec3(1800.0f, 100.0f, -500.0f));
+			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackQueen);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteKnight " << std::endl;
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
 			pieces[6] = new ChessPieceScript(whiteKnight);
 			whiteKnight->AddScript(pieces[6]);
-			whiteKnight->Translate(glm::vec3(2100.0f, 100.0f, -500.0f));
+			whiteKnight->Translate(glm::vec3(1300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKnight);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackKnight " << std::endl;
 			GraphNode* blackKnight = CreateNode("res/models/konik_czarny.fbx", defaultShader);
 			pieces[7] = new ChessPieceScript(blackKnight);
 			blackKnight->AddScript(pieces[7]);
-			blackKnight->Translate(glm::vec3(2400.0f, 100.0f, -500.0f));
+			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackKnight);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteRook " << std::endl;
 			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
 			pieces[8] = new ChessPieceScript(whiteRook);
 			whiteRook->AddScript(pieces[8]);
-			whiteRook->Translate(glm::vec3(2700.0f, 100.0f, -500.0f));
+			whiteRook->Translate(glm::vec3(1700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteRook);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackRook " << std::endl;
 			GraphNode* blackRook = CreateNode("res/models/wieza_czarna.fbx", defaultShader);
 			pieces[9] = new ChessPieceScript(blackRook);
 			blackRook->AddScript(pieces[9]);
-			blackRook->Translate(glm::vec3(3000.0f, 100.0f, -500.0f));
+			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackRook);
 		}
 		//-----------------------------Creating-Puzzle----------------------------
