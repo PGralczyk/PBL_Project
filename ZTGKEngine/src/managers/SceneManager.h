@@ -150,24 +150,32 @@ public:
 		int distance = 260;
 		string firstTilePath = "res/models/pole_biale.fbx";
 		string secondTilePath = "res/models/pole_czarne.fbx";
+		Model* model_white = new Model("res/models/pole_biale.fbx");
+		Model* model_black = new Model("res/models/pole_czarne.fbx");
+		model_white->SetShader(defaultShader);
+		model_black->SetShader(defaultShader);
 		for (int i = 0; i < 8; i++)
 		{
 			for (int j = 0; j < 4; j++)
 			{
 				//CHANGE KRZESELKO FOR WHITE AND BLACK BOARD PIECES!!!
 				std::cout << "LOADING: chess tile nr. " << 8 * i + 2 * j << std::endl;
-				chessTiles[i * 8 + 2 * j] = CreateNode(firstTilePath, defaultShader);
+				if (i % 2 == 0)
+					chessTiles[i * 8 + 2 * j] = new GraphNode(model_white, objectId++);
+				else
+					chessTiles[i * 8 + 2 * j] = new GraphNode(model_black, objectId++);
+				
 				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j]);
 				chessTiles[i * 8 + 2 * j]->Translate(glm::vec3(distance * 2 * j, 0, distance * i));
 				
 				std::cout << "LOADING: chess tile nr. " << 8 * i + 2 * j + 1 << std::endl;
-				chessTiles[i * 8 + 2 * j + 1] = CreateNode(secondTilePath, defaultShader);
+				if (i % 2 == 0)
+					chessTiles[i * 8 + 2 * j + 1] = new GraphNode(model_black, objectId++);
+				else
+					chessTiles[i * 8 + 2 * j + 1] = new GraphNode(model_white, objectId++);
 				ChessMainObject->AddChild(chessTiles[i * 8 + 2 * j + 1]);
 				chessTiles[i * 8 + 2 * j + 1]->Translate(glm::vec3(distance * 2 * j + distance, 0, distance * i));
 			}
-			string temp = firstTilePath;
-			firstTilePath = secondTilePath;
-			secondTilePath = temp;
 		}
 		//--------------------------Setting-chess-pieces--------------------------
 		ChessPieceScript* pieces[10];
@@ -286,9 +294,9 @@ public:
 private:
 	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
 	{
-		Model *model = new Model(pathToModel, objectId++);
+		Model *model = new Model(pathToModel);
 		model->SetShader(shader);
-		return new GraphNode(model);
+		return new GraphNode(model, objectId++);
 	}
 
 	GraphNode* CreateUiElement(int xPos, int yPos, int width, int height, string path, Shader* shader)
@@ -324,9 +332,9 @@ private:
 
 		Mesh* mesh = new Mesh(vertices, indices, textures);
 
-		Model* model = new Model(mesh, objectId++);
+		Model* model = new Model(mesh);
 		model->SetShader(shader);
-		return new GraphNode(model);
+		return new GraphNode(model, objectId++);
 	}
 };
 

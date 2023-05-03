@@ -33,10 +33,6 @@ void main()
 	//specular
     	float specularPointStrength = 0.9;
     	vec3 viewDir = normalize(viewPos - FragPos); 
-        if(viewDir.x < -0.2 || viewDir.y < -0.2 || viewDir.z < -0.8 || viewDir.z > 0.8)
-        {
-            discard;
-        }
         vec3 halfwayDir = normalize(lightDir + viewDir);   
     	float spec = pow(max(dot(norm, halfwayDir), 0.0), 32);
     	vec3 specular = (specularPointStrength * spec * pointLightColor);

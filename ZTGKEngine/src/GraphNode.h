@@ -26,18 +26,23 @@ protected:
 	float y;
 	float z;
 
+	unsigned int objectId;
+
 	std::vector<RealtimeScript*> realtimeScripts;
 
 	bool isActive = true;
 
+	
+
 public:
-	GraphNode(Model* m = NULL)
+	GraphNode(Model* m = NULL, unsigned int givenId = 0)
 	{
 		this->model = m;
 		parent = NULL;
 		transform = new glm::mat4(1);
 		worldTransform = new glm::mat4(1);
 		transformOnStart = new glm::mat4(1);
+		objectId = givenId;
 	}
 	~GraphNode(void)
 	{
@@ -95,7 +100,7 @@ public:
 			}
 
 			bool getIds = false;
-			if (model && this->realtimeScripts.size() > 0 && currentlyPicked == model->objectID)
+			if (model && this->realtimeScripts.size() > 0 && currentlyPicked == objectId)
 			{
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 				{
@@ -133,7 +138,8 @@ public:
 		if (isActive)
 		{
 			if (model) {
-				model->Draw(currentlyPicked);
+				model->setTransform(worldTransform);
+				model->Draw(currentlyPicked, objectId);
 			}
 
 			for (GraphNode* node : children)
@@ -147,7 +153,8 @@ public:
 		if (isActive)
 		{
 			if (model && this->realtimeScripts.size() > 0) {
-				model->pickDraw(pickShader);
+				model->setTransform(worldTransform);
+				model->pickDraw(pickShader, objectId);
 			}
 
 			for (GraphNode* node : children)

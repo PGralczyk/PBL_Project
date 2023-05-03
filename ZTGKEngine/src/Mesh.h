@@ -71,7 +71,7 @@ public:
     }
 
     // Render the mesh
-    void Draw(Shader& shader, glm::mat4* model, int* objectID = nullptr, bool picking = false)
+    void Draw(Shader& shader, glm::mat4* model, unsigned int objectID = 0, bool picking = false)
     {
         //std::cout << (&shader != NULL) << std::endl;
         //For now we only use this part, because we don't instantiate objects
@@ -89,8 +89,8 @@ public:
             //We set our model matrix (used for transformations) as uniform for shader program
             shader.setMat4("model", *model);
 
-            if (picking && objectID != nullptr) {
-                shader.setInt("gObjectIndex", *objectID);
+            if (picking && objectID != 0) {
+                shader.setInt("gObjectIndex", objectID);
             }
 
             //We apply every texture that is in our object

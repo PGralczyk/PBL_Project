@@ -40,7 +40,6 @@ public:
     //Some objects may use gamma correction
     bool gammaCorrection;
     
-    int objectID;
 
     //Simple setters for whole transformation matrix and shader program
     void setTransform(glm::mat4* matrix) { Transform = matrix; }
@@ -51,24 +50,22 @@ public:
 
     //Constructor. We have to specify path to main object file(obj, fbx...) and can set optional stuff
     //like instantiation or gamma correction
-    Model(string const& path, int objectId, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
+    Model(string const& path, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
     {
         instanced = instance;
         loadModel(path);
         Transform = new glm::mat4(1);
-        this->objectID = objectId;
     }
 
-    Model(Mesh* mesh, int objectID, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
+    Model(Mesh* mesh, bool instance = false, bool gamma = false) : gammaCorrection(gamma)
     {
         meshes.push_back(*mesh);
-        this->objectID = objectID;
         Transform = new glm::mat4(1);
 
     }
 
     //We simply draw every mesh using Mesh class functionality
-    void Draw(unsigned int currentlyPicked)
+    void Draw(unsigned int currentlyPicked, unsigned int objectID)
     {
         shader->use();
         if (currentlyPicked == objectID)
@@ -80,12 +77,12 @@ public:
             shader->setBool("isHoovered", false);
         }
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(*shader, Transform, &objectID);
+            meshes[i].Draw(*shader, Transform, objectID);
     }
 
-    void pickDraw(Shader& pickShader) {
+    void pickDraw(Shader& pickShader, unsigned int objectID) {
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(pickShader, Transform, &objectID, true);
+            meshes[i].Draw(pickShader, Transform, objectID, true);
     }
 
 private:
