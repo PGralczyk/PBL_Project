@@ -37,7 +37,27 @@ public:
 		{
 			tile = 0;
 		}
-		
+	}
+
+	void Start()
+	{
+		srand(time(NULL));
+		for (ChessPieceScript* piece : pieces)
+		{	
+			unsigned int index;
+			do
+			{
+				index = rand() % 64;
+			} 
+			while (tileState[index]);
+			tileState[index] = 1;
+			piece->goalPosition = glm::vec3(fields[index]->getTranslation().x,
+				piece->GetNode()->getTranslation().y, fields[index]->getTranslation().z);
+		}
+		for (int i = 0; i < 64; i++)
+		{
+			tileState[i] = 0;
+		}
 	}
 
 	~ChessBoardPuzzle() = default;
@@ -53,12 +73,14 @@ public:
 				{
 					piece->GetNode()->setTranslate(new glm::vec3(fields[tileID]->getTranslation().x,
 						piece->GetNode()->getTranslation().y - 300.0f, fields[tileID]->getTranslation().z));
+					piece->SavePosition();
 					tileState[tileID] = 1;
 					if (piece->tileId != 100)
 					{
 						tileState[piece->tileId] = 0;
 					}
 					piece->tileId = tileID;
+					CheckSolution();
 				}
 				else
 				{
@@ -67,6 +89,19 @@ public:
 				//HERE YOU CAN CHECK I DEMANDED STATE IS ACHIEVED. IF SO, THEN YOU JUST PUSH THE REQUIRED DRAWER
 			}
 		}
+	}
+
+	void CheckSolution()
+	{
+		unsigned int correctPieces = 0;
+		for (ChessPieceScript* piece : pieces)
+		{
+			if (piece->goalPosition == piece->brightWorldPosition)
+			{
+				correctPieces++;
+			}
+		}
+		std::cout << correctPieces << std::endl;
 	}
 
 	void Update()
@@ -90,6 +125,7 @@ public:
 				}
 			}
 		}
+
 	}
 
 };

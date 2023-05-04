@@ -31,6 +31,7 @@ public:
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 	string pickedElementId = "";
+	bool brightWorld = true;
 
 	//Updates each frame
 	void Update()

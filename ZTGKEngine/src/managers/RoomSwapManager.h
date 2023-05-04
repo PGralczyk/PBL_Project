@@ -50,10 +50,12 @@ public:
 				if (brightWorld->GetActive())
 				{
 					*lightVersion = true;
+					ApTime::instance().brightWorld = true;
 				}
 				else
 				{
 					*lightVersion = false;
+					ApTime::instance().brightWorld = false;
 				}
 			}
 		}
