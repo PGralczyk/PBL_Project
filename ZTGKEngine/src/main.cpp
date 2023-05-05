@@ -102,6 +102,7 @@ int main(void)
     
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
     //Resource and scene setup
+    Shader basicShader("res/shaders/basic.vert", "res/shaders/basic.frag");
     Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader lightShader("res/shaders/light.vert", "res/shaders/light.frag");
     Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
@@ -127,7 +128,7 @@ int main(void)
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
 
-    sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT);
+    sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
 
@@ -172,6 +173,10 @@ int main(void)
         defaultShader.setFloat("LightConstant", 1.0f);
         defaultShader.setFloat("LightLinear", 0.09f);
         defaultShader.setFloat("LightQuadratic", 0.032f);
+
+        basicShader.use();
+        basicShader.setMat4("projection", projection);
+        basicShader.setMat4("view", view);
 
         lightShader.use();
         lightShader.setMat4("projection", projection);
@@ -257,7 +262,7 @@ int main(void)
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);
-        rainbowSquare.Draw();
+        //rainbowSquare.Draw();
 
         //Rainbow animation-----
         if (isRunning)

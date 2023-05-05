@@ -47,7 +47,7 @@ public:
 		delete(UI);
 	}
 
-	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT)
+	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
 	{
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-GAME-----------------" << std::endl;
@@ -59,7 +59,7 @@ public:
 		world = new GraphNode();
 		UI = new GraphNode();
 		Loading("res/models/everest.jpg");
-		Scene1Setup();
+		Scene1Setup(&otherShaders);
 		UiSetup();
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-DONE-----------------" << std::endl;
@@ -123,7 +123,7 @@ public:
 		rose2->AddScript(new InventoryItemScript(rose2, "rose2", window));
 	}
 
-	void Scene1Setup()
+	void Scene1Setup(Shader* additionalShaders[] = nullptr)
 	{
 		std::cout << "***Scene1***" << std::endl;
 		GraphNode* Scene1 = new GraphNode();
@@ -291,11 +291,15 @@ public:
 		ChessMainObject->Translate(glm::vec3(0.0f, 20.0f, 0.0f));
 		std::cout << "LOADING: mainScene1 object " << std::endl;
 		GraphNode* SceneBackground = CreateNode("res/models/pokoj_export.fbx", defaultShader);
+		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0]);
+		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0]);
 
 		//SETTING_INHERITANCE
 		world->AddChild(Scene1);
 		Scene1->AddChild(Scene1Bright);
 		Scene1->AddChild(Scene1Dark);
+		Scene1Bright->AddChild(SceneOutsideBright);
+		Scene1Dark->AddChild(SceneOutsideDark);
 		world->AddChild(bulb);
 		Scene1->AddChild(SceneBackground);
 		SceneBackground->Scale(0.1f);
@@ -305,6 +309,14 @@ public:
 		Scene1->Scale(0.005f);
 		bulb->Scale(0.01f);
 		bulb->Translate(glm::vec3(0.4f, 0.5f, 0.0f));
+		SceneOutsideBright->Translate(glm::vec3(-100.0f, 55.0f, 136.0f));
+		SceneOutsideBright->Scale(0.35f);
+		//SceneOutsideBright->Rotate(glm::vec3(0.4f, 0.5f, 0.0f));
+
+		SceneOutsideDark->Translate(glm::vec3(-100.0f, 55.0f, 136.0f));
+		SceneOutsideDark->Scale(0.35f);
+		//SceneOutsideDark->Rotate(glm::vec3(0.4f, 0.5f, 0.0f));
+
 
 		//SETTING_SCRIPTS
 		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright));
