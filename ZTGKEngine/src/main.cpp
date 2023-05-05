@@ -1,6 +1,9 @@
 #include "./managers/SceneManager.h"
 #include "./UI/Text.h"
 #include "./UI/ApRectangle.h"
+#include <thread>
+
+void stupid(int x, int y,int z) {};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -43,6 +46,7 @@ unsigned int currentlyPicked = 0;
 bool singleClick = true;
 
 SceneManager sceneManager;
+
 
 struct PLight {
     glm::vec3 position = { 0.4f, 0.5f, 0.0f };
@@ -91,12 +95,12 @@ int main(void)
     }
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CCW);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-
+    glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
     //Resource and scene setup
     Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
     Shader lightShader("res/shaders/light.vert", "res/shaders/light.frag");
@@ -128,7 +132,7 @@ int main(void)
     sceneManager.Update(0, false, false);
 
 
-    glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+    
 
     float time = 0;
 
@@ -253,7 +257,7 @@ int main(void)
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);
-        //rainbowSquare.Draw();
+        rainbowSquare.Draw();
 
         //Rainbow animation-----
         if (isRunning)

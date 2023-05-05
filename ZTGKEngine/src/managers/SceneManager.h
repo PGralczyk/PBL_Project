@@ -58,6 +58,7 @@ public:
 		isBright = brightReference;
 		world = new GraphNode();
 		UI = new GraphNode();
+		Loading("res/models/everest.jpg");
 		Scene1Setup();
 		UiSetup();
 		std::cout << "----------------------------------------------" << std::endl;
@@ -309,7 +310,7 @@ public:
 		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright));
 	}
 
-
+	
 
 private:
 	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
@@ -355,6 +356,27 @@ private:
 		Model* model = new Model(mesh);
 		model->SetShader(shader);
 		return new GraphNode(model, objectId++);
+	}
+
+	void Loading(std::string path)
+	{
+		//std::cout << "Showing load screen...\n";
+		glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(*SCR_WIDTH), 0.0f, float(*SCR_HEIGHT));
+		glm::mat4 viewPrimitive = glm::mat4(1.0);
+		textureShader->use();
+		textureShader->setMat4("projection", projectionPrimitive);
+		textureShader->setMat4("view", viewPrimitive);
+		ApRectangle loadScreen(0, 0, *SCR_WIDTH, *SCR_HEIGHT, path);
+		loadScreen.SetShader(textureShader);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDepthFunc(GL_ALWAYS);
+		loadScreen.Draw();
+		glDisable(GL_BLEND);
+		glfwSwapBuffers(window);
+		glDepthFunc(GL_LESS);
+		glfwPollEvents();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//std::cout << "Showing scene...\n";
 	}
 };
 
