@@ -26,7 +26,6 @@
 class SceneManager
 {
 private:
-	GraphNode* world;
 	GraphNode* UI;
 	GLFWwindow* window;
 	bool* isBright;
@@ -35,9 +34,11 @@ private:
 	unsigned int* SCR_WIDTH;
 
 public:
+	GraphNode* world;
 	Shader *lightShader;
 	Shader *defaultShader;
 	Shader* textureShader;
+	Shader* outlineShader;
 
 	SceneManager() {};
 	~SceneManager()
@@ -89,11 +90,15 @@ public:
 		glDepthFunc(GL_LESS);
 	}
 
+	void RenderWithShader(Shader& choiceShader, int mode) {
+		world->choiceDraw(choiceShader, mode);
+	}
+
 	void Render()
 	{
 		world->Draw();
 		glDepthFunc(GL_ALWAYS);
-		UI->Draw();
+		//UI->Draw();
 		glDepthFunc(GL_LESS);
 	}
 

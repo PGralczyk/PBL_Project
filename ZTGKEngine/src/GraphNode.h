@@ -147,6 +147,20 @@ public:
 		}
 	}
 
+	void choiceDraw(Shader& pickShader, int mode) {
+		if (isActive)
+		{
+			if (model) {
+				model->shaderDraw(pickShader, mode);
+			}
+
+			for (GraphNode* node : children)
+			{
+				node->choiceDraw(pickShader, mode);
+			}
+		}
+	}
+
 	void Rotate(float angle, glm::vec3 axis) {
 		rotationMatrix = glm::rotate(rotationMatrix, glm::radians(angle), axis);
 		RenderTransform();

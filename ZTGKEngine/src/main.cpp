@@ -89,6 +89,8 @@ int main(void)
     //glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     //Resource and scene setup
     Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
@@ -100,6 +102,7 @@ int main(void)
     Shader primitiveTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveTexture.frag");
     Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
     Shader textShader("res/shaders/text.vert", "res/shaders/text.frag");
+    Shader outlineShader("res/shaders/basic.vert", "res/shaders/basic.frag");
 
     ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
     ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
@@ -164,6 +167,10 @@ int main(void)
         defaultShader.setFloat("LightLinear", 0.09f);
         defaultShader.setFloat("LightQuadratic", 0.032f);
 
+        outlineShader.use();
+        outlineShader.setMat4("projection", projection);
+        outlineShader.setMat4("view", view);
+
         lightShader.use();
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
@@ -187,9 +194,9 @@ int main(void)
 
         textShader.use();
         textShader.setMat4("projection", projectionPrimitive);
-
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
         {
             picker.Enable();
@@ -214,22 +221,38 @@ int main(void)
             currentlyPicked = 0;
             singleClick = true;
         }
-
+        
         //Processing input here
         processInput(window);
 
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        
         sceneManager.Update(currentlyPicked, singleClick);
-
+        
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
         {
             singleClick = false;
         }
         glEnable(GL_BLEND);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
         sceneManager.Render();
+        
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+        sceneManager.world->Scale(1.3f);
+        sceneManager.world->Update();
+        sceneManager.RenderWithShader(outlineShader, 2);
+        sceneManager.world->Scale(1.0f);
+        sceneManager.world->Update();
+        //sceneManager.Render();
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glEnable(GL_DEPTH_TEST);
 
+        //sceneManager.Render();
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);
