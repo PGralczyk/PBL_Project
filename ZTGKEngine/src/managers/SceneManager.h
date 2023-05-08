@@ -303,32 +303,32 @@ public:
 		//--------------------------Chandelier-Puzzle--------------------------
 		GraphNode* ChandelierBright = new GraphNode();
 		Scene1Bright->AddChild(ChandelierBright);
-		ChandelierBright->Translate(glm::vec3(0.0f, -10.0f, -50.0f));
+		ChandelierBright->Translate(glm::vec3(0.0f, -10.0f, -40.0f));
 
-		GraphNode* Chain = CreateNode("res/models/sam_lancuch.fbx", defaultShader);
+		GraphNode* Chain = CreateNode("res/models/zyrandol_lancuch.fbx", defaultShader);
 		Chain->Scale(0.1f);
 		ChandelierBright->AddChild(Chain);
 
-		GraphNode* ChandelierGlass = CreateNode("res/models/zyrandol.fbx", defaultShader);
+		GraphNode* ChandelierGlass = CreateNode("res/models/zyrandol_szklany.fbx", defaultShader);
 		ChandelierGlass->Scale(0.1f);
 		ChandelierBright->AddChild(ChandelierGlass);
 
-		GraphNode* ChandelierShattered = CreateNode("res/models/roztrzaskany.fbx", defaultShader);
+		GraphNode* ChandelierShattered = CreateNode("res/models/zyrandol_stluczony.fbx", defaultShader);
 		ChandelierShattered->Scale(0.1f);
-		ChandelierShattered->Translate(glm::vec3(0.0f, 0.0f, -50.0f));
+		ChandelierShattered->Translate(glm::vec3(0.0f, 0.0f, -40.0f));
 		Scene1->AddChild(ChandelierShattered);
 		ChandelierShattered->SetActive(false);
 
-		GraphNode* ChandelierNoGlass = CreateNode("res/models/zyrandol.fbx", defaultShader);
+		GraphNode* ChandelierNoGlass = CreateNode("res/models/zyrandol_szklany.fbx", defaultShader);
 		ChandelierNoGlass->Scale(0.1f);
-		ChandelierNoGlass->Translate(glm::vec3(0.0f, -10.0f, -50.0f));
+		ChandelierNoGlass->Translate(glm::vec3(0.0f, -10.0f, -40.0f));
 		Scene1Dark->AddChild(ChandelierNoGlass);
 		ChandelierNoGlass->AddScript(new ChandelierScript(ChandelierNoGlass, ChandelierGlass, ChandelierShattered, whitePawnActivator));
 		objectId--;
 
-		GraphNode* Line = CreateNode("res/models/sama_lina.fbx", defaultShader);
+		GraphNode* Line = CreateNode("res/models/zyrandol_lina.fbx", defaultShader);
 		Line->Scale(0.1f);
-		Line->Translate(glm::vec3(0.0f, -10.0f, -50.0f));
+		Line->Translate(glm::vec3(0.0f, -10.0f, -40.0f));
 		Scene1Dark->AddChild(Line);
 
 		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright));
@@ -341,12 +341,12 @@ public:
 		bottomPanel->AddScript(new OtherTestRealtimeScript(bottomPanel));
 
 		GraphNode* scissors = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+			"res/models/nozyce.png", textureShader);
 		UI->AddChild(scissors);
-		scissors->Scale(0.5);
-		scissors->Translate(glm::vec3(150, -200, 0));
+		scissors->Scale(0.75);
+		scissors->Translate(glm::vec3(-50, -250, 0));
 		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window));
-		scissors->SetActive(false);
+		//scissors->SetActive(false);
 
 		GraphNode* rose2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
