@@ -230,7 +230,8 @@ int main(void)
         ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
         picker.Disable();
         //Saving id of the currently picked object
-        currentlyPicked = pixel.ObjectID;
+        currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
+        //std::cout << "Currently picked: " << currentlyPicked << std::endl;
 
         //Whenever mouse i button isn't pressed we make sure that the next frame it's pressed
         //it will be a single click. Later on, after that dirst frame singleClick is set to false,

@@ -30,9 +30,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (boardReference->isMovingChess)
-		{
-			boardReference->PlaceChessPiece(id);
-		}
+		boardReference->PlaceChessPiece(id);
 	}
+
 };

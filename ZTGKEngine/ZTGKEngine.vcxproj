@@ -150,6 +150,7 @@
     <ClCompile Include="src\utils\textureUtilscpp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scripts\ChandelierScript.h" />
     <ClInclude Include="src\scripts\ChessBoardPuzzle.h" />
     <ClInclude Include="src\scripts\ChessPieceScript.h" />
     <ClInclude Include="src\scripts\InventoryItemScript.h" />

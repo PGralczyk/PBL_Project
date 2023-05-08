@@ -6,5 +6,6 @@ out vec4 FragColor;
 
 void main()
 {
-   FragColor = vec4(float(gObjectIndex) / 255, 0.0f, 0.0f, 1.0f);
+    int decimalParts = (gObjectIndex % 255) / 255;
+    FragColor = vec4(float(gObjectIndex % 255) / 255, float(gObjectIndex / 255), 0.0f, 1.0f);
 }

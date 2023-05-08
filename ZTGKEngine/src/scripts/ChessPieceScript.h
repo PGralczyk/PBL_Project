@@ -46,18 +46,6 @@ public:
 				node->Translate(glm::vec3(0.0f, 300.0f, 0.0f));
 				isBeingMoved = true;
 			}
-
-			if (ApTime::instance().pickedElementId == "rose")
-			{
-				ApTime::instance().pickedElementId = "";
-				std::cout << "Used rose on chess piece\n";
-			}
-
-			if (ApTime::instance().pickedElementId == "rose2")
-			{
-				ApTime::instance().pickedElementId = "";
-				std::cout << "Used rose2 on chess piece\n";
-			}
 		}
 	}
 
@@ -76,11 +64,13 @@ public:
 			{
 				node->setTranslate(new glm::vec3(brightWorldPosition.x,
 					brightWorldPosition.y, brightWorldPosition.z));
+				node->isHoverable = true;
 			}
 			else
 			{
 				node->setTranslate(new glm::vec3(goalPosition.x,
 					goalPosition.y, goalPosition.z));
+				node->isHoverable = false;
 			}
 			brightWorld = !brightWorld;
 		}

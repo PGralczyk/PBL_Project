@@ -23,6 +23,7 @@
 #include "../scripts/TileScript.h";
 #include "../scripts/OneTimeActivatorScript.h";
 #include "../scripts/InventoryItemScript.h"
+#include "../scripts/ChandelierScript.h";
 
 class SceneManager
 {
@@ -60,7 +61,6 @@ public:
 		UI = new GraphNode();
 		Loading("res/models/everest.jpg");
 		Scene1Setup(&otherShaders);
-		UiSetup();
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-DONE-----------------" << std::endl;
 		std::cout << "----------------------------------------------" << std::endl;
@@ -100,29 +100,6 @@ public:
 		glDepthFunc(GL_LESS);
 	}
 
-	void UiSetup()
-	{
-		//ApRectangle bottomPanel(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/gui_panel.png");
-		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, 
-			"res/models/gui_panel.png", textureShader);
-		UI->AddChild(bottomPanel);
-		bottomPanel->AddScript(new OtherTestRealtimeScript(bottomPanel));
-
-		GraphNode* rose = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		UI->AddChild(rose);
-		rose->Scale(0.5);
-		rose->Translate(glm::vec3(150, -200, 0));
-		rose->AddScript(new InventoryItemScript(rose, "rose", window));	
-
-		GraphNode* rose2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		rose2->Scale(0.5);
-		rose2->Translate(glm::vec3(300, -200, 0));
-		UI->AddChild(rose2);
-		rose2->AddScript(new InventoryItemScript(rose2, "rose2", window));
-	}
-
 	void Scene1Setup(Shader* additionalShaders[] = nullptr)
 	{
 		std::cout << "***Scene1***" << std::endl;
@@ -149,15 +126,19 @@ public:
 		Model* drawerFrame = new Model("res/models/szuflada_obudowa.fbx");
 		drawerBase->SetShader(defaultShader);
 		drawerFrame->SetShader(defaultShader);
+
 		GraphNode* drawer1 = new GraphNode(drawerFrame);
-		GraphNode* drawer1MovableSegment = new GraphNode(drawerBase);
+		GraphNode* drawer1MovableSegment = new GraphNode(drawerBase, objectId++);
 		drawer1->AddChild(drawer1MovableSegment);
+
 		GraphNode* drawer2 = new GraphNode(drawerFrame);
-		GraphNode* drawer2MovableSegment = new GraphNode(drawerBase);
+		GraphNode* drawer2MovableSegment = new GraphNode(drawerBase, objectId++);
 		drawer2->AddChild(drawer2MovableSegment);
+
 		GraphNode* drawer3 = new GraphNode(drawerFrame);
-		GraphNode* drawer3MovableSegment = new GraphNode(drawerBase);
+		GraphNode* drawer3MovableSegment = new GraphNode(drawerBase, objectId++);
 		drawer3->AddChild(drawer3MovableSegment);
+
 		DrawerMainObject->AddChild(drawer1);
 		DrawerMainObject->AddChild(drawer2);
 		DrawerMainObject->AddChild(drawer3);
@@ -200,7 +181,6 @@ public:
 		}
 		//--------------------------Setting-chess-pieces--------------------------
 		ChessPieceScript* pieces[10];
-		{
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whitePawn " << std::endl;
 			GraphNode* whitePawn = CreateNode("res/models/pionek_bialy.fbx", defaultShader);
@@ -213,8 +193,11 @@ public:
 			GraphNode* whitePawnActivator = CreateNode("res/models/pionek_bialy.fbx", defaultShader);
 			whitePawnActivator->AddScript(new OneTimeActivatorScript(whitePawnActivator, whitePawn));
 			whitePawn->SetActive(false);
-			whitePawnActivator->Translate(glm::vec3(100.0f, 1000.0f, -500.0f));
-			ChessMainObject->AddChild(whitePawnActivator);
+			whitePawnActivator->Translate(glm::vec3(20.0f, 4.0f, -70.0f));
+			whitePawnActivator->Rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+			whitePawnActivator->Scale(0.015f);
+			Scene1Bright->AddChild(whitePawnActivator);
+			whitePawnActivator->SetActive(false);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackPawn " << std::endl;
 			GraphNode* blackPawn = CreateNode("res/models/pionek_czarny.fbx", defaultShader);
@@ -278,7 +261,6 @@ public:
 			blackRook->AddScript(pieces[9]);
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackRook);
-		}
 		//-----------------------------Creating-Puzzle----------------------------
 		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles, pieces);
 		ChessMainObject->AddScript(puzzle);
@@ -318,8 +300,67 @@ public:
 		//SceneOutsideDark->Rotate(glm::vec3(0.4f, 0.5f, 0.0f));
 
 
-		//SETTING_SCRIPTS
+		//--------------------------Chandelier-Puzzle--------------------------
+		GraphNode* ChandelierBright = new GraphNode();
+		Scene1Bright->AddChild(ChandelierBright);
+		ChandelierBright->Translate(glm::vec3(0.0f, -10.0f, -50.0f));
+
+		GraphNode* Chain = CreateNode("res/models/sam_lancuch.fbx", defaultShader);
+		Chain->Scale(0.1f);
+		ChandelierBright->AddChild(Chain);
+
+		GraphNode* ChandelierGlass = CreateNode("res/models/zyrandol.fbx", defaultShader);
+		ChandelierGlass->Scale(0.1f);
+		ChandelierBright->AddChild(ChandelierGlass);
+
+		GraphNode* ChandelierShattered = CreateNode("res/models/roztrzaskany.fbx", defaultShader);
+		ChandelierShattered->Scale(0.1f);
+		ChandelierShattered->Translate(glm::vec3(0.0f, 0.0f, -50.0f));
+		Scene1->AddChild(ChandelierShattered);
+		ChandelierShattered->SetActive(false);
+
+		GraphNode* ChandelierNoGlass = CreateNode("res/models/zyrandol.fbx", defaultShader);
+		ChandelierNoGlass->Scale(0.1f);
+		ChandelierNoGlass->Translate(glm::vec3(0.0f, -10.0f, -50.0f));
+		Scene1Dark->AddChild(ChandelierNoGlass);
+		ChandelierNoGlass->AddScript(new ChandelierScript(ChandelierNoGlass, ChandelierGlass, ChandelierShattered, whitePawnActivator));
+		objectId--;
+
+		GraphNode* Line = CreateNode("res/models/sama_lina.fbx", defaultShader);
+		Line->Scale(0.1f);
+		Line->Translate(glm::vec3(0.0f, -10.0f, -50.0f));
+		Scene1Dark->AddChild(Line);
+
 		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright));
+
+
+		//--------------------------------UI-AND-INVENTORY--------------------------------
+		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/gui_panel.png", textureShader);
+		UI->AddChild(bottomPanel);
+		bottomPanel->AddScript(new OtherTestRealtimeScript(bottomPanel));
+
+		GraphNode* scissors = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		UI->AddChild(scissors);
+		scissors->Scale(0.5);
+		scissors->Translate(glm::vec3(150, -200, 0));
+		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window));
+		scissors->SetActive(false);
+
+		GraphNode* rose2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		rose2->Scale(0.5);
+		rose2->Translate(glm::vec3(300, -200, 0));
+		UI->AddChild(rose2);
+		rose2->AddScript(new InventoryItemScript(rose2, "rose2", window));
+
+		//Scripting for obtaining objects to inventory
+		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, scissors, false, true);
+		drawer1Script->enabled = false;
+		drawer1MovableSegment->AddScript(drawer1Script);
+		drawer1MovableSegment->isHoverable = false;
+		puzzle->SetPrizes(drawer1Script);
 	}
 
 	

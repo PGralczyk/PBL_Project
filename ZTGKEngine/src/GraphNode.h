@@ -32,9 +32,9 @@ protected:
 
 	bool isActive = true;
 
-	
-
 public:
+	bool isHoverable = true;
+
 	GraphNode(Model* m = NULL, unsigned int givenId = 0)
 	{
 		this->model = m;
@@ -96,7 +96,8 @@ public:
 			//With every call to Update in node we also execute updates in scripts
 			for (RealtimeScript* script : realtimeScripts)
 			{
-				script->Update();
+				if (script->enabled)
+					script->Update();
 			}
 
 			bool getIds = false;
@@ -108,20 +109,23 @@ public:
 					{
 						for (RealtimeScript* script : realtimeScripts)
 						{
-							script->OnMouseClicked();
+							if (script->enabled)
+								script->OnMouseClicked();
 						}
 					}
 
 					for (RealtimeScript* script : realtimeScripts)
 					{
-						script->OnMouseDragged();
+						if (script->enabled)
+							script->OnMouseDragged();
 					}
 				}
-				else
+				else if(isHoverable)
 				{
 					for (RealtimeScript* script : realtimeScripts)
 					{
-						script->OnMouseHover();
+						if (script->enabled)
+							script->OnMouseHover();
 					}
 				}
 			}
@@ -139,7 +143,7 @@ public:
 		{
 			if (model) {
 				model->setTransform(worldTransform);
-				model->Draw(currentlyPicked, objectId);
+				model->Draw(currentlyPicked, objectId, isHoverable);
 			}
 
 			for (GraphNode* node : children)
@@ -237,5 +241,10 @@ public:
 	bool GetActive()
 	{
 		return isActive;
+	}
+
+	unsigned int GetObjectId()
+	{
+		return this->objectId;
 	}
 };

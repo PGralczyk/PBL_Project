@@ -4,23 +4,24 @@
 #include "GraphNode.h"
 #include "RealtimeScript.h"
 #include "ApTime.h"
-#include "OtherTestRealtimeScript.h"
-#include "ChessBoardPuzzle.h";
 
 class GraphNode;
-class OtherTestRealtimeScript;
-class ChessBoardPuzzle;
 
 class OneTimeActivatorScript : public RealtimeScript {
 
 private:
 	GraphNode* other;
+	GraphNode* otherOther;
+	bool shouldDisappear, shouldDeactivate;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	OneTimeActivatorScript(GraphNode* nodePointer, GraphNode* givenOther) : RealtimeScript(nodePointer)
+	OneTimeActivatorScript(GraphNode* nodePointer, GraphNode* givenOther, bool shouldDisappear = true, bool shouldDeactivate = true, GraphNode* otherGivenOther = NULL) : RealtimeScript(nodePointer)
 	{
 		other = givenOther;
+		otherOther = otherGivenOther;
+		this->shouldDeactivate = shouldDeactivate;
+		this->shouldDisappear = shouldDisappear;
 	}
 
 	~OneTimeActivatorScript() = default;
@@ -28,6 +29,18 @@ public:
 	void OnMouseClicked()
 	{
 		other->SetActive(true);
-		node->SetActive(false);
+		if (otherOther != NULL)
+		{
+			otherOther->SetActive(true);
+		}
+		if (shouldDisappear)
+		{
+			node->SetActive(false);
+		}
+		else if (shouldDeactivate)
+		{
+			enabled = false;
+			node->isHoverable = false;
+		}
 	}
 };

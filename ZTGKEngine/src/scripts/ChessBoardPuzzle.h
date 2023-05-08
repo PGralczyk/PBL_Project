@@ -6,10 +6,12 @@
 #include "ApTime.h"
 #include "OtherTestRealtimeScript.h"
 #include "ChessPieceScript.h"
+#include "OneTimeActivatorScript.h"
 
 class GraphNode;
 class OtherTestRealtimeScript;
 class ChessPieceScript;
+class OneTimeActivatorScript;
 //WHAT IS THIS CLASS?
 //A test of implementing realtime script
 class ChessBoardPuzzle : public RealtimeScript {
@@ -18,9 +20,12 @@ private:
 	GraphNode* fields[64];
 	int tileState[64];
 	ChessPieceScript* pieces[10];
+	unsigned int phase = 0;
+	OneTimeActivatorScript* prize1;
+	OneTimeActivatorScript* prize2;
+	OneTimeActivatorScript* prize3;
 
 public:
-	bool isMovingChess = true;
 
 	//Constructor, here assign all the fields from the private section
 	ChessBoardPuzzle(GraphNode* nodePointer, GraphNode* givenFields[64], ChessPieceScript* givenPieces[10]) : RealtimeScript(nodePointer)
@@ -37,6 +42,11 @@ public:
 		{
 			tile = 0;
 		}
+	}
+
+	void SetPrizes(OneTimeActivatorScript* givenPrize1)
+	{
+		prize1 = givenPrize1;
 	}
 
 	void Start()
@@ -101,7 +111,16 @@ public:
 				correctPieces++;
 			}
 		}
-		std::cout << correctPieces << std::endl;
+		if (correctPieces == 1 and phase < 1)
+		{
+			phase++;
+			if (prize1 != NULL)
+			{
+				prize1->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
+				prize1->GetNode()->isHoverable = true;
+				prize1->enabled = true;
+			}
+		}
 	}
 
 	void Update()
