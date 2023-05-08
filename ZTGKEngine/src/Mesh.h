@@ -13,7 +13,8 @@
 using namespace std;
 
 #define MAX_BONE_INFLUENCE 4
-
+#define PICKING_MODE 1
+#define OUTLINE_MODE 2
 //What is this class?
 //Mesh/meshes are components that can be included in model(we can use model to create objects with
 //no graphical representation). This class uses assimp library to load data about our shape and then
@@ -71,7 +72,7 @@ public:
     }
 
     // Render the mesh
-    void Draw(Shader& shader, glm::mat4* model, unsigned int objectID = 0, bool picking = false)
+    void Draw(Shader& shader, glm::mat4* model, unsigned int objectID = 0, int mode = 0)
     {
         //std::cout << (&shader != NULL) << std::endl;
         //For now we only use this part, because we don't instantiate objects
@@ -89,15 +90,18 @@ public:
             //We set our model matrix (used for transformations) as uniform for shader program
             shader.setMat4("model", *model);
 
-            if (picking && objectID != 0) {
+            if (mode == PICKING_MODE && objectID != 0) {
                 shader.setInt("gObjectIndex", objectID);
             }
+            //else if (mode == OUTLINE_MODE) {
+            //    shader.setFloat("outlining", 3.0f);
+            //}
 
             //We apply every texture that is in our object
             for (unsigned int i = 0; i < textures.size(); i++)
             {
                 //We have to activate the texture we are currently working with
-                glActiveTexture(GL_TEXTURE0 + i);
+                //glActiveTexture(GL_TEXTURE0 + i);
 
                 string number;
                 string name = textures[i].type;
@@ -120,7 +124,7 @@ public:
             glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
 
-            glActiveTexture(GL_TEXTURE0);
+            //glActiveTexture(GL_TEXTURE0);
         }
         //ONLY FOR INSTANTIONING:
         else {

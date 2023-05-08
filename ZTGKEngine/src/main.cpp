@@ -94,13 +94,15 @@ int main(void)
         return -1;
     }
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     //glEnable(GL_CULL_FACE);
     //glCullFace(GL_BACK);
     //glFrontFace(GL_CCW);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.00f);
     //Resource and scene setup
     Shader basicShader("res/shaders/basic.vert", "res/shaders/basic.frag");
     Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
@@ -112,6 +114,7 @@ int main(void)
     Shader primitiveTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveTexture.frag");
     Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
     Shader textShader("res/shaders/text.vert", "res/shaders/text.frag");
+    Shader outlineShader("res/shaders/outline.vert", "res/shaders/outline.frag");
 
     ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
     ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
@@ -132,7 +135,7 @@ int main(void)
 
     sceneManager.Update(0, false, false);
 
-
+    sceneManager.PostProcessSetup();
     
 
     float time = 0;
@@ -161,6 +164,9 @@ int main(void)
             //std::cout << "Z: " << castedRay.y << std::endl;
         }
 
+        outlineShader.use();
+        outlineShader.setMat4("projection", projection);
+        outlineShader.setMat4("view", view);
         defaultShader.use();
         defaultShader.setMat4("projection", projection);
         defaultShader.setMat4("view", view);
@@ -211,7 +217,7 @@ int main(void)
         {
             isHoldingMouseButton = false;
         }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         picker.Enable();
         //Setting shaders for picking models and textures
         pickShader.use();
@@ -246,7 +252,7 @@ int main(void)
         processInput(window);
 
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         sceneManager.Update(currentlyPicked, singleClick, isHoldingMouseButton);
 
@@ -258,7 +264,18 @@ int main(void)
         }
 
         glEnable(GL_BLEND);
+        //glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        //glStencilMask(0xFF);
+        //sceneManager.EnableFramebuffer();
+        //sceneManager.RenderWithShader(outlineShader, 1);
+        //sceneManager.DisableFramebuffer();
+        //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        //glStencilMask(0x00);
+        //glDisable(GL_DEPTH_TEST);
         sceneManager.Render(currentlyPicked);
+        //glStencilMask(0xFF);
+        //glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        //glEnable(GL_DEPTH_TEST);
 
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;

@@ -28,7 +28,6 @@
 class SceneManager
 {
 private:
-	GraphNode* world;
 	GraphNode* UI;
 	GLFWwindow* window;
 	bool* isBright;
@@ -36,10 +35,16 @@ private:
 	unsigned int* SCR_HEIGHT;
 	unsigned int* SCR_WIDTH;
 
+	unsigned int framebuffer;
+	unsigned int textureColorbuffer;
+	unsigned int rbo;
+
 public:
+	GraphNode* world;
 	Shader *lightShader;
 	Shader *defaultShader;
 	Shader* textureShader;
+	Shader* outlineShader;
 
 	SceneManager() {};
 	~SceneManager()
@@ -90,6 +95,10 @@ public:
 		//pickShader.setMat4("view", viewPrimitive);
 		UI->nPickDraw(texturePickShader);
 		glDepthFunc(GL_LESS);
+	}
+
+	void RenderWithShader(Shader& choiceShader, int mode) {
+		world->choiceDraw(choiceShader, mode);
 	}
 
 	void Render(unsigned int currentlyPicked)
@@ -363,7 +372,37 @@ public:
 		puzzle->SetPrizes(drawer1Script);
 	}
 
-	
+	void PostProcessSetup()
+	{
+		glGenFramebuffers(1, &framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+		glGenTextures(1, &textureColorbuffer);
+		glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+		glGenRenderbuffers(1, &rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, *SCR_WIDTH, *SCR_HEIGHT);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void EnableFramebuffer()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	}
+
+	void DisableFramebuffer()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 
 private:
 	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
@@ -432,4 +471,6 @@ private:
 		//std::cout << "Showing scene...\n";
 	}
 };
+
+
 

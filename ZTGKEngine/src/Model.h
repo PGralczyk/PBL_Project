@@ -82,7 +82,12 @@ public:
 
     void pickDraw(Shader& pickShader, unsigned int objectID) {
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(pickShader, Transform, objectID, true);
+            meshes[i].Draw(pickShader, Transform, objectID, 1);
+    }
+
+    void shaderDraw(Shader& choiceShader, int mode1) {
+        for (unsigned int i = 0; i < meshes.size(); i++)
+            meshes[i].Draw(choiceShader, Transform, 0, mode1);
     }
 
 private:
