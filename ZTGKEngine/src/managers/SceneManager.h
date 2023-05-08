@@ -346,7 +346,7 @@ public:
 		scissors->Scale(0.75);
 		scissors->Translate(glm::vec3(-50, -250, 0));
 		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window));
-		//scissors->SetActive(false);
+		scissors->SetActive(false);
 
 		GraphNode* rose2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
