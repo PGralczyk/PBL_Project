@@ -172,6 +172,12 @@
     <ClInclude Include="src\UI\Text.h" />
     <ClInclude Include="src\scripts\TileScript.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\blur.frag" />
+    <None Include="res\shaders\blur.vert" />
+    <None Include="res\shaders\mixer.frag" />
+    <None Include="res\shaders\mixer.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

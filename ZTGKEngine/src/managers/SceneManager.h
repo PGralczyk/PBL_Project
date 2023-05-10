@@ -35,9 +35,8 @@ private:
 	unsigned int* SCR_HEIGHT;
 	unsigned int* SCR_WIDTH;
 
-	unsigned int framebuffer;
-	unsigned int textureColorbuffer;
-	unsigned int rbo;
+	unsigned int quadVAO = 0;
+	unsigned int quadVBO;
 
 public:
 	GraphNode* world;
@@ -45,6 +44,10 @@ public:
 	Shader *defaultShader;
 	Shader* textureShader;
 	Shader* outlineShader;
+
+	unsigned int frameBuffers[2];
+	unsigned int textureBuffers[2];
+	unsigned int rbo;
 
 	SceneManager() {};
 	~SceneManager()
@@ -374,34 +377,97 @@ public:
 
 	void PostProcessSetup()
 	{
-		glGenFramebuffers(1, &framebuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-		glGenTextures(1, &textureColorbuffer);
-		glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-
 		glGenRenderbuffers(1, &rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, *SCR_WIDTH, *SCR_HEIGHT);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+		//glGenFramebuffers(1, &framebuffer);
+		//glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+		//glGenTextures(1, &textureColorbuffer);
+		//glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+		glGenFramebuffers(2, frameBuffers);
+		glGenTextures(2, textureBuffers);
+		for (unsigned int i = 0; i < 2; i++)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[i]);
+			glBindTexture(GL_TEXTURE_2D, textureBuffers[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffers[i], 0);
+			//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+			// also check if framebuffers are complete (no need for depth buffer)
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				std::cout << "Framebuffer not complete!" << std::endl;
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void EnableFramebuffer()
+	void renderQuad()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		if (quadVAO == 0)
+		{
+			float quadVertices[] = {
+				// positions        // texture Coords
+				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			};
+			// setup plane VAO
+			glGenVertexArrays(1, &quadVAO);
+			glGenBuffers(1, &quadVBO);
+			glBindVertexArray(quadVAO);
+			glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		}
+		glBindVertexArray(quadVAO);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);
 	}
 
-	void DisableFramebuffer()
-	{
+	void BlurRender(Shader* blurShader, Shader* mixShader) { // for later when we have a specific object to render
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
+		RenderWithShader(*outlineShader, 1);
+		bool horizontal = true;
+		unsigned int amount = 10;
+		blurShader->use();
+		blurShader->setInt("image", 0);
+		for (unsigned int i = 0; i < amount; i++)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
+			blurShader->setInt("horizontal", horizontal);
+			glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+			renderQuad();
+			horizontal = !horizontal;
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		mixShader->use();
+		mixShader->setInt("scene", 0);
+		mixShader->setInt("bloomBlur", 1);
+		mixShader->setInt("bloom", true);
+		mixShader->setFloat("exposure", 1.0f);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		renderQuad();
 	}
 
 private:

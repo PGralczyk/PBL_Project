@@ -115,6 +115,8 @@ int main(void)
     Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
     Shader textShader("res/shaders/text.vert", "res/shaders/text.frag");
     Shader outlineShader("res/shaders/outline.vert", "res/shaders/outline.frag");
+    Shader blurShader("res/shaders/blur.vert", "res/shaders/blur.frag");
+    Shader mixShader("res/shaders/mixer.vert", "res/shaders/mixer.frag");
 
     ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
     ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
@@ -130,6 +132,7 @@ int main(void)
     sceneManager.defaultShader = &defaultShader;
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
+    sceneManager.outlineShader = &outlineShader;
 
     sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
@@ -267,12 +270,13 @@ int main(void)
         //glStencilFunc(GL_ALWAYS, 1, 0xFF);
         //glStencilMask(0xFF);
         //sceneManager.EnableFramebuffer();
-        //sceneManager.RenderWithShader(outlineShader, 1);
+        //sceneManager.RenderWithShader(outlineShader, 2);
         //sceneManager.DisableFramebuffer();
         //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
         //glStencilMask(0x00);
         //glDisable(GL_DEPTH_TEST);
         sceneManager.Render(currentlyPicked);
+        //sceneManager.BlurRender(&blurShader, &mixShader);
         //glStencilMask(0xFF);
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
