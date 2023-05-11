@@ -94,8 +94,8 @@ int main(void)
         return -1;
     }
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    //glEnable(GL_STENCIL_TEST);
+    //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     //glEnable(GL_CULL_FACE);
     //glCullFace(GL_BACK);
     //glFrontFace(GL_CCW);
@@ -220,8 +220,9 @@ int main(void)
         {
             isHoldingMouseButton = false;
         }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        picker.Enable();
         //Setting shaders for picking models and textures
         pickShader.use();
         pickShader.setMat4("projection", projection);
@@ -237,10 +238,9 @@ int main(void)
         glfwGetCursorPos(window, &mouseXd, &mouseYd);
         //Reading ObjectId fo pixel below the mouse
         ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
-        picker.Disable();
         //Saving id of the currently picked object
         currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
-        //std::cout << "Currently picked: " << currentlyPicked << std::endl;
+        std::cout << "Currently picked: " << currentlyPicked << std::endl;
 
         //Whenever mouse i button isn't pressed we make sure that the next frame it's pressed
         //it will be a single click. Later on, after that dirst frame singleClick is set to false,
@@ -255,7 +255,7 @@ int main(void)
         processInput(window);
 
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         sceneManager.Update(currentlyPicked, singleClick, isHoldingMouseButton);
 
@@ -275,12 +275,12 @@ int main(void)
         //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
         //glStencilMask(0x00);
         //glDisable(GL_DEPTH_TEST);
-        sceneManager.Render(currentlyPicked);
-        //sceneManager.BlurRender(&blurShader, &mixShader);
+        //sceneManager.Render(currentlyPicked);
+        
         //glStencilMask(0xFF);
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
-
+        sceneManager.BlurRender(&blurShader, &mixShader, currentlyPicked);
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);

@@ -24,6 +24,8 @@
 #include "../scripts/OneTimeActivatorScript.h";
 #include "../scripts/InventoryItemScript.h"
 #include "../scripts/ChandelierScript.h";
+#include "../scripts/GrowPlantScript.h";
+#include "../scripts/PlantPuzzleController.h";
 
 class SceneManager
 {
@@ -195,42 +197,75 @@ public:
 		ChessPieceScript* pieces[10];
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whitePawn " << std::endl;
-			GraphNode* whitePawn = CreateNode("res/models/pionek_bialy.fbx", defaultShader);
+			Model* _whitePawn = new Model("res/models/pionek_bialy.fbx");
+			_whitePawn->SetShader(defaultShader);
+			GraphNode* whitePawn = new GraphNode(_whitePawn, objectId++);
 			pieces[0] = new ChessPieceScript(whitePawn, window);
 			whitePawn->AddScript(pieces[0]);
 			whitePawn->Translate(glm::vec3(100.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whitePawn);
 			//****************
-			std::cout << "LOADING: whitePawnActivator " << std::endl;
-			GraphNode* whitePawnActivator = CreateNode("res/models/pionek_bialy.fbx", defaultShader);
+			GraphNode* whitePawnActivator = new GraphNode(_whitePawn, objectId++);
 			whitePawnActivator->AddScript(new OneTimeActivatorScript(whitePawnActivator, whitePawn));
 			whitePawn->SetActive(false);
 			whitePawnActivator->Translate(glm::vec3(20.0f, 4.0f, -70.0f));
 			whitePawnActivator->Rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			whitePawnActivator->Scale(0.015f);
-			Scene1Bright->AddChild(whitePawnActivator);
-			whitePawnActivator->SetActive(false);
+			whitePawnActivator->Scale(0.015f);;
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackPawn " << std::endl;
-			GraphNode* blackPawn = CreateNode("res/models/pionek_czarny.fbx", defaultShader);
+			Model* _blackPawn = new Model("res/models/pionek_czarny.fbx");
+			_blackPawn->SetShader(defaultShader);
+			GraphNode* blackPawn = new GraphNode(_blackPawn, objectId++);
 			pieces[1] = new ChessPieceScript(blackPawn, window);
 			blackPawn->AddScript(pieces[1]);
 			blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackPawn);
+			//****************
+			GraphNode* blackPawnActivator = new GraphNode(_blackPawn, objectId++);
+			blackPawnActivator->AddScript(new OneTimeActivatorScript(blackPawnActivator, blackPawn));
+			blackPawn->SetActive(false);
+			blackPawnActivator->Translate(glm::vec3(10.0f, 4.0f, -70.0f));
+			blackPawnActivator->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+			blackPawnActivator->Scale(0.015f);
+			//Below is a parent for two pawn activators, so that they can be activated together
+			GraphNode* chandelierPrizes = new GraphNode();
+			Scene1Bright->AddChild(chandelierPrizes);
+			chandelierPrizes->AddChild(blackPawnActivator);
+			chandelierPrizes->AddChild(whitePawnActivator);
+			chandelierPrizes->SetActive(false);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteKing " << std::endl;
-			GraphNode* whiteKing = CreateNode("res/models/krol_bialy.fbx", defaultShader);
+			Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
+			_whiteKing->SetShader(defaultShader);
+			GraphNode* whiteKing = new GraphNode(_whiteKing, objectId++);
 			pieces[2] = new ChessPieceScript(whiteKing, window);
 			whiteKing->AddScript(pieces[2]);
 			whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKing);
+			//****************
+			GraphNode* whiteKingActivator = new GraphNode(_whiteKing, objectId++);
+			whiteKingActivator->AddScript(new OneTimeActivatorScript(whiteKingActivator, whiteKing));
+			whiteKing->SetActive(false);
+			whiteKingActivator->Scale(0.015f);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackKing " << std::endl;
+			Model* _blackKing = new Model("res/models/krol_czarny.fbx");
+			_blackKing->SetShader(defaultShader);
 			GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
 			pieces[3] = new ChessPieceScript(blackKing, window);
 			blackKing->AddScript(pieces[3]);
 			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackKing);
+			//****************
+			GraphNode* blackKingActivator = new GraphNode(_whiteKing, objectId++);
+			blackKingActivator->AddScript(new OneTimeActivatorScript(blackKingActivator, blackKing));
+			blackKing->SetActive(false);
+			blackKingActivator->Scale(0.015f);
+			//Parent for both king activators so that they can be activated at the same time
+			GraphNode* plantPuzzlePrizes = new GraphNode();
+			Scene1Dark->AddChild(plantPuzzlePrizes);
+			plantPuzzlePrizes->AddChild(whiteKingActivator);
+			plantPuzzlePrizes->AddChild(blackKingActivator);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteQueen " << std::endl;
 			GraphNode* whiteQueen = CreateNode("res/models/krolowa_biala.fbx", defaultShader);
@@ -335,7 +370,7 @@ public:
 		ChandelierNoGlass->Scale(0.1f);
 		ChandelierNoGlass->Translate(glm::vec3(0.0f, -10.0f, -40.0f));
 		Scene1Dark->AddChild(ChandelierNoGlass);
-		ChandelierNoGlass->AddScript(new ChandelierScript(ChandelierNoGlass, ChandelierGlass, ChandelierShattered, whitePawnActivator));
+		ChandelierNoGlass->AddScript(new ChandelierScript(ChandelierNoGlass, ChandelierGlass, ChandelierShattered, chandelierPrizes));
 		objectId--;
 
 		GraphNode* Line = CreateNode("res/models/zyrandol_lina.fbx", defaultShader);
@@ -360,12 +395,12 @@ public:
 		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window));
 		scissors->SetActive(false);
 
-		GraphNode* rose2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		GraphNode* bucket = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		rose2->Scale(0.5);
-		rose2->Translate(glm::vec3(300, -200, 0));
-		UI->AddChild(rose2);
-		rose2->AddScript(new InventoryItemScript(rose2, "rose2", window));
+		bucket->Scale(0.5);
+		bucket->Translate(glm::vec3(300, -200, 0));
+		UI->AddChild(bucket);
+		bucket->AddScript(new InventoryItemScript(bucket, "bucket", window));
 
 		//Scripting for obtaining objects to inventory
 		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, scissors, false, true);
@@ -373,6 +408,39 @@ public:
 		drawer1MovableSegment->AddScript(drawer1Script);
 		drawer1MovableSegment->isHoverable = false;
 		puzzle->SetPrizes(drawer1Script);
+
+		////PLANTS PUZZLE
+		//int puzzleState = 0;
+		//Model* _plant = new Model("res/models/roslina.png");
+		//_plant->SetShader(defaultShader);
+		//GraphNode* plant1 = new GraphNode(_plant, objectId++);
+		//Scene1Dark->AddChild(plant1);
+		//plant1->AddScript(new GrowPlantScript(plant1, 4, &puzzleState));
+		//GraphNode* plant2 = new GraphNode(_plant, objectId++);
+		//Scene1Dark->AddChild(plant2);
+		//plant2->AddScript(new GrowPlantScript(plant2, 2, &puzzleState));
+		//GraphNode* plant3 = new GraphNode(_plant, objectId++);
+		//Scene1Dark->AddChild(plant3);
+		//plant3->AddScript(new GrowPlantScript(plant3, 3, &puzzleState));
+		//GraphNode* finalPlant = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(finalPlant);
+		//finalPlant->AddScript(new PlantPuzzleController(finalPlant, &puzzleState, plantPuzzlePrizes));
+
+		//GraphNode* pod1 = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(pod1);
+		//GraphNode* pod2 = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(pod2);
+		//GraphNode* pod3 = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(pod3);
+		//GraphNode* bigPod = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(bigPod);
+
+		//GraphNode* pod1b = CreateNode("", defaultShader);
+		//Scene1Bright->AddChild(pod1b);
+		//GraphNode* pod2b = CreateNode("", defaultShader);
+		//Scene1Bright->AddChild(pod2b);
+		//GraphNode* pod3b = CreateNode("", defaultShader);
+		//Scene1Bright->AddChild(pod3b);
 	}
 
 	void PostProcessSetup()
@@ -403,7 +471,7 @@ public:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffers[i], 0);
-			//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 			// also check if framebuffers are complete (no need for depth buffer)
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				std::cout << "Framebuffer not complete!" << std::endl;
@@ -438,11 +506,16 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void BlurRender(Shader* blurShader, Shader* mixShader) { // for later when we have a specific object to render
+	void BlurRender(Shader* blurShader, Shader* mixShader, unsigned int currentlyPicked) { // for later when we have a specific object to render
+
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[1]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
-		RenderWithShader(*outlineShader, 1);
+		RenderWithShader(*outlineShader, 0);
 		bool horizontal = true;
 		unsigned int amount = 10;
 		blurShader->use();
@@ -454,19 +527,21 @@ public:
 			glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
 			renderQuad();
 			horizontal = !horizontal;
+			glClear(GL_DEPTH_BUFFER_BIT);
 		}
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
+		Render(currentlyPicked);
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		mixShader->use();
 		mixShader->setInt("scene", 0);
 		mixShader->setInt("bloomBlur", 1);
 		mixShader->setInt("bloom", true);
 		mixShader->setFloat("exposure", 1.0f);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, textureBuffers[horizontal]);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
 		renderQuad();
 	}
 

@@ -116,6 +116,7 @@ public:
 
                 //Specyfify the value of a uniform variable for the current program object
                 glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+                glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, textures[i].id);
             }
 

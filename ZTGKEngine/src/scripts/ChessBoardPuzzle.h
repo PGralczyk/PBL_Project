@@ -81,7 +81,7 @@ public:
 				piece->isBeingMoved = false;
 				if (tileState[tileID] == 0)
 				{
-					piece->GetNode()->setTranslate(new glm::vec3(fields[tileID]->getTranslation().x,
+					piece->GetNode()->setTranslate(glm::vec3(fields[tileID]->getTranslation().x,
 						piece->GetNode()->getTranslation().y - 300.0f, fields[tileID]->getTranslation().z));
 					piece->SavePosition();
 					tileState[tileID] = 1;

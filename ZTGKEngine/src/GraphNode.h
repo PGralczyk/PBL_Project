@@ -207,15 +207,8 @@ public:
 		RenderTransform();
 	}
 
-	void setTranslate(glm::vec3* translate) {
-		translation = *translate;
-		RenderTransform();
-	}
-
 	void setTranslate(glm::vec3 translate) {
-		translation.x = translate.x;
-		translation.y = translate.y;
-		translation.z = translate.z;
+		translation = translate;
 		RenderTransform();
 	}
 

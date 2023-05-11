@@ -62,13 +62,13 @@ public:
 			isBeingMoved = false;
 			if (ApTime::instance().brightWorld)
 			{
-				node->setTranslate(new glm::vec3(brightWorldPosition.x,
+				node->setTranslate(glm::vec3(brightWorldPosition.x,
 					brightWorldPosition.y, brightWorldPosition.z));
 				node->isHoverable = true;
 			}
 			else
 			{
-				node->setTranslate(new glm::vec3(goalPosition.x,
+				node->setTranslate(glm::vec3(goalPosition.x,
 					goalPosition.y, goalPosition.z));
 				node->isHoverable = false;
 			}

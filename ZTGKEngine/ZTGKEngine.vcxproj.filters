@@ -98,6 +98,12 @@
     <ClInclude Include="src\scripts\ChandelierScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\scripts\GrowPlantScript.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\PlantPuzzleController.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blur.frag" />
