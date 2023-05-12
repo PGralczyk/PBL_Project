@@ -8,7 +8,7 @@
 class GraphNode;
 //WHAT IS THIS CLASS?
 //A test of implementing realtime script
-class ScalesBalance : public RealtimeScript {
+class SingleScaleScript : public RealtimeScript {
 private:
 	int* scalesPuzzleController;
 	bool isLeft;
@@ -17,7 +17,7 @@ private:
 
 public:
 	//Constructor, here assign all the fields from the private section
-	ScalesBalance(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9]) : RealtimeScript(nodePointer)
+	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9]) : RealtimeScript(nodePointer)
 	{
 		this->scalesPuzzleController = _scalesPuzzleController;
 		this->isLeft = _isLeft;
@@ -60,7 +60,7 @@ public:
 		}
 	}
 
-	~ScalesBalance() = default;
+	~SingleScaleScript() = default;
 
 	void OnMouseClicked()
 	{

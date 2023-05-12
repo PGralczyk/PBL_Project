@@ -26,6 +26,8 @@
 #include "../scripts/ChandelierScript.h";
 #include "../scripts/GrowPlantScript.h";
 #include "../scripts/PlantPuzzleController.h";
+#include "../scripts/SingleScaleScript.h";
+#include "../scripts/ScalesBalance.h";
 
 class SceneManager
 {
@@ -266,20 +268,41 @@ public:
 			Scene1Dark->AddChild(plantPuzzlePrizes);
 			plantPuzzlePrizes->AddChild(whiteKingActivator);
 			plantPuzzlePrizes->AddChild(blackKingActivator);
+			plantPuzzlePrizes->SetActive(false);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteQueen " << std::endl;
-			GraphNode* whiteQueen = CreateNode("res/models/krolowa_biala.fbx", defaultShader);
+			Model* _whiteQueen = new Model("res/models/krolowa_biala.fbx");
+			_whiteQueen->SetShader(defaultShader);
+			GraphNode* whiteQueen = new GraphNode(_whiteQueen, objectId++);
 			pieces[4] = new ChessPieceScript(whiteQueen, window);
 			whiteQueen->AddScript(pieces[4]);
 			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteQueen);
+			//****************
+			GraphNode* whiteQueenActivator = new GraphNode(_whiteQueen, objectId++);
+			whiteQueenActivator->AddScript(new OneTimeActivatorScript(whiteQueenActivator, whiteQueen));
+			whiteQueen->SetActive(false);
+			whiteQueenActivator->Scale(0.015f);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackQueen " << std::endl;
-			GraphNode* blackQueen = CreateNode("res/models/krolowa_czarna.fbx", defaultShader);
+			Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
+			_blackQueen->SetShader(defaultShader);
+			GraphNode* blackQueen = new GraphNode(_blackQueen, objectId++);
 			pieces[5] = new ChessPieceScript(blackQueen, window);
 			blackQueen->AddScript(pieces[5]);
 			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackQueen);
+			//****************
+			GraphNode* blackQueenActivator = new GraphNode(_blackQueen, objectId++);
+			blackQueenActivator->AddScript(new OneTimeActivatorScript(blackQueenActivator, blackQueen));
+			blackQueen->SetActive(false);
+			blackQueenActivator->Scale(0.015f);
+			//Parent for both king activators so that they can be activated at the same time
+			GraphNode* scalesPuzzlePrizes = new GraphNode();
+			Scene1Bright->AddChild(scalesPuzzlePrizes);
+			scalesPuzzlePrizes->AddChild(whiteQueenActivator);
+			scalesPuzzlePrizes->AddChild(blackQueenActivator);
+			scalesPuzzlePrizes->SetActive(false);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteKnight " << std::endl;
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
@@ -402,6 +425,13 @@ public:
 		UI->AddChild(bucket);
 		bucket->AddScript(new InventoryItemScript(bucket, "bucket", window));
 
+		//GraphNode* bucketEmpty = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		//	"", textureShader);
+		//bucketEmpty->Scale(0.5);
+		//bucketEmpty->Translate(glm::vec3(300, -200, 0));
+		//UI->AddChild(bucket);
+		//bucketEmpty->AddScript(new InventoryItemScript(bucketEmpty, "bucketEmpty", window));
+
 		//Scripting for obtaining objects to inventory
 		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, scissors, false, true);
 		drawer1Script->enabled = false;
@@ -411,7 +441,7 @@ public:
 
 		////PLANTS PUZZLE
 		//int puzzleState = 0;
-		//Model* _plant = new Model("res/models/roslina.png");
+		//Model* _plant = new Model("");
 		//_plant->SetShader(defaultShader);
 		//GraphNode* plant1 = new GraphNode(_plant, objectId++);
 		//Scene1Dark->AddChild(plant1);
@@ -441,6 +471,77 @@ public:
 		//Scene1Bright->AddChild(pod2b);
 		//GraphNode* pod3b = CreateNode("", defaultShader);
 		//Scene1Bright->AddChild(pod3b);
+
+
+
+		////SCALES PUZZLE
+		//GraphNode* scalesPlantLeft = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(scalesPlantLeft);
+		//GraphNode* scalesPlantRight = CreateNode("", defaultShader);
+		//Scene1Dark->AddChild(scalesPlantRight);
+
+		//GraphNode* ScalesPuzzle = new GraphNode();
+		//Scene1Bright->AddChild(ScalesPuzzle);
+
+		//GraphNode* staticScales = CreateNode("", defaultShader);
+		//ScalesPuzzle->AddChild(staticScales);
+		//GraphNode* rotatingScales = CreateNode("", defaultShader);
+		//ScalesPuzzle->AddChild(rotatingScales);
+		//GraphNode* leftScales = CreateNode("", defaultShader);
+		//ScalesPuzzle->AddChild(leftScales);
+		//GraphNode* rightScales = CreateNode("", defaultShader);
+		//ScalesPuzzle->AddChild(rightScales);
+
+		//Model* weight = new Model("");
+		//weight->SetShader(defaultShader);
+		//GraphNode* weight1l = new GraphNode(weight, objectId++);
+		//leftScales->AddChild(weight1l);
+		//GraphNode* weight2l = new GraphNode(weight, objectId++);
+		//leftScales->AddChild(weight2l);
+		//GraphNode* weight3l = new GraphNode(weight, objectId++);
+		//leftScales->AddChild(weight3l);
+		//GraphNode* weight1r = new GraphNode(weight, objectId++);
+		//rightScales->AddChild(weight1r);
+		//GraphNode* weight2r = new GraphNode(weight, objectId++);
+		//rightScales->AddChild(weight2r);
+		//GraphNode* weight3r = new GraphNode(weight, objectId++);
+		//rightScales->AddChild(weight3r);
+
+		//GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		//weight1->Scale(0.5);
+		//weight1->Translate(glm::vec3(450, -200, 0));
+		//UI->AddChild(weight1);
+		//weight1->AddScript(new InventoryItemScript(weight1, "weight3", window));
+
+		//GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		//	"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		//weight2->Scale(0.5);
+		//weight2->Translate(glm::vec3(600, -200, 0));
+		//UI->AddChild(weight2);
+		//weight2->AddScript(new InventoryItemScript(weight2, "weight2", window));
+
+		//GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		//	"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		//weight3->Scale(0.5);
+		//weight3->Translate(glm::vec3(750, -200, 0));
+		//UI->AddChild(weight3);
+		//weight3->AddScript(new InventoryItemScript(weight3, "weight5", window));
+
+		//GraphNode* scalesTab[9];
+		//scalesTab[0] = weight1l;
+		//scalesTab[1] = weight2l;
+		//scalesTab[2] = weight3l;
+		//scalesTab[3] = weight1r;
+		//scalesTab[4] = weight2r;
+		//scalesTab[5] = weight3r;
+		//scalesTab[6] = weight1;
+		//scalesTab[7] = weight2;
+		//scalesTab[8] = weight3;
+
+		//int scalesPuzzleController = 0;
+		//rotatingScales->AddScript(new ScalesBalance(rotatingScales, &scalesPuzzleController, scalesPuzzlePrizes));
+		//leftScales->AddScript(new SingleScaleScript(leftScales, &scalesPuzzleController, true, scalesTab));
+		//rightScales->AddScript(new SingleScaleScript(rightScales, &scalesPuzzleController, false, scalesTab));
 	}
 
 	void PostProcessSetup()

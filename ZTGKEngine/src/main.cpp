@@ -240,7 +240,6 @@ int main(void)
         ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
         //Saving id of the currently picked object
         currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
-        std::cout << "Currently picked: " << currentlyPicked << std::endl;
 
         //Whenever mouse i button isn't pressed we make sure that the next frame it's pressed
         //it will be a single click. Later on, after that dirst frame singleClick is set to false,
@@ -280,8 +279,8 @@ int main(void)
         //glStencilMask(0xFF);
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
-        sceneManager.BlurRender(&blurShader, &mixShader, currentlyPicked);
-        //sceneManager.Render(currentlyPicked);
+        //sceneManager.BlurRender(&blurShader, &mixShader, currentlyPicked);
+        sceneManager.Render(currentlyPicked);
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);

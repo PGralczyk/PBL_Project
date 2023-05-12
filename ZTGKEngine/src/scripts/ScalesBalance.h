@@ -9,6 +9,7 @@ class GraphNode;
 //WHAT IS THIS CLASS?
 //A test of implementing realtime script
 class ScalesBalance : public RealtimeScript {
+
 private:
 	int* scalesPuzzleController;
 	int rotateStatus;
