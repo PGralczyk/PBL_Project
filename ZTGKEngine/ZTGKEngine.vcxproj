@@ -158,6 +158,8 @@
     <ClInclude Include="src\scripts\OneTimeActivatorScript.h" />
     <ClInclude Include="src\managers\SceneManager.h" />
     <ClInclude Include="src\scripts\PlantPuzzleController.h" />
+    <ClInclude Include="src\scripts\ScalesBalance.h" />
+    <ClInclude Include="src\scripts\SingleScaleScript.h" />
     <ClInclude Include="src\UI\ApRectangle.h" />
     <ClInclude Include="src\UI\Primitive.h" />
     <ClInclude Include="src\Camera.h" />

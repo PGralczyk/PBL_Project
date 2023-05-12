@@ -255,7 +255,7 @@ int main(void)
         processInput(window);
 
         /* Render here */
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         sceneManager.Update(currentlyPicked, singleClick, isHoldingMouseButton);
 
@@ -281,6 +281,7 @@ int main(void)
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
         sceneManager.BlurRender(&blurShader, &mixShader, currentlyPicked);
+        //sceneManager.Render(currentlyPicked);
         //recTex.Draw();
         texOffset += 0.1 * ApTime::instance().deltaTime;
         glDepthFunc(GL_ALWAYS);
