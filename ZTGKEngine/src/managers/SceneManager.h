@@ -404,6 +404,76 @@ public:
 		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright));
 
 
+		//--------------------------------FLOWERS-AND-THE-REST----------------------------
+		GraphNode* RedFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_czerwony.fbx", defaultShader);
+		RedFlower->Scale(0.1f);
+		RedFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(RedFlower);
+
+		GraphNode* RedPot = CreateNode("res/models/zagadka_kwiaty/donica_czerwona.fbx", defaultShader);
+		RedPot->Scale(0.1f);
+		RedPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(RedPot);
+
+		GraphNode* RedStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_czerwona.fbx", defaultShader);
+		RedStripes->Scale(0.1f);
+		RedStripes->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(RedStripes);
+
+
+		GraphNode* BlueFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_niebieski.fbx", defaultShader);
+		BlueFlower->Scale(0.1f);
+		BlueFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(BlueFlower);
+
+		GraphNode* BluePot = CreateNode("res/models/zagadka_kwiaty/donica_niebieska.fbx", defaultShader);
+		BluePot->Scale(0.1f);
+		BluePot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(BluePot);
+
+		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
+		BlueStripes->Scale(0.1f);
+		BlueStripes->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(BlueStripes);
+
+
+		GraphNode* GreenFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_zielony.fbx", defaultShader);
+		GreenFlower->Scale(0.1f);
+		GreenFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(GreenFlower);
+
+		GraphNode* GreenPot = CreateNode("res/models/zagadka_kwiaty/donica_zielona.fbx", defaultShader);
+		GreenPot->Scale(0.1f);
+		GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(GreenPot);
+
+		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
+		GreenStripes->Scale(0.1f);
+		GreenStripes->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(GreenStripes);
+
+
+		GraphNode* WhiteFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_bialy.fbx", defaultShader);
+		WhiteFlower->Scale(0.1f);
+		WhiteFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(WhiteFlower);
+
+		GraphNode* WhitePot = CreateNode("res/models/zagadka_kwiaty/donica_kolorowaa.fbx", defaultShader);
+		WhitePot->Scale(0.1f);
+		WhitePot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(WhitePot);
+
+
+		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
+		Tap->Scale(0.1f);
+		Tap->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(Tap);
+
+		GraphNode* WaterBucket = CreateNode("res/models/zagadka_kwiaty/konewka.fbx", defaultShader);
+		WaterBucket->Scale(0.1f);
+		WaterBucket->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Scene1Dark->AddChild(WaterBucket);
+
 		//--------------------------------UI-AND-INVENTORY--------------------------------
 		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/gui_panel.png", textureShader);
