@@ -422,7 +422,7 @@ public:
 		RedPot->Scale(0.1f);
 		RedPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(RedPot);
-		RedPot->AddScript(new GrowPlantScript(RedPot, 4, puzzleState, RedFlower));
+		RedPot->AddScript(new GrowPlantScript(RedPot, 3, puzzleState, RedFlower));
 
 		GraphNode* RedStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_czerwona.fbx", defaultShader);
 		RedStripes->Scale(0.1f);
@@ -439,7 +439,7 @@ public:
 		BluePot->Scale(0.1f);
 		BluePot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(BluePot);
-		BluePot->AddScript(new GrowPlantScript(BluePot, 2, puzzleState, BlueFlower));
+		BluePot->AddScript(new GrowPlantScript(BluePot, 4, puzzleState, BlueFlower));
 
 		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
 		BlueStripes->Scale(0.1f);
@@ -456,7 +456,7 @@ public:
 		GreenPot->Scale(0.1f);
 		GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(GreenPot);
-		GreenPot->AddScript(new GrowPlantScript(GreenPot, 3, puzzleState, GreenFlower));
+		GreenPot->AddScript(new GrowPlantScript(GreenPot, 2, puzzleState, GreenFlower));
 
 		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
 		GreenStripes->Scale(0.1f);
