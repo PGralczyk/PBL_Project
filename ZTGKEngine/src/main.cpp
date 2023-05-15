@@ -133,6 +133,7 @@ int main(void)
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
     sceneManager.outlineShader = &outlineShader;
+    sceneManager.singleClick = &singleClick;
 
     sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 

@@ -14,6 +14,7 @@ private:
 	string elementId = "";
 	GLFWwindow* window;	
 	glm::vec3 oryginalPosition;
+	bool* singleClick;
 
 public:
 	void Start()
@@ -23,10 +24,11 @@ public:
 		oryginalPosition.z = node->getTranslation().z;
 	}
 
-	InventoryItemScript(GraphNode* nodePointer, string elementId_, GLFWwindow* windowNode) : RealtimeScript(nodePointer)
+	InventoryItemScript(GraphNode* nodePointer, string elementId_, GLFWwindow* windowNode, bool* _singleClick) : RealtimeScript(nodePointer)
 	{
 		this->elementId = elementId_;
 		this->window = windowNode;
+		singleClick = _singleClick;
 	}
 
 	void Update()
@@ -37,6 +39,11 @@ public:
 			node->setTranslate(oryginalPosition);
 		}
 		else if (ApTime::instance().pickedElementId != elementId) {
+			node->setTranslate(oryginalPosition);
+		}
+		else if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_LEFT) && *singleClick && ApTime::instance().pickedElementId == elementId)
+		{
+			ApTime::instance().pickedElementId = "";
 			node->setTranslate(oryginalPosition);
 		}
 	}

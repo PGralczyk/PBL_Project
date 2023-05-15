@@ -28,6 +28,9 @@
 #include "../scripts/PlantPuzzleController.h";
 #include "../scripts/SingleScaleScript.h";
 #include "../scripts/ScalesBalance.h";
+#include "../scripts/PlantPuzzleController.h";
+#include "../scripts/GrowPlantScript.h";
+#include "../scripts/CraneScript.h";
 
 class SceneManager
 {
@@ -52,6 +55,7 @@ public:
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
 	unsigned int rbo;
+	bool* singleClick;
 
 	SceneManager() {};
 	~SceneManager()
@@ -249,6 +253,7 @@ public:
 			whiteKingActivator->AddScript(new OneTimeActivatorScript(whiteKingActivator, whiteKing));
 			whiteKing->SetActive(false);
 			whiteKingActivator->Scale(0.015f);
+			whiteKingActivator->Translate(glm::vec3(20.0f, 73.0f, -123.0f));
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackKing " << std::endl;
 			Model* _blackKing = new Model("res/models/krol_czarny.fbx");
@@ -259,13 +264,13 @@ public:
 			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackKing);
 			//****************
-			GraphNode* blackKingActivator = new GraphNode(_whiteKing, objectId++);
+			GraphNode* blackKingActivator = new GraphNode(_blackKing, objectId++);
 			blackKingActivator->AddScript(new OneTimeActivatorScript(blackKingActivator, blackKing));
 			blackKing->SetActive(false);
 			blackKingActivator->Scale(0.015f);
+			blackKingActivator->Translate(glm::vec3(20.0f, 73.0f, -126.0f));
 			//Parent for both king activators so that they can be activated at the same time
 			GraphNode* plantPuzzlePrizes = new GraphNode();
-			Scene1Dark->AddChild(plantPuzzlePrizes);
 			plantPuzzlePrizes->AddChild(whiteKingActivator);
 			plantPuzzlePrizes->AddChild(blackKingActivator);
 			plantPuzzlePrizes->SetActive(false);
@@ -405,15 +410,19 @@ public:
 
 
 		//--------------------------------FLOWERS-AND-THE-REST----------------------------
+		int* puzzleState = new int;
+		*puzzleState = 0;
+
 		GraphNode* RedFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_czerwony.fbx", defaultShader);
 		RedFlower->Scale(0.1f);
-		RedFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		RedFlower->Translate(glm::vec3(10.0f, -20.0f, -5.0f));
 		Scene1Dark->AddChild(RedFlower);
 
 		GraphNode* RedPot = CreateNode("res/models/zagadka_kwiaty/donica_czerwona.fbx", defaultShader);
 		RedPot->Scale(0.1f);
 		RedPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
-		Scene1Dark->AddChild(RedPot);
+		Scene1Bright->AddChild(RedPot);
+		RedPot->AddScript(new GrowPlantScript(RedPot, 4, puzzleState, RedFlower));
 
 		GraphNode* RedStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_czerwona.fbx", defaultShader);
 		RedStripes->Scale(0.1f);
@@ -423,13 +432,14 @@ public:
 
 		GraphNode* BlueFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_niebieski.fbx", defaultShader);
 		BlueFlower->Scale(0.1f);
-		BlueFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		BlueFlower->Translate(glm::vec3(10.0f, -20.0f, -5.0f));
 		Scene1Dark->AddChild(BlueFlower);
 
 		GraphNode* BluePot = CreateNode("res/models/zagadka_kwiaty/donica_niebieska.fbx", defaultShader);
 		BluePot->Scale(0.1f);
 		BluePot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
-		Scene1Dark->AddChild(BluePot);
+		Scene1Bright->AddChild(BluePot);
+		BluePot->AddScript(new GrowPlantScript(BluePot, 2, puzzleState, BlueFlower));
 
 		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
 		BlueStripes->Scale(0.1f);
@@ -439,13 +449,14 @@ public:
 
 		GraphNode* GreenFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_zielony.fbx", defaultShader);
 		GreenFlower->Scale(0.1f);
-		GreenFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		GreenFlower->Translate(glm::vec3(10.0f, -20.0f, -5.0f));
 		Scene1Dark->AddChild(GreenFlower);
 
 		GraphNode* GreenPot = CreateNode("res/models/zagadka_kwiaty/donica_zielona.fbx", defaultShader);
 		GreenPot->Scale(0.1f);
 		GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
-		Scene1Dark->AddChild(GreenPot);
+		Scene1Bright->AddChild(GreenPot);
+		GreenPot->AddScript(new GrowPlantScript(GreenPot, 3, puzzleState, GreenFlower));
 
 		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
 		GreenStripes->Scale(0.1f);
@@ -456,23 +467,20 @@ public:
 		GraphNode* WhiteFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_bialy.fbx", defaultShader);
 		WhiteFlower->Scale(0.1f);
 		WhiteFlower->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
-		Scene1Dark->AddChild(WhiteFlower);
+		plantPuzzlePrizes->AddChild(WhiteFlower);
 
 		GraphNode* WhitePot = CreateNode("res/models/zagadka_kwiaty/donica_kolorowaa.fbx", defaultShader);
 		WhitePot->Scale(0.1f);
 		WhitePot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Dark->AddChild(WhitePot);
+		WhitePot->AddScript(new PlantPuzzleController(WhitePot, puzzleState, plantPuzzlePrizes));
+		Scene1Dark->AddChild(plantPuzzlePrizes);
 
 
 		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
 		Tap->Scale(0.1f);
 		Tap->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Dark->AddChild(Tap);
-
-		GraphNode* WaterBucket = CreateNode("res/models/zagadka_kwiaty/konewka.fbx", defaultShader);
-		WaterBucket->Scale(0.1f);
-		WaterBucket->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
-		Scene1Dark->AddChild(WaterBucket);
 
 		//--------------------------------UI-AND-INVENTORY--------------------------------
 		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
@@ -485,29 +493,39 @@ public:
 		UI->AddChild(scissors);
 		scissors->Scale(0.75);
 		scissors->Translate(glm::vec3(-50, -250, 0));
-		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window));
+		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window, singleClick));
 		scissors->SetActive(false);
 
 		GraphNode* bucket = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		bucket->Scale(0.5);
-		bucket->Translate(glm::vec3(300, -200, 0));
+			"res/models/bucket_water.png", textureShader);
+		bucket->Scale(0.75);
+		bucket->Translate(glm::vec3(70, 40, 0));
 		UI->AddChild(bucket);
-		bucket->AddScript(new InventoryItemScript(bucket, "bucket", window));
+		bucket->AddScript(new InventoryItemScript(bucket, "bucket", window, singleClick));
+		bucket->SetActive(false);
 
-		//GraphNode* bucketEmpty = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-		//	"", textureShader);
-		//bucketEmpty->Scale(0.5);
-		//bucketEmpty->Translate(glm::vec3(300, -200, 0));
-		//UI->AddChild(bucket);
-		//bucketEmpty->AddScript(new InventoryItemScript(bucketEmpty, "bucketEmpty", window));
+		GraphNode* bucketEmpty = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/bucket_empty.png", textureShader);
+		bucketEmpty->Scale(0.75);
+		bucketEmpty->Translate(glm::vec3(70, 40, 0));
+		UI->AddChild(bucketEmpty);
+		bucketEmpty->AddScript(new InventoryItemScript(bucketEmpty, "bucketEmpty", window, singleClick));
+		bucketEmpty->SetActive(false);
+
+		Tap->AddScript(new CraneScript(Tap, bucketEmpty, bucket));
 
 		//Scripting for obtaining objects to inventory
 		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, scissors, false, true);
 		drawer1Script->enabled = false;
 		drawer1MovableSegment->AddScript(drawer1Script);
 		drawer1MovableSegment->isHoverable = false;
-		puzzle->SetPrizes(drawer1Script);
+
+		OneTimeActivatorScript* drawer2Script = new OneTimeActivatorScript(drawer2MovableSegment, bucketEmpty, false, true);
+		drawer2Script->enabled = false;
+		drawer2MovableSegment->AddScript(drawer2Script);
+		drawer2MovableSegment->isHoverable = false;
+
+		puzzle->SetPrizes(drawer1Script, drawer2Script);
 
 		////PLANTS PUZZLE
 		//int puzzleState = 0;

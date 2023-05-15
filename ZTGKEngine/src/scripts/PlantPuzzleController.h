@@ -18,6 +18,7 @@ public:
 	{
 		puzzleState = _puzzleState;
 		prizes = _prizes;
+		node->isHoverable = false;
 	}
 
 	~PlantPuzzleController() = default;
@@ -26,7 +27,6 @@ public:
 	{
 		if (*puzzleState == 3)
 		{
-			node->Translate(glm::vec3(0.0f, 600.0f, 0.0f));
 			prizes->SetActive(true);
 			enabled = false;
 		}

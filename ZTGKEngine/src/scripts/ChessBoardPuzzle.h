@@ -44,9 +44,10 @@ public:
 		}
 	}
 
-	void SetPrizes(OneTimeActivatorScript* givenPrize1)
+	void SetPrizes(OneTimeActivatorScript* givenPrize1, OneTimeActivatorScript* givenPrize2)
 	{
 		prize1 = givenPrize1;
+		prize2 = givenPrize2;
 	}
 
 	void Start()
@@ -111,7 +112,7 @@ public:
 				correctPieces++;
 			}
 		}
-		if (correctPieces == 1 and phase < 1)
+		if (correctPieces == 4 && phase < 1)
 		{
 			phase++;
 			if (prize1 != NULL)
@@ -119,6 +120,26 @@ public:
 				prize1->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
 				prize1->GetNode()->isHoverable = true;
 				prize1->enabled = true;
+			}
+		}
+		else if (correctPieces == 6 && phase < 2)
+		{
+			phase++;
+			if (prize2 != NULL)
+			{
+				prize2->GetNode()->Translate(glm::vec3(400.0f, 0.0f, 0.0f));
+				prize2->GetNode()->isHoverable = true;
+				prize2->enabled = true;
+			}
+		}
+		else if (correctPieces == 8 && phase < 3)
+		{
+			phase++;
+			if (prize3 != NULL)
+			{
+				prize3->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
+				prize3->GetNode()->isHoverable = true;
+				prize3->enabled = true;
 			}
 		}
 	}
