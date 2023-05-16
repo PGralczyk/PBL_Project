@@ -41,6 +41,10 @@ void main()
     // attenuation
         float distance    = length(pointLightPos - FragPos);
         float attenuation = 1.0 / (LightConstant + LightLinear * distance + LightQuadratic * (distance * distance)); 
+        if(pointLightColor.r < 0.5)
+        {
+            attenuation *= 0.8;
+        }
 
         ambient  *= attenuation;  
         specular *= attenuation;

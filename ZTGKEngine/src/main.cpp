@@ -51,7 +51,7 @@ SceneManager sceneManager;
 struct PLight {
     glm::vec3 position = { 0.4f, 0.5f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
-    float color2[3] = { 0.70f, 1.0f, 1.0f };
+    float color2[3] = { 0.40f, 1.0f, 1.0f };
 
     float constant;
     float linear;
@@ -169,6 +169,8 @@ int main(void)
     sceneManager.textureShader = &primitiveTextureShader;
     sceneManager.outlineShader = &outlineShader;
     sceneManager.singleClick = &singleClick;
+
+    ApTime::instance().isEasyMode = true;
 
     sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 

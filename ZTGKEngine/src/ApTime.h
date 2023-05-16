@@ -33,6 +33,7 @@ public:
 	string pickedElementId = "";
 	bool brightWorld = true;
 	bool isChessPosition = false;
+	bool isEasyMode = false;
 
 	//Updates each frame
 	void Update()

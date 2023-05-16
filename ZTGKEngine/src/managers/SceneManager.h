@@ -236,7 +236,8 @@ public:
 			//Below is a parent for two pawn activators, so that they can be activated together
 			GraphNode* chandelierPrizes = new GraphNode();
 			Scene1Bright->AddChild(chandelierPrizes);
-			chandelierPrizes->AddChild(blackPawnActivator);
+			if(ApTime::instance().isEasyMode == false)
+				chandelierPrizes->AddChild(blackPawnActivator);
 			chandelierPrizes->AddChild(whitePawnActivator);
 			chandelierPrizes->SetActive(false);
 			//------------------------------------------------------------------------
@@ -272,7 +273,8 @@ public:
 			//Parent for both king activators so that they can be activated at the same time
 			GraphNode* plantPuzzlePrizes = new GraphNode();
 			plantPuzzlePrizes->AddChild(whiteKingActivator);
-			plantPuzzlePrizes->AddChild(blackKingActivator);
+			if (ApTime::instance().isEasyMode == false)
+				plantPuzzlePrizes->AddChild(blackKingActivator);
 			plantPuzzlePrizes->SetActive(false);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteQueen " << std::endl;
@@ -283,11 +285,6 @@ public:
 			whiteQueen->AddScript(pieces[4]);
 			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteQueen);
-			//****************
-			GraphNode* whiteQueenActivator = new GraphNode(_whiteQueen, objectId++);
-			whiteQueenActivator->AddScript(new OneTimeActivatorScript(whiteQueenActivator, whiteQueen));
-			whiteQueen->SetActive(false);
-			whiteQueenActivator->Scale(0.015f);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: blackQueen " << std::endl;
 			Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
@@ -296,18 +293,8 @@ public:
 			pieces[5] = new ChessPieceScript(blackQueen, window);
 			blackQueen->AddScript(pieces[5]);
 			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackQueen);
-			//****************
-			GraphNode* blackQueenActivator = new GraphNode(_blackQueen, objectId++);
-			blackQueenActivator->AddScript(new OneTimeActivatorScript(blackQueenActivator, blackQueen));
-			blackQueen->SetActive(false);
-			blackQueenActivator->Scale(0.015f);
-			//Parent for both king activators so that they can be activated at the same time
-			GraphNode* scalesPuzzlePrizes = new GraphNode();
-			Scene1Bright->AddChild(scalesPuzzlePrizes);
-			scalesPuzzlePrizes->AddChild(whiteQueenActivator);
-			scalesPuzzlePrizes->AddChild(blackQueenActivator);
-			scalesPuzzlePrizes->SetActive(false);
+			if (ApTime::instance().isEasyMode == false)
+				ChessMainObject->AddChild(blackQueen);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteKnight " << std::endl;
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
@@ -321,7 +308,8 @@ public:
 			pieces[7] = new ChessPieceScript(blackKnight, window);
 			blackKnight->AddScript(pieces[7]);
 			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackKnight);
+			if (ApTime::instance().isEasyMode == false)
+				ChessMainObject->AddChild(blackKnight);
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteRook " << std::endl;
 			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
@@ -335,7 +323,8 @@ public:
 			pieces[9] = new ChessPieceScript(blackRook, window);
 			blackRook->AddScript(pieces[9]);
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackRook);
+			if (ApTime::instance().isEasyMode == false)
+				ChessMainObject->AddChild(blackRook);
 		//-----------------------------Creating-Puzzle----------------------------
 		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles, pieces, window);
 		ChessMainObject->AddScript(puzzle);

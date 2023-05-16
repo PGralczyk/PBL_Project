@@ -25,6 +25,7 @@ private:
 	OneTimeActivatorScript* prize2;
 	OneTimeActivatorScript* prize3;
 	GLFWwindow* window;
+	float solutionMultiplyer = 1;
 
 public:
 
@@ -71,6 +72,11 @@ public:
 		{
 			tileState[i] = 0;
 		}
+
+		if (ApTime::instance().isEasyMode)
+		{
+			solutionMultiplyer /= 2;
+		}
 	}
 
 	~ChessBoardPuzzle() = default;
@@ -114,7 +120,7 @@ public:
 				correctPieces++;
 			}
 		}
-		if (correctPieces == 4 && phase < 1)
+		if (correctPieces == 6 * solutionMultiplyer && phase < 1)
 		{
 			phase++;
 			if (prize1 != NULL)
@@ -124,7 +130,7 @@ public:
 				prize1->enabled = true;
 			}
 		}
-		else if (correctPieces == 6 && phase < 2)
+		else if (correctPieces == 8 * solutionMultiplyer && phase < 2)
 		{
 			phase++;
 			if (prize2 != NULL)
@@ -134,7 +140,7 @@ public:
 				prize2->enabled = true;
 			}
 		}
-		else if (correctPieces == 8 && phase < 3)
+		else if (correctPieces == 10 * solutionMultiplyer && phase < 3)
 		{
 			phase++;
 			if (prize3 != NULL)
@@ -177,7 +183,7 @@ public:
 					piece->GetNode()->Translate(glm::vec3(0.0f, -300.0f, 0.0f));
 				}
 			}
-			ApTime::instance().isChessPosition = false;
+			ApTime::instance().isChessPosition = false; 
 		}
 	}
 
