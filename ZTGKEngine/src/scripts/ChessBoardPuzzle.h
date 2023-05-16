@@ -24,11 +24,12 @@ private:
 	OneTimeActivatorScript* prize1;
 	OneTimeActivatorScript* prize2;
 	OneTimeActivatorScript* prize3;
+	GLFWwindow* window;
 
 public:
 
 	//Constructor, here assign all the fields from the private section
-	ChessBoardPuzzle(GraphNode* nodePointer, GraphNode* givenFields[64], ChessPieceScript* givenPieces[10]) : RealtimeScript(nodePointer)
+	ChessBoardPuzzle(GraphNode* nodePointer, GraphNode* givenFields[64], ChessPieceScript* givenPieces[10], GLFWwindow* _window) : RealtimeScript(nodePointer)
 	{
 		for (int i = 0; i < 64; i++)
 		{
@@ -42,6 +43,7 @@ public:
 		{
 			tile = 0;
 		}
+		window = _window;
 	}
 
 	void SetPrizes(OneTimeActivatorScript* givenPrize1, OneTimeActivatorScript* givenPrize2)
@@ -165,7 +167,18 @@ public:
 				}
 			}
 		}
-
+		if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_RIGHT))
+		{
+			for (ChessPieceScript* piece : pieces)
+			{
+				if (piece->isBeingMoved)
+				{
+					piece->isBeingMoved = false;
+					piece->GetNode()->Translate(glm::vec3(0.0f, -300.0f, 0.0f));
+				}
+			}
+			ApTime::instance().isChessPosition = false;
+		}
 	}
 
 };

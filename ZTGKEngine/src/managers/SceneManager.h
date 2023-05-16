@@ -337,7 +337,7 @@ public:
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackRook);
 		//-----------------------------Creating-Puzzle----------------------------
-		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles, pieces);
+		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles, pieces, window);
 		ChessMainObject->AddScript(puzzle);
 		//-----------------------------Binding-Scripts----------------------------
 		for (int i = 0; i < 64; i++)

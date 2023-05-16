@@ -17,7 +17,7 @@ bool isMouseActive = false;
 unsigned int SCR_WIDTH = 1900;
 unsigned int SCR_HEIGHT = 1000;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.75f, 0.5f, 0.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 float texOffset = 0;
@@ -59,8 +59,43 @@ struct PLight {
 
 } pointLight;
 
+struct CameraPosition {
+    glm::vec3 position;
+    glm::mat4 projection;
+    glm::mat4 view;
+
+
+} defaultCameraPosition, chessCameraPosition;
+
+
+//MAIN
 int main(void)
 {
+    defaultCameraPosition.position = { 0.97314, 0.423791, -0.04889 };
+    defaultCameraPosition.projection = glm::mat4(
+        1.27064, 0, 0, 0,
+        0, 2.41421, 0, 0,
+        0, 0, -1.002, -1,
+        0, 0, -0.2002, 0);
+    defaultCameraPosition.view = glm::mat4(
+        -0.00174269, -0.292371, 0.956303, 0,
+        -3.49246e-10, 0.956305, 0.292372, 0,
+        -0.999999, 0.000509512, -0.00166654, 0,
+        -0.0471941, -0.12073, -1.0546, 1);
+
+    chessCameraPosition.position = { 0.223529, 0.426999, 0.0527502 };
+    chessCameraPosition.projection = glm::mat4(
+        1.27064, 0, 0, 0,
+        0, 2.41421, 0, 0,
+        0, 0, -1.002, -1,
+        0, 0, -0.2002, 0);
+    chessCameraPosition.view = glm::mat4(
+        0.0157156, -0.890102, 0.45549, 0,
+        0, 0.455546, 0.890212, 0,
+        -0.999877, -0.0139902, 0.00715917, 0,
+        0.0492308, 0.00518422, -0.482313, 1);
+
+
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -153,20 +188,50 @@ int main(void)
         //Counting new deltaTime
         ApTime::instance().Update();
 
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection, view;
+        if(!ApTime::instance().isChessPosition)
+        {
+            projection = defaultCameraPosition.projection;
+            view = defaultCameraPosition.view;
+            camera.Position = defaultCameraPosition.position;
+
+        }
+        else
+        {
+            projection = chessCameraPosition.projection;
+            view = chessCameraPosition.view;
+            camera.Position = chessCameraPosition.position;
+        }
+        //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        //glm::mat4 view = camera.GetViewMatrix();
+
+   /*     std::cout << "Projection:\n";
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                std::cout  << projection[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "---------------------------------------------------------------\n";
+        std::cout << "View:\n";
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                std::cout << view[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "---------------------------------------------------------------\n";
+        std::cout << "Position:\n";
+        std::cout << camera.Position.x << " " << camera.Position.y << " " << camera.Position.z << "\n";*/
+        
 
         glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
         glm::mat4 viewPrimitive = glm::mat4(1.0);
 
-        glm::vec3 newCastedRay = rayCast(window, projection, view);
-        if (castedRay != newCastedRay)
-        {
-            castedRay = newCastedRay;
-            //std::cout << "X: " << castedRay.x << "   ";
-            //std::cout << "Y: " << castedRay.y << "   ";
-            //std::cout << "Z: " << castedRay.y << std::endl;
-        }
 
         outlineShader.use();
         outlineShader.setMat4("projection", projection);
@@ -365,14 +430,14 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS && oldMouseButtonState == GLFW_RELEASE) {
         if (isMouseActive) {
@@ -418,13 +483,13 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    //camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
+    //camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view)

@@ -28,19 +28,22 @@ public:
 
 	void OnMouseClicked()
 	{
-		other->SetActive(true);
-		if (otherOther != NULL)
+		if (!ApTime::instance().isChessPosition)
 		{
-			otherOther->SetActive(true);
-		}
-		if (shouldDisappear)
-		{
-			node->SetActive(false);
-		}
-		else if (shouldDeactivate)
-		{
-			enabled = false;
-			node->isHoverable = false;
+			other->SetActive(true);
+			if (otherOther != NULL)
+			{
+				otherOther->SetActive(true);
+			}
+			if (shouldDisappear)
+			{
+				node->SetActive(false);
+			}
+			else if (shouldDeactivate)
+			{
+				enabled = false;
+				node->isHoverable = false;
+			}
 		}
 	}
 };

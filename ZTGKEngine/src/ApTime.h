@@ -32,6 +32,7 @@ public:
 	float lastFrame = 0.0f;
 	string pickedElementId = "";
 	bool brightWorld = true;
+	bool isChessPosition = false;
 
 	//Updates each frame
 	void Update()

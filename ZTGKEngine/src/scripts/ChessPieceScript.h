@@ -39,13 +39,20 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (ApTime::instance().brightWorld)
+		if (ApTime::instance().isChessPosition)
 		{
-			if (!isBeingMoved)
+			if (ApTime::instance().brightWorld)
 			{
-				node->Translate(glm::vec3(0.0f, 300.0f, 0.0f));
-				isBeingMoved = true;
+				if (!isBeingMoved)
+				{
+					node->Translate(glm::vec3(0.0f, 300.0f, 0.0f));
+					isBeingMoved = true;
+				}
 			}
+		}
+		else
+		{
+			ApTime::instance().isChessPosition = true;
 		}
 	}
 

@@ -30,7 +30,10 @@ public:
 
 	void OnMouseClicked()
 	{
-		boardReference->PlaceChessPiece(id);
+		if (ApTime::instance().isChessPosition)
+			boardReference->PlaceChessPiece(id);
+		else
+			ApTime::instance().isChessPosition = true;
 	}
 
 };
