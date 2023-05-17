@@ -36,4 +36,12 @@ public:
 			ApTime::instance().isChessPosition = true;
 	}
 
+	void Update()
+	{
+		if (ApTime::instance().currentPuzzleState == 2 && ApTime::instance().adviseWindow > 0 && boardReference->shouldBeEnlightened())
+		{
+			node->forceHover = true;
+		}
+	}
+
 };

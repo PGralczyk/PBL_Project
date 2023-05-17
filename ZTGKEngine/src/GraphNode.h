@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "ApTime.h"
 #include "./scripts/RealtimeScript.h"
 
 class GraphNode
@@ -34,6 +35,7 @@ protected:
 
 public:
 	bool isHoverable = true;
+	bool forceHover = false;
 
 	GraphNode(Model* m = NULL, unsigned int givenId = 0)
 	{
@@ -72,6 +74,13 @@ public:
 
 	void Update(unsigned int currentlyPicked, bool singleClick, GLFWwindow* window)
 	{
+		if (forceHover)
+		{
+			if (ApTime::instance().adviseWindow <= 0)
+			{
+				forceHover = false;
+			}
+		}
 		if (parent)
 		{
 			*worldTransform = *parent->worldTransform * (*transform);
@@ -129,8 +138,6 @@ public:
 					}
 				}
 			}
-
-
 			for (GraphNode* node : children)
 			{
 				node->Update(currentlyPicked, singleClick, window);
@@ -143,7 +150,7 @@ public:
 		{
 			if (model) {
 				model->setTransform(worldTransform);
-				model->Draw(currentlyPicked, objectId, isHoverable);
+				model->Draw(currentlyPicked, objectId, isHoverable, forceHover);
 			}
 
 			for (GraphNode* node : children)
@@ -253,5 +260,11 @@ public:
 	unsigned int GetObjectId()
 	{
 		return this->objectId;
+	}
+
+	void GiveAdvice()
+	{
+		this->forceHover = true;
+		ApTime::instance().adviseWindow = 5.0f;
 	}
 };

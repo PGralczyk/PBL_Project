@@ -46,4 +46,12 @@ public:
 			}
 		}
 	}
+
+	void Update()
+	{
+		if (ApTime::instance().adviseWindow > 0)
+		{
+			node->forceHover = true;
+		}
+	}
 };

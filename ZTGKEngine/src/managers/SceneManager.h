@@ -230,7 +230,7 @@ public:
 			GraphNode* blackPawnActivator = new GraphNode(_blackPawn, objectId++);
 			blackPawnActivator->AddScript(new OneTimeActivatorScript(blackPawnActivator, blackPawn));
 			blackPawn->SetActive(false);
-			blackPawnActivator->Translate(glm::vec3(10.0f, 4.0f, -70.0f));
+			blackPawnActivator->Translate(glm::vec3(14.0f, 4.0f, -64.0f));
 			blackPawnActivator->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 			blackPawnActivator->Scale(0.015f);
 			//Below is a parent for two pawn activators, so that they can be activated together
@@ -240,6 +240,7 @@ public:
 				chandelierPrizes->AddChild(blackPawnActivator);
 			chandelierPrizes->AddChild(whitePawnActivator);
 			chandelierPrizes->SetActive(false);
+			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 0.0f));
 			//------------------------------------------------------------------------
 			std::cout << "LOADING: whiteKing " << std::endl;
 			Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
@@ -421,7 +422,7 @@ public:
 
 		GraphNode* BlueFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_niebieski.fbx", defaultShader);
 		BlueFlower->Scale(0.1f);
-		BlueFlower->Translate(glm::vec3(45.0f, 0.0f, 0.0f));
+		BlueFlower->Translate(glm::vec3(45.0f, -20.0f, 0.0f));
 		Scene1Dark->AddChild(BlueFlower);
 
 		GraphNode* BluePot = CreateNode("res/models/zagadka_kwiaty/donica_niebieska.fbx", defaultShader);
@@ -515,40 +516,6 @@ public:
 		drawer2MovableSegment->isHoverable = false;
 
 		puzzle->SetPrizes(drawer1Script, drawer2Script);
-
-		////PLANTS PUZZLE
-		//int puzzleState = 0;
-		//Model* _plant = new Model("");
-		//_plant->SetShader(defaultShader);
-		//GraphNode* plant1 = new GraphNode(_plant, objectId++);
-		//Scene1Dark->AddChild(plant1);
-		//plant1->AddScript(new GrowPlantScript(plant1, 4, &puzzleState));
-		//GraphNode* plant2 = new GraphNode(_plant, objectId++);
-		//Scene1Dark->AddChild(plant2);
-		//plant2->AddScript(new GrowPlantScript(plant2, 2, &puzzleState));
-		//GraphNode* plant3 = new GraphNode(_plant, objectId++);
-		//Scene1Dark->AddChild(plant3);
-		//plant3->AddScript(new GrowPlantScript(plant3, 3, &puzzleState));
-		//GraphNode* finalPlant = CreateNode("", defaultShader);
-		//Scene1Dark->AddChild(finalPlant);
-		//finalPlant->AddScript(new PlantPuzzleController(finalPlant, &puzzleState, plantPuzzlePrizes));
-
-		//GraphNode* pod1 = CreateNode("", defaultShader);
-		//Scene1Dark->AddChild(pod1);
-		//GraphNode* pod2 = CreateNode("", defaultShader);
-		//Scene1Dark->AddChild(pod2);
-		//GraphNode* pod3 = CreateNode("", defaultShader);
-		//Scene1Dark->AddChild(pod3);
-		//GraphNode* bigPod = CreateNode("", defaultShader);
-		//Scene1Dark->AddChild(bigPod);
-
-		//GraphNode* pod1b = CreateNode("", defaultShader);
-		//Scene1Bright->AddChild(pod1b);
-		//GraphNode* pod2b = CreateNode("", defaultShader);
-		//Scene1Bright->AddChild(pod2b);
-		//GraphNode* pod3b = CreateNode("", defaultShader);
-		//Scene1Bright->AddChild(pod3b);
-
 
 
 		////SCALES PUZZLE

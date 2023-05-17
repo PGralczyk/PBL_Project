@@ -123,6 +123,7 @@ public:
 		if (correctPieces == 6 * solutionMultiplyer && phase < 1)
 		{
 			phase++;
+			ApTime::instance().currentPuzzleState = 3;
 			if (prize1 != NULL)
 			{
 				prize1->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
@@ -133,6 +134,7 @@ public:
 		else if (correctPieces == 8 * solutionMultiplyer && phase < 2)
 		{
 			phase++;
+			ApTime::instance().currentPuzzleState = 4;
 			if (prize2 != NULL)
 			{
 				prize2->GetNode()->Translate(glm::vec3(400.0f, 0.0f, 0.0f));
@@ -143,6 +145,7 @@ public:
 		else if (correctPieces == 10 * solutionMultiplyer && phase < 3)
 		{
 			phase++;
+			ApTime::instance().currentPuzzleState = 6;
 			if (prize3 != NULL)
 			{
 				prize3->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
@@ -185,6 +188,28 @@ public:
 			}
 			ApTime::instance().isChessPosition = false; 
 		}
+	}
+
+	bool shouldBeEnlightened()
+	{
+		unsigned int availablePieces = 0;
+		for (ChessPieceScript* piece : pieces)
+		{
+			if (piece->GetNode()->GetActive())
+			{
+				availablePieces++;
+			}
+		}
+		availablePieces -= 3;
+
+		for (ChessPieceScript* piece : pieces)
+		{
+			if (piece->goalPosition == piece->brightWorldPosition)
+			{
+				availablePieces--;
+			}
+		}
+		return (availablePieces > 0);
 	}
 
 };

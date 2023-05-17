@@ -77,5 +77,10 @@ public:
 			node->isHoverable = false;
 			enabled = false;
 		}
+
+		if (ApTime::instance().currentPuzzleState == 5 && ApTime::instance().adviseWindow > 0 && growthState != growthGoal)
+		{
+			node->forceHover = true;
+		}
 	}
 };

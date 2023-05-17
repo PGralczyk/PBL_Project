@@ -65,10 +65,10 @@ public:
     }
 
     //We simply draw every mesh using Mesh class functionality
-    void Draw(unsigned int currentlyPicked, unsigned int objectID, bool isHoverable)
+    void Draw(unsigned int currentlyPicked, unsigned int objectID, bool isHoverable, bool forceHover = false)
     {
         shader->use();
-        if (objectID !=0 && currentlyPicked == objectID && isHoverable)
+        if ((objectID !=0 && currentlyPicked == objectID && isHoverable) || forceHover)
         {
             shader->setBool("isHoovered", true);
         }

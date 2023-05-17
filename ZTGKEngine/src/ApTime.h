@@ -18,6 +18,15 @@ private:
 		float currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = (currentFrame - lastFrame) * timeRatio;
 		lastFrame = currentFrame;
+
+		if (adviseWindow > 0)
+		{
+			adviseWindow -= deltaTime;
+		}
+		else
+		{
+			adviseWindow = 0;
+		}
 	}
 
 	ApTime(){}
@@ -34,6 +43,14 @@ public:
 	bool brightWorld = true;
 	bool isChessPosition = false;
 	bool isEasyMode = false;
+
+	//Possible puzzle states:
+	//2 - show chess board,
+	//3 - show chandelier,
+	//4 - show crane,
+	//5 - show plants,
+	int currentPuzzleState = 2;
+	float adviseWindow = 0;
 
 	//Updates each frame
 	void Update()

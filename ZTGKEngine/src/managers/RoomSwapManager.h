@@ -17,6 +17,7 @@ private:
 	GLFWwindow* window;
 
 	bool keyPressed = false;
+	bool controlPressed = false;
 
 	bool *lightVersion;
 
@@ -44,6 +45,7 @@ public:
 		{
 			if (!keyPressed)
 			{
+				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
 				darkWorld->SetActive(!darkWorld->GetActive());
 				brightWorld->SetActive(!brightWorld->GetActive());
@@ -62,6 +64,24 @@ public:
 		else
 		{
 			keyPressed = false;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && ApTime::instance().isEasyMode)
+		{
+			if(!controlPressed)
+			{
+				controlPressed = true;
+				ApTime::instance().adviseWindow = 3.0f;
+			}
+		}
+		else
+		{
+			controlPressed = false;
+		}
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+		{
+			ApTime::instance().adviseWindow = 0.0f;
 		}
 	}
 };

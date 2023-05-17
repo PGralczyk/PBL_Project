@@ -27,6 +27,7 @@ public:
 	{
 		if (*puzzleState == 3)
 		{
+			ApTime::instance().currentPuzzleState = 2;
 			prizes->SetActive(true);
 			enabled = false;
 		}

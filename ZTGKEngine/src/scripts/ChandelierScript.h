@@ -34,6 +34,15 @@ public:
 			node->SetActive(false);
 			prize->SetActive(true);
 			ApTime::instance().pickedElementId = "";
+			ApTime::instance().currentPuzzleState = 2;
+		}
+	}
+
+	void Update()
+	{
+		if (ApTime::instance().currentPuzzleState == 3 && ApTime::instance().adviseWindow > 0)
+		{
+			node->forceHover = true;
 		}
 	}
 };

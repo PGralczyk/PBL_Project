@@ -35,8 +35,16 @@ public:
 			toBeDisabled->SetActive(false);
 			toBeEnabled->SetActive(true);
 			enabled = false;
+			ApTime::instance().currentPuzzleState = 5;
 		}
 	}
 
+	void Update()
+	{
+		if (ApTime::instance().currentPuzzleState == 4 && ApTime::instance().adviseWindow > 0)
+		{
+			node->forceHover = true;
+		}
+	}
 
 };
