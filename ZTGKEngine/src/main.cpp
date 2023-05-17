@@ -168,6 +168,8 @@ int main(void)
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
     sceneManager.outlineShader = &outlineShader;
+    sceneManager.blurShader = &blurShader;
+    sceneManager.mixShader = &mixShader;
     sceneManager.singleClick = &singleClick;
 
     ApTime::instance().isEasyMode = true;
@@ -175,9 +177,6 @@ int main(void)
     sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
-
-    sceneManager.PostProcessSetup();
-    
 
     float time = 0;
 

@@ -17,6 +17,7 @@
 #include "ApTime.h"
 #include "RoomSwapManager.h"
 #include "ClickPicker.h"
+#include "FadeOut.h"
 #include "../UI/ApRectangle.h"
 #include "../UI/Text.h"
 #include "../scripts/ChessBoardPuzzle.h";
@@ -37,6 +38,7 @@ class SceneManager
 private:
 	GraphNode* UI;
 	GLFWwindow* window;
+	FadeOut* fade;
 	bool* isBright;
 	int objectId = 1;
 	unsigned int* SCR_HEIGHT;
@@ -45,12 +47,16 @@ private:
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
 
+	bool engageSwap;
+
 public:
 	GraphNode* world;
 	Shader *lightShader;
 	Shader *defaultShader;
 	Shader* textureShader;
 	Shader* outlineShader;
+	Shader* blurShader;
+	Shader* mixShader;
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
@@ -70,12 +76,15 @@ public:
 		std::cout << "-----------------LOADING-GAME-----------------" << std::endl;
 		std::cout << "----------------------------------------------" << std::endl;
 		window = givenWindow;
+		engageSwap = false;
 		this->SCR_HEIGHT = SCR_HEIGHT;
 		this->SCR_WIDTH = SCR_WIDTH;
 		isBright = brightReference;
 		world = new GraphNode();
 		UI = new GraphNode();
+		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, textureShader);
 		Loading("res/models/everest.jpg");
+		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-DONE-----------------" << std::endl;
@@ -115,6 +124,9 @@ public:
 	void Render(unsigned int currentlyPicked)
 	{
 		world->Draw(currentlyPicked);
+		if (engageSwap) {
+			BlurRender(currentlyPicked);
+		}
 		glDepthFunc(GL_ALWAYS);
 		UI->Draw(currentlyPicked);
 		glDepthFunc(GL_LESS);
@@ -396,7 +408,7 @@ public:
 		Line->Translate(glm::vec3(20.0f, -10.0f, -10.0f));
 		Scene1Dark->AddChild(Line);
 
-		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright));
+		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright, &engageSwap));
 
 
 		//--------------------------------FLOWERS-AND-THE-REST----------------------------
@@ -651,7 +663,7 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void BlurRender(Shader* blurShader, Shader* mixShader, unsigned int currentlyPicked) { // for later when we have a specific object to render
+	void BlurRender(unsigned int currentlyPicked) { // for later when we have a specific object to render
 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -660,7 +672,7 @@ public:
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
-		RenderWithShader(*outlineShader, 0);
+		fade->Draw();
 		bool horizontal = true;
 		unsigned int amount = 10;
 		blurShader->use();
@@ -675,7 +687,7 @@ public:
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
-		Render(currentlyPicked);
+		world->Draw(currentlyPicked);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		mixShader->use();
@@ -749,6 +761,7 @@ private:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_ALWAYS);
 		loadScreen.Draw();
+		//fade->Draw();
 		glDisable(GL_BLEND);
 		glfwSwapBuffers(window);
 		glDepthFunc(GL_LESS);

@@ -113,7 +113,7 @@
     <ClInclude Include="src\scripts\CraneScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\AdviseManager.h">
+    <ClInclude Include="src\FadeOut.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
