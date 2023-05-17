@@ -170,7 +170,7 @@ int main(void)
     sceneManager.outlineShader = &outlineShader;
     sceneManager.singleClick = &singleClick;
 
-    ApTime::instance().isEasyMode = true;
+    ApTime::instance().isEasyMode = false;
 
     sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
