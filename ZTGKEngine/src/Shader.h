@@ -21,16 +21,19 @@ public:
     //Unsigned ints often used in GL as some kind of reference as ID
     unsigned int ID;
     // Constructor generates the shader on the fly, we pass path to vertex shader and fragment shader
-    Shader(const char* vertexPath, const char* fragmentPath)
+    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
     {
-        // 1. retrieve the vertex/fragment source code from filePath
+        // 1. retrieve the vertex/fragment/geometry source code from filePath
         std::string vertexCode;
         std::string fragmentCode;
+        std::string geometryCode;
         std::ifstream vShaderFile;
         std::ifstream fShaderFile;
+        std::ifstream gShaderFile;
         // Ensure ifstream objects can throw exceptions:
         vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try
         {
             // Open files
@@ -46,6 +49,16 @@ public:
             // Convert stream into string
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
+
+            // Same for geometry shader if present
+            if (geometryPath != nullptr)
+            {
+                gShaderFile.open(geometryPath);
+                std::stringstream gShaderStream;
+                gShaderStream << gShaderFile.rdbuf();
+                gShaderFile.close();
+                geometryCode = gShaderStream.str();
+            }
         }
         catch (std::ifstream::failure& e)
         {
@@ -71,6 +84,20 @@ public:
         //We attach both shaders to one shader program (we won't use them separately anyway)
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
+
+        // Same for geaometry shader if present
+        if (geometryPath != nullptr)
+        {
+            const char* gShaderCode = geometryCode.c_str();
+            unsigned int geometry;
+
+            geometry = glCreateShader(GL_GEOMETRY_SHADER);
+            glShaderSource(geometry, 1, &gShaderCode, NULL);
+            glCompileShader(geometry);
+            checkCompileErrors(geometry, "GEOMETRY");
+
+            glAttachShader(ID, geometry);
+        }
         
         glLinkProgram(ID);
         checkCompileErrors(ID, "PROGRAM");

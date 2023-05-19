@@ -3,50 +3,33 @@
 #include "./UI/ApRectangle.h"
 #include <thread>
 
-void stupid(int x, int y,int z) {};
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
 
-int oldMouseButtonState = GLFW_RELEASE;
-bool isMouseActive = false;
+int oldMouseButtonState = GLFW_RELEASE,
+    objectID = 1;
 
-unsigned int SCR_WIDTH = 1900;
-unsigned int SCR_HEIGHT = 1000;
+unsigned int SCR_WIDTH = 1900,
+             SCR_HEIGHT = 1000,
+             currentlyPicked = 0;
 
-Camera camera(glm::vec3(0.75f, 0.5f, 0.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-float texOffset = 0;
-bool firstMouse = true;
+float lastX = SCR_WIDTH / 2.0f,
+      lastY = SCR_HEIGHT / 2.0f,
+      texOffset = 0;
 
-bool lightVersion = true;
-
-bool isHoldingMouseButton = false;
-
-//rainbow anim----
-float r = 1.0f, g = 0.0f, b = 0.0f;
-float animSpeed = 1.5f;
-int animStage = 1;
-bool isRunning = true;
-glm::vec3 rainbowColor = { 1.0, 0.0, 0.0 };
-//----------------
-Text text;
+bool isMouseActive = false,
+     firstMouse = true,
+     lightVersion = true,
+     isHoldingMouseButton = false,
+     singleClick = true;
 
 glm::vec3 castedRay = glm::vec3(1);
-
 ClickPicker picker = ClickPicker();
-
-int objectID = 1;
-
-unsigned int currentlyPicked = 0;
-bool singleClick = true;
-
+Camera camera(glm::vec3(0.75f, 0.5f, 0.0f));
 SceneManager sceneManager;
-
 
 struct PLight {
     glm::vec3 position = { 0.4f, 0.5f, 0.0f };
@@ -64,13 +47,15 @@ struct CameraPosition {
     glm::mat4 projection;
     glm::mat4 view;
 
-
 } defaultCameraPosition, chessCameraPosition;
 
+Text text;
 
 //MAIN
 int main(void)
 {
+#pragma region Camera Positions
+
     defaultCameraPosition.position = { 0.97314, 0.423791, -0.04889 };
     defaultCameraPosition.projection = glm::mat4(
         1.27064, 0, 0, 0,
@@ -95,6 +80,9 @@ int main(void)
         -0.999877, -0.0139902, 0.00715917, 0,
         0.0492308, 0.00518422, -0.482313, 1);
 
+#pragma endregion
+
+#pragma region Initialization
 
     GLFWwindow* window;
 
@@ -128,6 +116,9 @@ int main(void)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+#pragma endregion
+
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_STENCIL_TEST);
     //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -136,33 +127,29 @@ int main(void)
     //glFrontFace(GL_CCW);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.00f);
+
+#pragma region Resource and scene setup
+
     //Resource and scene setup
-    Shader basicShader("res/shaders/basic.vert", "res/shaders/basic.frag");
-    Shader defaultShader("res/shaders/enlightened.vert", "res/shaders/enlightened.frag");
-    Shader lightShader("res/shaders/light.vert", "res/shaders/light.frag");
-    Shader pickShader("res/shaders/clickpick.vert", "res/shaders/clickpick.frag");
-    Shader texturePickShader("res/shaders/primitiveTexture.vert", "res/shaders/texturePickShader.frag");
-    Shader primitiveColorShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveColor.frag");
-    Shader primitiveAnimTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveAnimTexture.frag");
-    Shader primitiveTextureShader("res/shaders/primitiveTexture.vert", "res/shaders/primitiveTexture.frag");
-    Shader rainbowPrimitiveShader("res/shaders/primitiveColor.vert", "res/shaders/primitiveRainbowColor.frag");
-    Shader textShader("res/shaders/text.vert", "res/shaders/text.frag");
-    Shader outlineShader("res/shaders/outline.vert", "res/shaders/outline.frag");
-    Shader blurShader("res/shaders/blur.vert", "res/shaders/blur.frag");
-    Shader mixShader("res/shaders/mixer.vert", "res/shaders/mixer.frag");
+    Shader basicShader("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag");
+    Shader defaultShader("res/shaders/enlightened/enlightened.vert", "res/shaders/enlightened/enlightened.frag");
+    Shader lightShader("res/shaders/light/light.vert", "res/shaders/light/light.frag");
+    Shader pickShader("res/shaders/clickpick/clickpick.vert", "res/shaders/clickpick/clickpick.frag");
+    Shader texturePickShader("res/shaders/primitiveTexture/primitiveTexture.vert", "res/shaders/texturePickShader/texturePickShader.frag");
+    Shader primitiveColorShader("res/shaders/primitiveColor/primitiveColor.vert", "res/shaders/primitiveColor/primitiveColor.frag");
+    Shader primitiveAnimTextureShader("res/shaders/primitiveTexture/primitiveTexture.vert", "res/shaders/primitiveAnimTexture/primitiveAnimTexture.frag");
+    Shader primitiveTextureShader("res/shaders/primitiveTexture/primitiveTexture.vert", "res/shaders/primitiveTexture/primitiveTexture.frag");
+    Shader rainbowPrimitiveShader("res/shaders/primitiveColor/primitiveColor.vert", "res/shaders/primitiveRainbowColor/primitiveRainbowColor.frag");
+    Shader textShader("res/shaders/text/text.vert", "res/shaders/text/text.frag");
+    Shader outlineShader("res/shaders/outline/outline.vert", "res/shaders/outline/outline.frag");
+    Shader blurShader("res/shaders/blur/blur.vert", "res/shaders/blur/blur.frag");
+    Shader mixShader("res/shaders/mixer/mixer.vert", "res/shaders/mixer/mixer.frag");
 
-    ApRectangle rec(0, 0, SCR_WIDTH, SCR_HEIGHT, glm::vec3{1.0, 0.0, 1.0});
-    ApRectangle recTex(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/everest.jpg");
-    //ApRectangle bottomPanel(0, 0, SCR_WIDTH, SCR_HEIGHT, "res/models/gui_panel.png");
-    ApRectangle rainbowSquare(35, SCR_HEIGHT - 75, 300, 50, rainbowColor);
+    // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
-
-    rec.SetShader(&primitiveColorShader);
-    recTex.SetShader(&primitiveAnimTextureShader);
-    //bottomPanel.SetShader(&primitiveTextureShader);
-    rainbowSquare.SetShader(&rainbowPrimitiveShader);
+    //-----------------------------------------------------------------------------
 
     sceneManager.defaultShader = &defaultShader;
     sceneManager.lightShader = &lightShader;
@@ -174,13 +161,18 @@ int main(void)
 
     ApTime::instance().isEasyMode = true;
 
-    sceneManager.Setup( window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
+    sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
 
     float time = 0;
 
     //Scene1Dark->SetActive(false);
+
+#pragma endregion
+
+#pragma region Game Loop
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -190,7 +182,10 @@ int main(void)
         ApTime::instance().Update();
 
         glm::mat4 projection, view;
-        if(!ApTime::instance().isChessPosition)
+
+#pragma region Camera Setup
+
+        if (!ApTime::instance().isChessPosition)
         {
             projection = defaultCameraPosition.projection;
             view = defaultCameraPosition.view;
@@ -203,6 +198,11 @@ int main(void)
             view = chessCameraPosition.view;
             camera.Position = chessCameraPosition.position;
         }
+
+#pragma endregion
+
+#pragma region Camera Setup Debug
+
         //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         //glm::mat4 view = camera.GetViewMatrix();
 
@@ -228,11 +228,13 @@ int main(void)
         std::cout << "---------------------------------------------------------------\n";
         std::cout << "Position:\n";
         std::cout << camera.Position.x << " " << camera.Position.y << " " << camera.Position.z << "\n";*/
-        
+
+#pragma endregion
 
         glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
         glm::mat4 viewPrimitive = glm::mat4(1.0);
 
+#pragma region Setting Shaders
 
         outlineShader.use();
         outlineShader.setMat4("projection", projection);
@@ -278,6 +280,18 @@ int main(void)
         textShader.use();
         textShader.setMat4("projection", projectionPrimitive);
 
+        //Setting shaders for picking models and textures
+        pickShader.use();
+        pickShader.setMat4("projection", projection);
+        pickShader.setMat4("view", view);
+        texturePickShader.use();
+        texturePickShader.setMat4("projection", projectionPrimitive);
+        texturePickShader.setMat4("view", viewPrimitive);
+
+#pragma endregion
+
+#pragma region Mouse Picking
+
         //RENDER FOR MOUSE PICKING
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
         {
@@ -290,15 +304,9 @@ int main(void)
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        //Setting shaders for picking models and textures
-        pickShader.use();
-        pickShader.setMat4("projection", projection);
-        pickShader.setMat4("view", view);
-        texturePickShader.use();
-        texturePickShader.setMat4("projection", projectionPrimitive);
-        texturePickShader.setMat4("view", viewPrimitive);
+        
         //Performing mouse picking render
-        sceneManager.RenderMousePicking(pickShader,texturePickShader);
+        sceneManager.RenderMousePicking(pickShader, texturePickShader);
         //Checking mouse position
         double mouseXd;
         double mouseYd;
@@ -308,17 +316,22 @@ int main(void)
         //Saving id of the currently picked object
         currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
 
+#pragma endregion
+        
+
+        //Processing input here
+        processInput(window);
+
+#pragma region Render
+
         //Whenever mouse i button isn't pressed we make sure that the next frame it's pressed
         //it will be a single click. Later on, after that dirst frame singleClick is set to false,
         //and it will be mouseDragging, not clicking. Player will have to release the button and press
         //again for that to be click.
-        if(!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)))
+        if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)))
         {
             singleClick = true;
         }
-
-        //Processing input here
-        processInput(window);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -342,85 +355,25 @@ int main(void)
         //glStencilMask(0x00);
         //glDisable(GL_DEPTH_TEST);
         //sceneManager.Render(currentlyPicked);
-        
+
         //glStencilMask(0xFF);
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
-        //sceneManager.BlurRender(&blurShader, &mixShader, currentlyPicked);
+        //sceneManager.BlurRender(currentlyPicked);
         sceneManager.Render(currentlyPicked);
-        //recTex.Draw();
-        texOffset += 0.1 * ApTime::instance().deltaTime;
-        glDepthFunc(GL_ALWAYS);
-        //rainbowSquare.Draw();
-
-        //Rainbow animation-----
-        if (isRunning)
-        {
-            switch (animStage)
-            {
-            case 1:
-                g += animSpeed * ApTime::instance().deltaTime;
-                if (g >= 1.0f)
-                {
-                    g = 1.0f;
-                    animStage++;
-                }
-                break;
-            case 2:
-                r -= animSpeed * ApTime::instance().deltaTime;
-                if (r <= 0.0f)
-                {
-                    r = 0.0f;
-                    animStage++;
-                }
-                break;
-            case 3:
-                b += animSpeed * ApTime::instance().deltaTime;
-                if (b >= 1.0f)
-                {
-                    b = 1.0f;
-                    animStage++;
-                }
-                break;
-            case 4:
-                g -= animSpeed * ApTime::instance().deltaTime;
-                if (g <= 0.0f)
-                {
-                    g = 0.0f;
-                    animStage++;
-                }
-                break;
-            case 5:
-                r += animSpeed * ApTime::instance().deltaTime;
-                if (r >= 1.0f)
-                {
-                    r = 1.0f;
-                    animStage++;
-                }
-                break;
-            case 6:
-                b -= animSpeed * ApTime::instance().deltaTime;
-                if (b <= 0.0f)
-                {
-                    b = 0.0f;
-                    animStage = 1;
-                }
-                break;
-            }
-
-            rainbowSquare.SetColor(glm::vec3(r,g,b));
-        }
-        //----------------------
-
-        //bottomPanel.Draw();
-        //text.RenderText(textShader, to_string(time), float(SCR_WIDTH) - 200, float(SCR_HEIGHT) - 75, 0.5, glm::vec3(0.9, 0.1f, 0.1f));
+          
         glDepthFunc(GL_LESS);
         glDisable(GL_BLEND);
+
+#pragma endregion
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+#pragma endregion
 
     glfwTerminate();
     return 0;
@@ -458,7 +411,7 @@ void processInput(GLFWwindow* window)
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    SCR_WIDTH= width;
+    SCR_WIDTH = width;
     SCR_HEIGHT = height;
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.

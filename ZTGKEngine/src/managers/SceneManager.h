@@ -83,7 +83,7 @@ public:
 		world = new GraphNode();
 		UI = new GraphNode();
 		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, textureShader);
-		Loading("res/models/everest.jpg");
+		Loading("res/models/Sanctum.png");
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		std::cout << "----------------------------------------------" << std::endl;

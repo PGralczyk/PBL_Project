@@ -117,10 +117,4 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\blur.frag" />
-    <None Include="res\shaders\blur.vert" />
-    <None Include="res\shaders\mixer.vert" />
-    <None Include="res\shaders\mixer.frag" />
-  </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ private:
 	bool keyPressed = false;
 	bool controlPressed = false;
 
-	bool *lightVersion;
+	bool* lightVersion;
 
 public:
 	//Constructor, here assign all the fields from the private section
