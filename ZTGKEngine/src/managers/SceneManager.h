@@ -46,6 +46,7 @@ private:
 
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
+	float timeCounter;
 
 	bool engageSwap;
 
@@ -57,6 +58,7 @@ public:
 	Shader* outlineShader;
 	Shader* blurShader;
 	Shader* mixShader;
+	Shader* fadeShader;
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
@@ -82,8 +84,9 @@ public:
 		isBright = brightReference;
 		world = new GraphNode();
 		UI = new GraphNode();
-		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, textureShader);
-		Loading("res/models/Sanctum.png");
+		timeCounter = 0.0f;
+		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
+		Loading("res/models/everest.jpg");
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		std::cout << "----------------------------------------------" << std::endl;
@@ -125,7 +128,15 @@ public:
 	{
 		world->Draw(currentlyPicked);
 		if (engageSwap) {
-			BlurRender(currentlyPicked);
+			BlurRender(currentlyPicked, timeCounter);
+			//count time
+			timeCounter += ApTime::instance().deltaTime;
+			if (timeCounter > 1.0f)
+			{
+				engageSwap = false;
+				timeCounter = 0.0f;
+			}
+				
 		}
 		glDepthFunc(GL_ALWAYS);
 		UI->Draw(currentlyPicked);
@@ -529,7 +540,6 @@ public:
 
 		puzzle->SetPrizes(drawer1Script, drawer2Script);
 
-
 		////SCALES PUZZLE
 		//GraphNode* scalesPlantLeft = CreateNode("", defaultShader);
 		//Scene1Dark->AddChild(scalesPlantLeft);
@@ -663,7 +673,7 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void BlurRender(unsigned int currentlyPicked) { // for later when we have a specific object to render
+	void BlurRender(unsigned int currentlyPicked, float scale) { // for later when we have a specific object to render
 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -672,7 +682,9 @@ public:
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
-		fade->Draw();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		fade->Draw(scale);
 		bool horizontal = true;
 		unsigned int amount = 10;
 		blurShader->use();
@@ -761,7 +773,6 @@ private:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_ALWAYS);
 		loadScreen.Draw();
-		//fade->Draw();
 		glDisable(GL_BLEND);
 		glfwSwapBuffers(window);
 		glDepthFunc(GL_LESS);

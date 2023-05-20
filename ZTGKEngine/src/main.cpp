@@ -146,6 +146,7 @@ int main(void)
     Shader outlineShader("res/shaders/outline/outline.vert", "res/shaders/outline/outline.frag");
     Shader blurShader("res/shaders/blur/blur.vert", "res/shaders/blur/blur.frag");
     Shader mixShader("res/shaders/mixer/mixer.vert", "res/shaders/mixer/mixer.frag");
+    Shader fadeShader("res/shaders/fade.vert", "res/shaders/fade.frag");
 
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
@@ -154,6 +155,7 @@ int main(void)
     sceneManager.defaultShader = &defaultShader;
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
+    sceneManager.fadeShader = &fadeShader;
     sceneManager.outlineShader = &outlineShader;
     sceneManager.blurShader = &blurShader;
     sceneManager.mixShader = &mixShader;
@@ -272,6 +274,10 @@ int main(void)
         primitiveTextureShader.use();
         primitiveTextureShader.setMat4("projection", projectionPrimitive);
         primitiveTextureShader.setMat4("view", viewPrimitive);
+
+        fadeShader.use(); // lol
+        fadeShader.setMat4("projection", projectionPrimitive);
+        fadeShader.setMat4("view", viewPrimitive);
 
         rainbowPrimitiveShader.use();
         rainbowPrimitiveShader.setMat4("projection", projectionPrimitive);

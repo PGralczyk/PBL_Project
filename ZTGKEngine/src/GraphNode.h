@@ -21,7 +21,6 @@ protected:
 	float m_scale = 1.0f;
 
 	glm::mat4* transformOnStart;
-	std::vector<GraphNode*> children;
 	float dir;
 	float x;
 	float y;
@@ -34,6 +33,7 @@ protected:
 	bool isActive = true;
 
 public:
+	std::vector<GraphNode*> children;
 	bool isHoverable = true;
 	bool forceHover = false;
 

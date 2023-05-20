@@ -48,7 +48,7 @@ public:
 		{
 			if (!keyPressed)
 			{
-				//*swapPostman = !*swapPostman;
+				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
 				darkWorld->SetActive(!darkWorld->GetActive());
