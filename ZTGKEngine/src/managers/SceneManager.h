@@ -52,6 +52,8 @@ private:
 
 public:
 	GraphNode* world;
+	GraphNode* Scene1 = new GraphNode();
+	GraphNode* Scene2 = new GraphNode();
 	Shader *lightShader;
 	Shader *defaultShader;
 	Shader* textureShader;
@@ -146,7 +148,6 @@ public:
 	void Scene1Setup(Shader* additionalShaders[] = nullptr)
 	{
 		std::cout << "***Scene1***" << std::endl;
-		GraphNode* Scene1 = new GraphNode();
 
 		//BRIGHT_WORLD:
 		std::cout << "LOADING: scene structure" << std::endl;
@@ -419,9 +420,6 @@ public:
 		Line->Translate(glm::vec3(20.0f, -10.0f, -10.0f));
 		Scene1Dark->AddChild(Line);
 
-		Scene1->AddScript(new RoomSwapManager(Scene1, Scene1Bright, Scene1Dark, window, isBright, &engageSwap));
-
-
 		//--------------------------------FLOWERS-AND-THE-REST----------------------------
 		int* puzzleState = new int;
 		*puzzleState = 0;
@@ -539,6 +537,13 @@ public:
 		drawer2MovableSegment->isHoverable = false;
 
 		puzzle->SetPrizes(drawer1Script, drawer2Script);
+
+		GraphNode* door = CreateNode("res/models/drzwi.fbx", defaultShader);
+		door->Scale(0.15f);
+		door->Rotate(70, glm::vec3(0.0, 1.0, 0.0));
+		door->Translate(glm::vec3(40.0, 0.0, 120.0));
+		Scene1->AddChild(door);
+		door->AddScript(new RoomSwapManager(door, Scene1Bright, Scene1Dark, window, Scene1, Scene2, isBright, &engageSwap));
 
 		////SCALES PUZZLE
 		//GraphNode* scalesPlantLeft = CreateNode("", defaultShader);

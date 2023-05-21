@@ -17,6 +17,8 @@ private:
 	GraphNode* fadeNode;
 	GLFWwindow* window;
 	bool* swapPostman;
+	GraphNode* currentScene; 
+	GraphNode* otherScene;
 
 	bool keyPressed = false;
 	bool controlPressed = false;
@@ -26,13 +28,16 @@ private:
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
-		GLFWwindow* givenWindow, bool* givenVersion, bool* swapPostman = nullptr): RealtimeScript(nodePointer)
+		GLFWwindow* givenWindow, GraphNode* _currentScene, GraphNode* _otherScene,
+		bool* givenVersion, bool* swapPostman = nullptr): RealtimeScript(nodePointer)
 	{
 		brightWorld = brightNode;
 		darkWorld = darkNode;
 		window = givenWindow;
 		lightVersion = givenVersion;
 		this->swapPostman = swapPostman;
+		currentScene = _currentScene;
+		otherScene = _otherScene;
 	}
 
 	~RoomSwapManager() = default;
@@ -87,5 +92,14 @@ public:
 		{
 			ApTime::instance().adviseWindow = 0.0f;
 		}
+	}
+
+	void OnMouseClicked()
+	{
+		ApTime::instance().brightWorld = true;
+		brightWorld->SetActive(true);
+		darkWorld->SetActive(false);
+		currentScene->SetActive(false);
+		otherScene->SetActive(true);
 	}
 };
