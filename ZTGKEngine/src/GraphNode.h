@@ -31,15 +31,13 @@ protected:
 	std::vector<RealtimeScript*> realtimeScripts;
 
 	bool isActive = true;
-	bool canChangeShader;
-	bool canShadow;
 
 public:
 	std::vector<GraphNode*> children;
 	bool isHoverable = true;
 	bool forceHover = false;
 
-	GraphNode(Model* m = NULL, unsigned int givenId = 0, bool canChangeShader = true, bool canShadow = true)
+	GraphNode(Model* m = NULL, unsigned int givenId = 0)
 	{
 		this->model = m;
 		parent = NULL;
@@ -65,8 +63,6 @@ public:
 	glm::mat4* GetWorldTransform() { return worldTransform; }
 
 	Model* GetModel() { return model; }
-
-	std::vector<GraphNode*> GetChildren() { return children; }
 
 	void SetModel(Model* m) { model = m; }
 
@@ -148,18 +144,18 @@ public:
 			}
 		}
 	}
-	void Draw(unsigned int currentlyPicked, bool shaderMapMode = false)
+	void Draw(unsigned int currentlyPicked)
 	{
 		if (isActive)
 		{
-			if ((!shaderMapMode && model) || (model && (shaderMapMode && canShadow))) {
+			if (model) {
 				model->setTransform(worldTransform);
 				model->Draw(currentlyPicked, objectId, isHoverable, forceHover);
 			}
 
 			for (GraphNode* node : children)
 			{
-				node->Draw(currentlyPicked, shaderMapMode);
+				node->Draw(currentlyPicked);
 			}
 		}
 	}
@@ -270,16 +266,5 @@ public:
 	{
 		this->forceHover = true;
 		ApTime::instance().adviseWindow = 5.0f;
-	}
-
-	// Note that this method will set same shader for model from this node and all models from children connected with this node. Use carefully!
-	void SetShaderForAll(Shader* shader)
-	{
-		if (model && canChangeShader) model->SetShader(shader);
-
-		for (GraphNode* node : children)
-		{
-			node->SetShaderForAll(shader);
-		}
 	}
 };
