@@ -14,6 +14,8 @@ int oldMouseButtonState = GLFW_RELEASE,
 
 unsigned int SCR_WIDTH = 1900,
              SCR_HEIGHT = 1000,
+             SHD_WIDTH = 2048,
+             SHD_HEIGHT = 2048,
              currentlyPicked = 0;
 
 float lastX = SCR_WIDTH / 2.0f,
@@ -50,6 +52,16 @@ struct CameraPosition {
 } defaultCameraPosition, chessCameraPosition;
 
 Text text;
+
+//debug
+enum  Perspective
+{
+    SH_LEFT, SH_RIGHT, SH_TOP, SH_BOTTOM, SH_FRONT, SH_BACK
+};
+
+Perspective shadowViewDirection = SH_RIGHT;
+bool canDirectionChange = true;
+string directionInfo = "Direction: RIGHT";
 
 //MAIN
 int main(void)
@@ -135,6 +147,7 @@ int main(void)
     //Resource and scene setup
     Shader basicShader("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag");
     Shader defaultShader("res/shaders/enlightened/enlightened.vert", "res/shaders/enlightened/enlightened.frag");
+    Shader defaultShadowShader("res/shaders/enlightenedShadow/enlightenedShadow.vert", "res/shaders/enlightenedShadow/enlightenedShadow.frag");
     Shader lightShader("res/shaders/light/light.vert", "res/shaders/light/light.frag");
     Shader pickShader("res/shaders/clickpick/clickpick.vert", "res/shaders/clickpick/clickpick.frag");
     Shader texturePickShader("res/shaders/primitiveTexture/primitiveTexture.vert", "res/shaders/texturePickShader/texturePickShader.frag");
@@ -146,6 +159,7 @@ int main(void)
     Shader outlineShader("res/shaders/outline/outline.vert", "res/shaders/outline/outline.frag");
     Shader blurShader("res/shaders/blur/blur.vert", "res/shaders/blur/blur.frag");
     Shader mixShader("res/shaders/mixer/mixer.vert", "res/shaders/mixer/mixer.frag");
+    Shader shadowMapShader("res/shaders/depthCubeMap/depthCubeMap.vert", "res/shaders/depthCubeMap/depthCubeMap.frag", "res/shaders/depthCubeMap/depthCubeMap.geo");
     Shader fadeShader("res/shaders/fade.vert", "res/shaders/fade.frag");
 
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
@@ -153,17 +167,19 @@ int main(void)
     //-----------------------------------------------------------------------------
 
     sceneManager.defaultShader = &defaultShader;
+    //sceneManager.defaultShader = &defaultShadowShader;
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
     sceneManager.fadeShader = &fadeShader;
     sceneManager.outlineShader = &outlineShader;
     sceneManager.blurShader = &blurShader;
     sceneManager.mixShader = &mixShader;
+    sceneManager.shadowMapShader = &shadowMapShader;
     sceneManager.singleClick = &singleClick;
 
     ApTime::instance().isEasyMode = true;
 
-    sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
+    sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &SHD_WIDTH, &SHD_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
 
@@ -235,12 +251,53 @@ int main(void)
 
         glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
         glm::mat4 viewPrimitive = glm::mat4(1.0);
+        float near_plane = 1;
+        float far_plane = 35;
+        glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHD_WIDTH / (float)SHD_HEIGHT, near_plane, far_plane);
+        std::vector<glm::mat4> shadowTransforms;
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+        
+#pragma region Shadow Debug
+
+        glm::mat4 shadowView;
+        switch (shadowViewDirection)
+        {
+        case SH_LEFT:
+            shadowView = glm::lookAt(pointLight.position, pointLight.position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            break;
+        case SH_RIGHT:
+            shadowView = glm::lookAt(pointLight.position, pointLight.position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            break;
+        case SH_TOP:
+            shadowView = glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            break;
+        case SH_BOTTOM:
+            shadowView = glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+            break;
+        case SH_FRONT:
+            shadowView = glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+            break;
+        case SH_BACK:
+            shadowView = glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+            break;
+        default:
+            shadowView = glm::mat4(1);
+            break;
+        }
+
+#pragma endregion
 
 #pragma region Setting Shaders
 
         outlineShader.use();
         outlineShader.setMat4("projection", projection);
         outlineShader.setMat4("view", view);
+
         defaultShader.use();
         defaultShader.setMat4("projection", projection);
         defaultShader.setMat4("view", view);
@@ -253,6 +310,21 @@ int main(void)
         defaultShader.setFloat("LightConstant", 1.0f);
         defaultShader.setFloat("LightLinear", 0.09f);
         defaultShader.setFloat("LightQuadratic", 0.032f);
+
+        // default shader version with shadows setup
+        defaultShadowShader.use();
+        defaultShadowShader.setMat4("projection", shadowProj);
+        defaultShadowShader.setMat4("view", shadowView);
+        defaultShadowShader.setVec3("viewPos", pointLight.position);
+        defaultShadowShader.setVec3("pointLightPos", pointLight.position);
+        if (lightVersion)
+            defaultShadowShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
+        else
+            defaultShadowShader.setVec3("pointLightColor", glm::vec3({ pointLight.color2[0], pointLight.color2[1], pointLight.color2[2] }));
+        defaultShadowShader.setFloat("LightConstant", 1.0f);
+        defaultShadowShader.setFloat("LightLinear", 0.09f);
+        defaultShadowShader.setFloat("LightQuadratic", 0.032f);
+        defaultShadowShader.setFloat("far_plane", far_plane);
 
         basicShader.use();
         basicShader.setMat4("projection", projection);
@@ -293,6 +365,13 @@ int main(void)
         texturePickShader.use();
         texturePickShader.setMat4("projection", projectionPrimitive);
         texturePickShader.setMat4("view", viewPrimitive);
+
+        //Setting shader for shadow map
+        shadowMapShader.use();
+        for (unsigned int i = 0; i < 6; ++i)
+            shadowMapShader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+        shadowMapShader.setFloat("far_plane", far_plane);
+        shadowMapShader.setVec3("lightPos", pointLight.position);
 
 #pragma endregion
 
@@ -340,7 +419,7 @@ int main(void)
         }
 
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        
 
         sceneManager.Update(currentlyPicked, singleClick, isHoldingMouseButton);
 
@@ -366,6 +445,9 @@ int main(void)
         //glStencilFunc(GL_ALWAYS, 0, 0xFF);
         //glEnable(GL_DEPTH_TEST);
         //sceneManager.BlurRender(currentlyPicked);
+ 
+        //sceneManager.RenderToShadowMap(currentlyPicked);
+
         sceneManager.Render(currentlyPicked);
           
         glDepthFunc(GL_LESS);
@@ -387,6 +469,16 @@ int main(void)
 
 void processInput(GLFWwindow* window)
 {
+#pragma region LightBulbMove Debug
+
+    float speed = 1.0f;
+    glm::vec3 translateX(speed * ApTime::instance().deltaTime, 0, 0);
+    glm::vec3 translateY(0, speed * ApTime::instance().deltaTime, 0);
+    glm::vec3 translateZ(0, 0, speed * ApTime::instance().deltaTime);
+    GraphNode* bulb = sceneManager.world->GetChildren()[1];
+
+#pragma endregion
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -398,6 +490,111 @@ void processInput(GLFWwindow* window)
     //    camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
     //if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     //    camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
+
+#pragma region Shadow Debug
+
+    if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_PRESS && canDirectionChange) {
+        canDirectionChange = false;
+        switch (shadowViewDirection)
+        {
+        case SH_LEFT:
+            shadowViewDirection = SH_TOP;
+            directionInfo = "Direction: TOP";
+            break;
+        case SH_RIGHT:
+            shadowViewDirection = SH_LEFT;
+            directionInfo = "Direction: LEFT";
+            break;
+        case SH_TOP:
+            shadowViewDirection = SH_BOTTOM;
+            directionInfo = "Direction: BOTTOM";
+            break;
+        case SH_BOTTOM:
+            shadowViewDirection = SH_BACK;
+            directionInfo = "Direction: BACK";
+            break;
+        case SH_FRONT:
+            shadowViewDirection = SH_RIGHT;
+            directionInfo = "Direction: RIGHT";
+            break;
+        case SH_BACK:
+            shadowViewDirection = SH_FRONT;
+            directionInfo = "Direction: FRONT";
+            break;
+        }
+        cout << endl << directionInfo << endl;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_RELEASE) {
+        canDirectionChange = true;
+    }
+
+#pragma endregion
+
+#pragma region LightBulbMove Debug
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        pointLight.position += translateX;
+        bulb->Translate(translateX);
+        cout << endl;
+        cout << directionInfo << endl;
+        cout << "Light Position X: " << pointLight.position.x << endl;
+        cout << "Light Position Y: " << pointLight.position.y << endl;
+        cout << "Light Position Z: " << pointLight.position.z << endl;
+        cout << endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        pointLight.position -= translateX;
+        bulb->Translate(-translateX);
+        cout << endl;
+        cout << directionInfo << endl;
+        cout << "Light Position X: " << pointLight.position.x << endl;
+        cout << "Light Position Y: " << pointLight.position.y << endl;
+        cout << "Light Position Z: " << pointLight.position.z << endl;
+        cout << endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        pointLight.position += translateY;
+        bulb->Translate(translateY);
+        cout << endl;
+        cout << directionInfo << endl;
+        cout << "Light Position X: " << pointLight.position.x << endl;
+        cout << "Light Position Y: " << pointLight.position.y << endl;
+        cout << "Light Position Z: " << pointLight.position.z << endl;
+        cout << endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        pointLight.position -= translateY;
+        bulb->Translate(-translateY);
+        cout << endl;
+        cout << directionInfo << endl;
+        cout << "Light Position X: " << pointLight.position.x << endl;
+        cout << "Light Position Y: " << pointLight.position.y << endl;
+        cout << "Light Position Z: " << pointLight.position.z << endl;
+        cout << endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
+        pointLight.position += translateZ;
+        bulb->Translate(translateZ);
+        cout << endl;
+        cout << directionInfo << endl;
+        cout << "Light Position X: " << pointLight.position.x << endl;
+        cout << "Light Position Y: " << pointLight.position.y << endl;
+        cout << "Light Position Z: " << pointLight.position.z << endl;
+        cout << endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS) {
+        pointLight.position -= translateZ;
+        bulb->Translate(-translateZ);
+        cout << endl;
+        cout << directionInfo << endl;
+        cout << "Light Position X: " << pointLight.position.x << endl;
+        cout << "Light Position Y: " << pointLight.position.y << endl;
+        cout << "Light Position Z: " << pointLight.position.z << endl;
+        cout << endl;
+    }
+
+#pragma endregion
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS && oldMouseButtonState == GLFW_RELEASE) {
         if (isMouseActive) {

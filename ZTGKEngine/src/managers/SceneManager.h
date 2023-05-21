@@ -43,12 +43,15 @@ private:
 	int objectId = 1;
 	unsigned int* SCR_HEIGHT;
 	unsigned int* SCR_WIDTH;
+	unsigned int* SHD_HEIGHT;
+	unsigned int* SHD_WIDTH;
 
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
 	float timeCounter;
 
 	bool engageSwap;
+	bool renderingShadowMap = false;
 
 public:
 	GraphNode* world;
@@ -60,11 +63,14 @@ public:
 	Shader* outlineShader;
 	Shader* blurShader;
 	Shader* mixShader;
+	Shader* shadowMapShader;
 	Shader* fadeShader;
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
 	unsigned int rbo;
+	unsigned int depthCubemapTexture;
+	unsigned int depthCubemapFBO;
 	bool* singleClick;
 
 	SceneManager() {};
@@ -72,9 +78,12 @@ public:
 	{
 		delete(world);
 		delete(UI);
+		delete(fade);
+		glDeleteFramebuffers(2, frameBuffers);
+		glDeleteFramebuffers(1, &depthCubemapFBO);
 	}
 
-	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
+	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, unsigned int* SHD_WIDTH, unsigned int* SHD_HEIGHT, Shader * otherShaders ...)
 	{
 		std::cout << "----------------------------------------------" << std::endl;
 		std::cout << "-----------------LOADING-GAME-----------------" << std::endl;
@@ -83,12 +92,14 @@ public:
 		engageSwap = false;
 		this->SCR_HEIGHT = SCR_HEIGHT;
 		this->SCR_WIDTH = SCR_WIDTH;
+		this->SHD_HEIGHT = SHD_HEIGHT;
+		this->SHD_WIDTH = SHD_WIDTH;
 		isBright = brightReference;
 		world = new GraphNode();
 		UI = new GraphNode();
 		timeCounter = 0.0f;
 		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
-		Loading("res/models/everest.jpg");
+		Loading("res/models/Sanctum.png");
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		std::cout << "----------------------------------------------" << std::endl;
@@ -128,21 +139,17 @@ public:
 
 	void Render(unsigned int currentlyPicked)
 	{
-		world->Draw(currentlyPicked);
-		if (engageSwap) {
-			BlurRender(currentlyPicked, timeCounter);
-			//count time
-			timeCounter += ApTime::instance().deltaTime;
-			if (timeCounter > 1.0f)
-			{
-				engageSwap = false;
-				timeCounter = 0.0f;
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		world->Draw(currentlyPicked, renderingShadowMap);
+		/*if (!renderingShadowMap) 
+		{
+			if (engageSwap) {
+				BlurRender(currentlyPicked);
 			}
-				
-		}
-		glDepthFunc(GL_ALWAYS);
-		UI->Draw(currentlyPicked);
-		glDepthFunc(GL_LESS);
+			glDepthFunc(GL_ALWAYS);
+			UI->Draw(currentlyPicked);
+			glDepthFunc(GL_LESS);
+		}*/
 	}
 
 	void Scene1Setup(Shader* additionalShaders[] = nullptr)
@@ -152,7 +159,7 @@ public:
 		//BRIGHT_WORLD:
 		std::cout << "LOADING: scene structure" << std::endl;
 		GraphNode* Scene1Bright = new GraphNode();
-		GraphNode* bulb =  CreateNode("res/models/House.obj", lightShader);
+		GraphNode* bulb =  CreateNode("res/models/House.obj", defaultShader, false, false);
 
 		//DARK_WORLD:
 		GraphNode* Scene1Dark = new GraphNode();
@@ -362,8 +369,8 @@ public:
 		ChessMainObject->Translate(glm::vec3(0.0f, 20.0f, 0.0f));
 		std::cout << "LOADING: mainScene1 object " << std::endl;
 		GraphNode* SceneBackground = CreateNode("res/models/pokoj_export.fbx", defaultShader);
-		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0]);
-		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0]);
+		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0], false, false);
+		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0], false, false);
 
 		//SETTING_INHERITANCE
 		world->AddChild(Scene1);
@@ -648,6 +655,34 @@ public:
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				std::cout << "Framebuffer not complete!" << std::endl;
 		}
+
+		// Depth cube map setup here
+
+		glGenFramebuffers(1, &depthCubemapFBO);
+
+		// Cubemap texture setup
+
+		glGenTextures(1, &depthCubemapTexture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
+		for (unsigned int i = 0; i < 6; ++i)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+				*SHD_WIDTH, *SHD_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		// Cubemap FBO setup
+
+		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemapTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "Framebuffer not complete!" << std::endl;
+		//else std::cout << "Framebuffer for Shadow map is ok!" << std::endl;
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
@@ -711,7 +746,7 @@ public:
 		mixShader->setInt("scene", 0);
 		mixShader->setInt("bloomBlur", 1);
 		mixShader->setInt("bloom", true);
-		mixShader->setFloat("exposure", 1.0f);
+		mixShader->setFloat("exposure", 0.5f);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[horizontal]);
 		glActiveTexture(GL_TEXTURE1);
@@ -719,15 +754,35 @@ public:
 		renderQuad();
 	}
 
+	void RenderToShadowMap(unsigned int currentlyPicked)
+	{
+		renderingShadowMap = true;
+		glViewport(0, 0, *SHD_WIDTH, *SHD_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		world->SetShaderForAll(shadowMapShader);
+		Render(currentlyPicked);
+		world->SetShaderForAll(defaultShader);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, *SCR_WIDTH, *SCR_HEIGHT);
+
+		//Set genereted texture as uniform value
+		defaultShader->use();
+		defaultShader->setInt("depthMap", 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
+		renderingShadowMap = false;
+	}
+
 private:
-	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
+	GraphNode* CreateNode(string const& pathToModel, Shader* shader, bool canChangeShader = true, bool canShadow = true)
 	{
 		Model *model = new Model(pathToModel);
 		model->SetShader(shader);
-		return new GraphNode(model, objectId++);
+		return new GraphNode(model, objectId++, canChangeShader, canShadow);
 	}
 
-	GraphNode* CreateUiElement(int xPos, int yPos, int width, int height, string path, Shader* shader)
+	GraphNode* CreateUiElement(int xPos, int yPos, int width, int height, string path, Shader* shader, bool canChangeShader = true, bool canShadow = true)
 	{
 		//glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, yPos, 0));
 		glm::mat4 *Transform = new glm::mat4(1.0);
@@ -762,7 +817,7 @@ private:
 
 		Model* model = new Model(mesh);
 		model->SetShader(shader);
-		return new GraphNode(model, objectId++);
+		return new GraphNode(model, objectId++, canChangeShader, canShadow);
 	}
 
 	void Loading(std::string path)
