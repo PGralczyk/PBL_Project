@@ -60,12 +60,14 @@ public:
 	}
 
 	void Draw(float scale) {
+		glDepthFunc(GL_ALWAYS);
 		for (int i = 0; i < PARTICLE_AMOUNT; i++) {
 			//generator->Scale(scale);
 			particleShader->use();
 			particleShader->setMat4("scale", glm::scale(glm::mat4(1.0f), glm::vec3(scale * 3, scale * 3, 1.0f)));
 			generator->Draw(-1);
 		}
+		glDepthFunc(GL_LESS);
 	}
 
 };

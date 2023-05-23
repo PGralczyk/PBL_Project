@@ -20,6 +20,7 @@ public:
 	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9]) : RealtimeScript(nodePointer)
 	{
 		this->scalesPuzzleController = _scalesPuzzleController;
+		std::cout << *scalesPuzzleController << std::endl;
 		this->isLeft = _isLeft;
 		startPosition = node->getTranslation();
 		for (int i = 0; i < 9; i++)
@@ -30,6 +31,7 @@ public:
 
 	void Update()
 	{
+		std::cout << *scalesPuzzleController << std::endl;
 		if (*scalesPuzzleController > 0)
 		{
 			if (isLeft)
