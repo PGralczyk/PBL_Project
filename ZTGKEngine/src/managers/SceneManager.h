@@ -32,6 +32,7 @@
 #include "../scripts/PlantPuzzleController.h";
 #include "../scripts/GrowPlantScript.h";
 #include "../scripts/CraneScript.h";
+#include "../scripts/MenuScript.h";
 
 class SceneManager
 {
@@ -66,12 +67,41 @@ public:
 	unsigned int textureBuffers[2];
 	unsigned int rbo;
 	bool* singleClick;
+	bool* gameMode = new bool;
+	bool* choosenGameMode = new bool;
 
 	SceneManager() {};
 	~SceneManager()
 	{
 		delete(world);
 		delete(UI);
+	}
+
+	void MenuSetup(GLFWwindow* givenWindow, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT)
+	{
+		window = givenWindow;
+		engageSwap = false;
+		this->SCR_HEIGHT = SCR_HEIGHT;
+		this->SCR_WIDTH = SCR_WIDTH;
+		world = new GraphNode();
+		UI = new GraphNode();
+		timeCounter = 0.0f;
+		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
+		Loading("res/models/everest.jpg");
+
+		*choosenGameMode = false;
+
+		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hopa_u_dzoszuly/swiecznik.png", textureShader);
+		easy->Scale(0.5);
+		easy->Translate(glm::vec3(450, -200, 0));
+		easy->AddScript(new MenuScript(easy, "easy", gameMode, choosenGameMode));
+
+		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hopa_u_dzoszuly/solniczka.png", textureShader);
+		medium->Scale(0.5);
+		medium->Translate(glm::vec3(250, -200, 0));
+		medium->AddScript(new MenuScript(medium, "medium", gameMode, choosenGameMode));
+
+		ExecuteStartScripts();
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)

@@ -50,6 +50,7 @@ struct CameraPosition {
 } defaultCameraPosition, chessCameraPosition;
 
 Text text;
+bool gameMenu(GLFWwindow* window, Shader* textShader, Shader* pickShader, Shader* texturePickShader);
 
 //MAIN
 int main(void)
@@ -161,7 +162,7 @@ int main(void)
     sceneManager.mixShader = &mixShader;
     sceneManager.singleClick = &singleClick;
 
-    ApTime::instance().isEasyMode = true;
+    ApTime::instance().isEasyMode = gameMenu(window, &textShader, &pickShader, &texturePickShader);
 
     sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
@@ -481,4 +482,105 @@ glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view)
     glm::vec3 castedRay = glm::vec3(worldCoords.x, worldCoords.y, worldCoords.z);
     castedRay = glm::normalize(castedRay);
     return castedRay;
+}
+
+bool gameMenu(GLFWwindow* window, Shader* textShader, Shader* pickShader, Shader* texturePickShader)
+{
+    sceneManager.MenuSetup(window, &SCR_WIDTH, &SCR_HEIGHT);
+    sceneManager.Update(0, false, false);
+
+    while (!*sceneManager.choosenGameMode)
+    {
+
+        //Counting new deltaTime
+        ApTime::instance().Update();
+
+        glm::mat4 projection, view;
+
+        if (!ApTime::instance().isChessPosition)
+        {
+            projection = defaultCameraPosition.projection;
+            view = defaultCameraPosition.view;
+            camera.Position = defaultCameraPosition.position;
+
+        }
+        else
+        {
+            projection = chessCameraPosition.projection;
+            view = chessCameraPosition.view;
+            camera.Position = chessCameraPosition.position;
+        }
+
+        glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
+        glm::mat4 viewPrimitive = glm::mat4(1.0);
+
+        textShader->use();
+        textShader->setMat4("projection", projectionPrimitive);
+
+        //Setting shaders for picking models and textures
+        pickShader->use();
+        pickShader->setMat4("projection", projection);
+        pickShader->setMat4("view", view);
+        texturePickShader->use();
+        texturePickShader->setMat4("projection", projectionPrimitive);
+        texturePickShader->setMat4("view", viewPrimitive);
+
+        //RENDER FOR MOUSE PICKING
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+        {
+            isHoldingMouseButton = true;
+        }
+        else
+        {
+            isHoldingMouseButton = false;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        //Performing mouse picking render
+        sceneManager.RenderMousePicking(*pickShader, *texturePickShader);
+        //Checking mouse position
+        double mouseXd;
+        double mouseYd;
+        glfwGetCursorPos(window, &mouseXd, &mouseYd);
+        //Reading ObjectId fo pixel below the mouse
+        ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
+        //Saving id of the currently picked object
+        currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
+
+        //Processing input here
+        processInput(window);
+
+        //Whenever mouse i button isn't pressed we make sure that the next frame it's pressed
+        //it will be a single click. Later on, after that dirst frame singleClick is set to false,
+        //and it will be mouseDragging, not clicking. Player will have to release the button and press
+        //again for that to be click.
+        if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)))
+        {
+            singleClick = true;
+        }
+
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        sceneManager.Update(currentlyPicked, singleClick, isHoldingMouseButton);
+
+        //After the first frame singleClick is set to false(mouse clicking function won't be used,
+        //only the dragging function. It will be set to true again after te button is released.
+        if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)))
+        {
+            singleClick = false;
+        }
+
+        glEnable(GL_BLEND);
+        sceneManager.Render(currentlyPicked);
+
+        glDepthFunc(GL_LESS);
+        glDisable(GL_BLEND);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+    return true;
 }
