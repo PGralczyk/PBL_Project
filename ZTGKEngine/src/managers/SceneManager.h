@@ -547,61 +547,88 @@ public:
 		door->AddScript(new RoomSwapManager(door, Scene1Bright, Scene1Dark, window, Scene1, Scene2, isBright, &engageSwap));
 
 		//SCALES PUZZLE
-		GraphNode* scalesPlantLeft = CreateNode("", defaultShader);
+		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
+		scalesPlantLeft->Scale(0.1f);
 		Scene1Dark->AddChild(scalesPlantLeft);
-		GraphNode* scalesPlantRight = CreateNode("", defaultShader);
+		scalesPlantLeft->Translate(glm::vec3(0.0f, 0.0f, 60.0f));
+		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
+		scalesPlantRight->Scale(0.1f);
 		Scene1Dark->AddChild(scalesPlantRight);
+		scalesPlantRight->Translate(glm::vec3(0.0f, 0.0f, -30.0f));
 
 		GraphNode* ScalesPuzzle = new GraphNode();
 		ScalesPuzzle->Scale(0.1);
-		ScalesPuzzle->Translate(glm::vec3(50.0f, 0.0f, 0.0f));
+		ScalesPuzzle->Translate(glm::vec3(70.0f, 40.0f, 0.0f));
 		Scene1Bright->AddChild(ScalesPuzzle);
 
 		GraphNode* staticScales = CreateNode("res/models/stojak.fbx", defaultShader);
 		ScalesPuzzle->AddChild(staticScales);
 		GraphNode* rotatingScales = CreateNode("res/models/bujak.fbx", defaultShader);
-		//rotatingScales->Translate(glm::vec3(-40.0f, 0.0f, 0.0f));
+		rotatingScales->Translate(glm::vec3(0.0f, 188.0f, 0.0f));
 		ScalesPuzzle->AddChild(rotatingScales);
 		GraphNode* leftScales = CreateNode("res/models/szalka.fbx", defaultShader);
 		ScalesPuzzle->AddChild(leftScales);
 		GraphNode* rightScales = CreateNode("res/models/szalka.fbx", defaultShader);
 		ScalesPuzzle->AddChild(rightScales);
-		rightScales->Translate(glm::vec3(0.0f, 0.0f, -200.0f));
+		rightScales->Translate(glm::vec3(0.0f, 0.0f, -236.0f));
 
-		Model* weight = new Model("");
+		Model* weight = new Model("res/models/ciezarek.fbx");
 		weight->SetShader(defaultShader);
 		GraphNode* weight1l = new GraphNode(weight, objectId++);
 		leftScales->AddChild(weight1l);
+		weight1l->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
+		weight1l->Scale(0.75);
+		weight1l->SetActive(false);
+
 		GraphNode* weight2l = new GraphNode(weight, objectId++);
 		leftScales->AddChild(weight2l);
+		weight2l->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
+		weight2l->Scale(0.75);
+		weight2l->SetActive(false);
+
 		GraphNode* weight3l = new GraphNode(weight, objectId++);
 		leftScales->AddChild(weight3l);
+		weight3l->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
+		weight3l->Scale(0.75);
+		weight3l->SetActive(false);
+
 		GraphNode* weight1r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight1r);
+		weight1r->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
+		weight1r->Scale(0.75);
+		weight1r->SetActive(false);
+
 		GraphNode* weight2r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight2r);
+		weight2r->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
+		weight2r->Scale(0.75);
+		weight2r->SetActive(false);
+
 		GraphNode* weight3r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight3r);
+		weight3r->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
+		weight3r->Scale(0.75);
+		weight3r->SetActive(false);
 
 		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		weight1->Scale(0.5);
 		weight1->Translate(glm::vec3(450, -200, 0));
 		UI->AddChild(weight1);
-		weight1->AddScript(new InventoryItemScript(weight1, "weight3", window, singleClick));
+		weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
 
 		GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		weight2->Scale(0.5);
 		weight2->Translate(glm::vec3(600, -200, 0));
 		UI->AddChild(weight2);
-		weight2->AddScript(new InventoryItemScript(weight2, "weight2", window, singleClick));
+		weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
 
 		GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		weight3->Scale(0.5);
 		weight3->Translate(glm::vec3(750, -200, 0));
 		UI->AddChild(weight3);
-		weight3->AddScript(new InventoryItemScript(weight3, "weight5", window, singleClick));
+		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
@@ -617,7 +644,7 @@ public:
 		GraphNode* scalesPuzzlePrizes = new GraphNode();
 
 		int* scalesPuzzleController = new int;
-		*scalesPuzzleController = 2;
+		*scalesPuzzleController = 3;
 		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
 		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab));
 		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab));

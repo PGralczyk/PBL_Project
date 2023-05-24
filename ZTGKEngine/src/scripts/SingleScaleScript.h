@@ -20,7 +20,6 @@ public:
 	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9]) : RealtimeScript(nodePointer)
 	{
 		this->scalesPuzzleController = _scalesPuzzleController;
-		std::cout << *scalesPuzzleController << std::endl;
 		this->isLeft = _isLeft;
 		startPosition = node->getTranslation();
 		for (int i = 0; i < 9; i++)
@@ -31,7 +30,6 @@ public:
 
 	void Update()
 	{
-		std::cout << *scalesPuzzleController << std::endl;
 		if (*scalesPuzzleController > 0)
 		{
 			if (isLeft)
@@ -68,53 +66,55 @@ public:
 	{
 		if (node->isHoverable)
 		{
-			if (ApTime::instance().pickedElementId == "weight3")
+			if (ApTime::instance().pickedElementId == "weight4")
 			{
 				if (isLeft)
 				{
-					*scalesPuzzleController -= 3;
+					*scalesPuzzleController -= 4;
 					weightsTab[0]->SetActive(true);
 					weightsTab[6]->SetActive(false);
 				}
 				else
 				{
-					*scalesPuzzleController += 3;
+					*scalesPuzzleController += 4;
 					weightsTab[3]->SetActive(true);
 					weightsTab[6]->SetActive(false);
 				}
-			}
-			else if (ApTime::instance().pickedElementId == "weight2")
-			{
-				if (isLeft)
-				{
-					*scalesPuzzleController -= 2;
-					weightsTab[1]->SetActive(true);
-					weightsTab[7]->SetActive(false);
-				}
-				else
-				{
-					*scalesPuzzleController += 2;
-					weightsTab[4]->SetActive(true);
-					weightsTab[7]->SetActive(false);
-				}
+				ApTime::instance().pickedElementId = "";
 			}
 			else if (ApTime::instance().pickedElementId == "weight5")
 			{
 				if (isLeft)
 				{
 					*scalesPuzzleController -= 5;
+					weightsTab[1]->SetActive(true);
+					weightsTab[7]->SetActive(false);
+				}
+				else
+				{
+					*scalesPuzzleController += 5;
+					weightsTab[4]->SetActive(true);
+					weightsTab[7]->SetActive(false);
+				}
+				ApTime::instance().pickedElementId = "";
+			}
+			else if (ApTime::instance().pickedElementId == "weight6")
+			{
+				if (isLeft)
+				{
+					*scalesPuzzleController -= 6;
 					weightsTab[2]->SetActive(true);
 					weightsTab[8]->SetActive(false);
 				}
 				else
 				{
-					*scalesPuzzleController += 5;
+					*scalesPuzzleController += 6;
 					weightsTab[5]->SetActive(true);
 					weightsTab[8]->SetActive(false);
 				}
+				ApTime::instance().pickedElementId = "";
 			}
-			
-			if (weightsTab[6]->GetActive() && weightsTab[7]->GetActive() && weightsTab[8]->GetActive())
+			else
 			{
 				for (int i = 0; i < 6; i++)
 				{
@@ -123,6 +123,7 @@ public:
 				weightsTab[6]->SetActive(true);
 				weightsTab[7]->SetActive(true);
 				weightsTab[8]->SetActive(true);
+				*scalesPuzzleController = 2;
 			}
 		}
 	}
