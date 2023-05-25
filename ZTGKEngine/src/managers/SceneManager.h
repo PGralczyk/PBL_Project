@@ -716,6 +716,7 @@ public:
 	void BlurRender(unsigned int currentlyPicked, float scale) { // for later when we have a specific object to render
 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
+		glClearColor(1.0f, 1.0f, 1.0f, 0.00f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[1]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -752,6 +753,7 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
 		renderQuad();
+		//glClearColor(0.0f, 0.0f, 0.0f, 0.00f);
 	}
 
 private:
