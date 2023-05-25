@@ -30,6 +30,7 @@ public:
 
 	void Update()
 	{
+		std::cout << *scalesPuzzleController << std::endl;
 		if (*scalesPuzzleController > 0)
 		{
 			if (isLeft)
@@ -123,7 +124,7 @@ public:
 				weightsTab[6]->SetActive(true);
 				weightsTab[7]->SetActive(true);
 				weightsTab[8]->SetActive(true);
-				*scalesPuzzleController = 2;
+				*scalesPuzzleController = 3;
 			}
 		}
 	}
