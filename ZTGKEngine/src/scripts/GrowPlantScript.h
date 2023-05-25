@@ -14,14 +14,17 @@ private:
 	int growthState = 0;
 	glm::vec3 translation;
 	int* puzzleState;
-	GraphNode* flowerReference;
+	GraphNode* flowerReference[5];
 public:
 	//Constructor, here assign all the fields from the private section
-	GrowPlantScript(GraphNode* nodePointer, int _growthGoal, int* _puzzleState, GraphNode* _flowerReference) : RealtimeScript(nodePointer)
+	GrowPlantScript(GraphNode* nodePointer, int _growthGoal, int* _puzzleState, GraphNode* _flowerReference[]) : RealtimeScript(nodePointer)
 	{
 		growthGoal = _growthGoal;
-		flowerReference = _flowerReference;
-		translation = flowerReference->getTranslation();
+		for (int i = 0; i < 5; i++)
+		{
+			flowerReference[i] = _flowerReference[i];
+			flowerReference[i]->SetActive(false);
+		}
 		puzzleState = _puzzleState;
 	}
 
@@ -32,9 +35,8 @@ public:
 		if (growthState < 5)
 		{
 			bool isRight = growthGoal == growthState;
+			flowerReference[growthState]->SetActive(true);
 			growthState++;
-			translation.y += 4.0f;
-			flowerReference->setTranslate(translation);
 			if (!isRight && growthGoal == growthState)
 			{
 				*puzzleState += 1;
@@ -48,9 +50,11 @@ public:
 		{
 			if (growthGoal == growthState)
 				*puzzleState--;
-			translation.y -= 4.0f * growthState;
 			growthState = 0;
-			flowerReference->setTranslate(translation);
+			for (GraphNode* flower : flowerReference)
+			{
+				flower->SetActive(false);
+			}
 		}
 	}
 
@@ -60,9 +64,11 @@ public:
 		{
 			if (growthGoal == growthState)
 				*puzzleState -= 1;
-			translation.y -= 200.0f * growthState;
 			growthState = 0;
-			flowerReference->setTranslate(translation);
+			for (GraphNode* flower : flowerReference)
+			{
+				flower->SetActive(false);
+			}
 		}
 		else if (ApTime::instance().pickedElementId == "bucket")
 		{

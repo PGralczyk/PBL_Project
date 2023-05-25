@@ -30,7 +30,6 @@ public:
 
 	void Update()
 	{
-		std::cout << *scalesPuzzleController << std::endl;
 		if (*scalesPuzzleController > 0)
 		{
 			if (isLeft)

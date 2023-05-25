@@ -148,26 +148,22 @@ public:
 
 	void Scene1Setup(Shader* additionalShaders[] = nullptr)
 	{
-		std::cout << "***Scene1***" << std::endl;
-
 		//BRIGHT_WORLD:
-		std::cout << "LOADING: scene structure" << std::endl;
 		GraphNode* Scene1Bright = new GraphNode();
-		GraphNode* bulb =  CreateNode("res/models/House.obj", lightShader);
-
 		//DARK_WORLD:
 		GraphNode* Scene1Dark = new GraphNode();
-		////CHESS_BOARD_LOADING
-		std::cout << "LOADING: chess board" << std::endl;
+		//BULB MARKER
+		GraphNode* bulb = CreateNode("res/models/House.obj", lightShader);
+
+#pragma region Chess Puzzle
+
+#pragma region Chess Main Object
 		GraphNode* ChessMainObject = new GraphNode();
 		GraphNode* DrawerMainObject = new GraphNode();
 		ChessMainObject->AddChild(DrawerMainObject);
-		std::cout << "LOADING: chess board base" << std::endl;
 		GraphNode* ChessBoardBottom = CreateNode("res/models/szachownica_spod.fbx", defaultShader);
 		DrawerMainObject->AddChild(ChessBoardBottom);
-		std::cout << "LOADING: chess drawer" << std::endl;
 		Model* drawerBase = new Model("res/models/szuflada.fbx");
-		std::cout << "LOADING: chess drawer frame" << std::endl;
 		Model* drawerFrame = new Model("res/models/szuflada_obudowa.fbx");
 		drawerBase->SetShader(defaultShader);
 		drawerFrame->SetShader(defaultShader);
@@ -192,8 +188,9 @@ public:
 		drawer2->Translate(glm::vec3(0, -240, 0));
 		drawer3->Translate(glm::vec3(0, -480, 0));
 		ChessMainObject->Translate(glm::vec3(0, 20, 0));
-		
+#pragma endregion
 
+#pragma region Chess Fields
 		//--------------------------Setting-chess-fields--------------------------
 		GraphNode* ChessTiles = new GraphNode();
 		ChessMainObject->AddChild(ChessTiles);
@@ -224,10 +221,13 @@ public:
 				chessTiles[i * 8 + 2 * j + 1]->Translate(glm::vec3(distance * 2 * j + distance, 0, distance * i));
 			}
 		}
+#pragma endregion
+
+#pragma region Chess Pieces
 		//--------------------------Setting-chess-pieces--------------------------
 		ChessPieceScript* pieces[10];
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: whitePawn " << std::endl;
 			Model* _whitePawn = new Model("res/models/pionek_bialy.fbx");
 			_whitePawn->SetShader(defaultShader);
 			GraphNode* whitePawn = new GraphNode(_whitePawn, objectId++);
@@ -235,15 +235,16 @@ public:
 			whitePawn->AddScript(pieces[0]);
 			whitePawn->Translate(glm::vec3(100.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whitePawn);
+
 			//****************
 			GraphNode* whitePawnActivator = new GraphNode(_whitePawn, objectId++);
 			whitePawnActivator->AddScript(new OneTimeActivatorScript(whitePawnActivator, whitePawn));
 			whitePawn->SetActive(false);
 			whitePawnActivator->Translate(glm::vec3(20.0f, 4.0f, -70.0f));
 			whitePawnActivator->Rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			whitePawnActivator->Scale(0.015f);;
+			whitePawnActivator->Scale(0.015f);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: blackPawn " << std::endl;
 			Model* _blackPawn = new Model("res/models/pionek_czarny.fbx");
 			_blackPawn->SetShader(defaultShader);
 			GraphNode* blackPawn = new GraphNode(_blackPawn, objectId++);
@@ -251,6 +252,7 @@ public:
 			blackPawn->AddScript(pieces[1]);
 			blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackPawn);
+
 			//****************
 			GraphNode* blackPawnActivator = new GraphNode(_blackPawn, objectId++);
 			blackPawnActivator->AddScript(new OneTimeActivatorScript(blackPawnActivator, blackPawn));
@@ -260,14 +262,16 @@ public:
 			blackPawnActivator->Scale(0.015f);
 			//Below is a parent for two pawn activators, so that they can be activated together
 			GraphNode* chandelierPrizes = new GraphNode();
-			Scene1Bright->AddChild(chandelierPrizes);
+			Scene1->AddChild(chandelierPrizes);
 			if(ApTime::instance().isEasyMode == false)
 				chandelierPrizes->AddChild(blackPawnActivator);
 			chandelierPrizes->AddChild(whitePawnActivator);
 			chandelierPrizes->SetActive(false);
 			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 0.0f));
+			whitePawnActivator->Scale(0.02f);
+			blackPawnActivator->Scale(0.02f);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: whiteKing " << std::endl;
 			Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
 			_whiteKing->SetShader(defaultShader);
 			GraphNode* whiteKing = new GraphNode(_whiteKing, objectId++);
@@ -275,14 +279,15 @@ public:
 			whiteKing->AddScript(pieces[2]);
 			whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKing);
+
 			//****************
 			GraphNode* whiteKingActivator = new GraphNode(_whiteKing, objectId++);
 			whiteKingActivator->AddScript(new OneTimeActivatorScript(whiteKingActivator, whiteKing));
 			whiteKing->SetActive(false);
 			whiteKingActivator->Scale(0.015f);
 			whiteKingActivator->Translate(glm::vec3(20.0f, 73.0f, -123.0f));
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: blackKing " << std::endl;
 			Model* _blackKing = new Model("res/models/krol_czarny.fbx");
 			_blackKing->SetShader(defaultShader);
 			GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
@@ -290,6 +295,7 @@ public:
 			blackKing->AddScript(pieces[3]);
 			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackKing);
+
 			//****************
 			GraphNode* blackKingActivator = new GraphNode(_blackKing, objectId++);
 			blackKingActivator->AddScript(new OneTimeActivatorScript(blackKingActivator, blackKing));
@@ -302,8 +308,8 @@ public:
 			if (ApTime::instance().isEasyMode == false)
 				plantPuzzlePrizes->AddChild(blackKingActivator);
 			plantPuzzlePrizes->SetActive(false);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: whiteQueen " << std::endl;
 			Model* _whiteQueen = new Model("res/models/krolowa_biala.fbx");
 			_whiteQueen->SetShader(defaultShader);
 			GraphNode* whiteQueen = new GraphNode(_whiteQueen, objectId++);
@@ -311,8 +317,8 @@ public:
 			whiteQueen->AddScript(pieces[4]);
 			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteQueen);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: blackQueen " << std::endl;
 			Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
 			_blackQueen->SetShader(defaultShader);
 			GraphNode* blackQueen = new GraphNode(_blackQueen, objectId++);
@@ -321,36 +327,39 @@ public:
 			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
 			if (ApTime::instance().isEasyMode == false)
 				ChessMainObject->AddChild(blackQueen);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: whiteKnight " << std::endl;
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
 			pieces[6] = new ChessPieceScript(whiteKnight, window);
 			whiteKnight->AddScript(pieces[6]);
 			whiteKnight->Translate(glm::vec3(1300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKnight);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: blackKnight " << std::endl;
 			GraphNode* blackKnight = CreateNode("res/models/konik_czarny.fbx", defaultShader);
 			pieces[7] = new ChessPieceScript(blackKnight, window);
 			blackKnight->AddScript(pieces[7]);
 			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
 			if (ApTime::instance().isEasyMode == false)
 				ChessMainObject->AddChild(blackKnight);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: whiteRook " << std::endl;
 			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
 			pieces[8] = new ChessPieceScript(whiteRook, window);
 			whiteRook->AddScript(pieces[8]);
 			whiteRook->Translate(glm::vec3(1700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteRook);
+
 			//------------------------------------------------------------------------
-			std::cout << "LOADING: blackRook " << std::endl;
 			GraphNode* blackRook = CreateNode("res/models/wieza_czarna.fbx", defaultShader);
 			pieces[9] = new ChessPieceScript(blackRook, window);
 			blackRook->AddScript(pieces[9]);
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
 			if (ApTime::instance().isEasyMode == false)
 				ChessMainObject->AddChild(blackRook);
+#pragma endregion
+
+#pragma region Chess Puzzle Scripting
 		//-----------------------------Creating-Puzzle----------------------------
 		ChessBoardPuzzle* puzzle = new ChessBoardPuzzle(ChessMainObject, chessTiles, pieces, window);
 		ChessMainObject->AddScript(puzzle);
@@ -361,7 +370,10 @@ public:
 		}
 		ChessMainObject->Scale(0.015);
 		ChessMainObject->Translate(glm::vec3(0.0f, 20.0f, 0.0f));
-		std::cout << "LOADING: mainScene1 object " << std::endl;
+#pragma endregion
+#pragma endregion
+
+#pragma region World Configuration
 		GraphNode* SceneBackground = CreateNode("res/models/pokoj_export.fbx", defaultShader);
 		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0]);
 		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0]);
@@ -388,8 +400,9 @@ public:
 		SceneOutsideDark->Translate(glm::vec3(-100.0f, 55.0f, 136.0f));
 		SceneOutsideDark->Scale(0.35f);
 		//SceneOutsideDark->Rotate(glm::vec3(0.4f, 0.5f, 0.0f));
+#pragma endregion
 
-
+#pragma region Chandelier Puzzle
 		//--------------------------Chandelier-Puzzle--------------------------
 		GraphNode* ChandelierBright = new GraphNode();
 		Scene1Bright->AddChild(ChandelierBright);
@@ -420,55 +433,148 @@ public:
 		Line->Scale(0.1f);
 		Line->Translate(glm::vec3(20.0f, -10.0f, -10.0f));
 		Scene1Dark->AddChild(Line);
+#pragma endregion
 
-		//--------------------------------FLOWERS-AND-THE-REST----------------------------
+#pragma region Flowers Puzzle
 		int* puzzleState = new int;
 		*puzzleState = 0;
 
-		GraphNode* RedFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_czerwony.fbx", defaultShader);
-		RedFlower->Scale(0.1f);
-		RedFlower->Translate(glm::vec3(-10.0f, -20.0f, -5.0f));
-		Scene1Dark->AddChild(RedFlower);
+		Model* redFlower = new Model("res/models/zagadka_kwiaty/kwiatek_czerwony.fbx");
+		redFlower->SetShader(defaultShader);
+		Model* blueFlower = new Model("res/models/zagadka_kwiaty/kwiatek_niebieski.fbx");
+		blueFlower->SetShader(defaultShader);
+		Model* greenFlower = new Model("res/models/zagadka_kwiaty/kwiatek_zielony.fbx");
+		greenFlower->SetShader(defaultShader);
+
+#pragma region Red Flowers
+		GraphNode* RedFlowers[5];
+
+		GraphNode* RedFlower1 = new GraphNode(redFlower, objectId);
+		RedFlower1->Scale(0.1f);
+		RedFlower1->Translate(glm::vec3(-10.0f, -5.0f, -5.0f));
+		Scene1Dark->AddChild(RedFlower1);
+		RedFlowers[0] = RedFlower1;
+
+		GraphNode* RedFlower2 = new GraphNode(redFlower, objectId);
+		RedFlower2->Scale(0.1f);
+		RedFlower2->Translate(glm::vec3(-10.0f, 5.0f, -5.0f));
+		Scene1Dark->AddChild(RedFlower2);
+		RedFlowers[1] = RedFlower2;
+
+		GraphNode* RedFlower3 = new GraphNode(redFlower, objectId);
+		RedFlower3->Scale(0.1f);
+		RedFlower3->Translate(glm::vec3(-10.0f, 15.0f, -5.0f));
+		Scene1Dark->AddChild(RedFlower3);
+		RedFlowers[2] = RedFlower3;
+
+		GraphNode* RedFlower4 = new GraphNode(redFlower, objectId);
+		RedFlower4->Scale(0.1f);
+		RedFlower4->Translate(glm::vec3(-10.0f, 25.0f, -5.0f));
+		Scene1Dark->AddChild(RedFlower4);
+		RedFlowers[3] = RedFlower4;
+
+		GraphNode* RedFlower5 = new GraphNode(redFlower, objectId);
+		RedFlower5->Scale(0.1f);
+		RedFlower5->Translate(glm::vec3(-10.0f, 35.0f, -5.0f));
+		Scene1Dark->AddChild(RedFlower5);
+		RedFlowers[4] = RedFlower5;
+#pragma endregion
 
 		GraphNode* RedPot = CreateNode("res/models/zagadka_kwiaty/donica_czerwona.fbx", defaultShader);
 		RedPot->Scale(0.1f);
 		RedPot->Translate(glm::vec3(-10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(RedPot);
-		RedPot->AddScript(new GrowPlantScript(RedPot, 3, puzzleState, RedFlower));
+		RedPot->AddScript(new GrowPlantScript(RedPot, 3, puzzleState, RedFlowers));
 
 		GraphNode* RedStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_czerwona.fbx", defaultShader);
 		RedStripes->Scale(0.1f);
 		RedStripes->Translate(glm::vec3(-10.0f, 0.0f, -5.0f));
 		Scene1Dark->AddChild(RedStripes);
 
+#pragma region Blue Flowers
+		GraphNode* BlueFlowers[5];
 
-		GraphNode* BlueFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_niebieski.fbx", defaultShader);
-		BlueFlower->Scale(0.1f);
-		BlueFlower->Translate(glm::vec3(45.0f, -20.0f, 0.0f));
-		Scene1Dark->AddChild(BlueFlower);
+		GraphNode* BlueFlower1 = new GraphNode(blueFlower, objectId);
+		BlueFlower1->Scale(0.1f);
+		BlueFlower1->Translate(glm::vec3(45.0f, -5.0f, 0.0f));
+		Scene1Dark->AddChild(BlueFlower1);
+		BlueFlowers[0] = BlueFlower1;
+
+		GraphNode* BlueFlower2 = new GraphNode(blueFlower, objectId);
+		BlueFlower2->Scale(0.1f);
+		BlueFlower2->Translate(glm::vec3(45.0f, 5.0f, 0.0f));
+		Scene1Dark->AddChild(BlueFlower2);
+		BlueFlowers[1] = BlueFlower2;
+
+		GraphNode* BlueFlower3 = new GraphNode(blueFlower, objectId);
+		BlueFlower3->Scale(0.1f);
+		BlueFlower3->Translate(glm::vec3(45.0f, 15.0f, 0.0f));
+		Scene1Dark->AddChild(BlueFlower3);
+		BlueFlowers[2] = BlueFlower3;
+
+		GraphNode* BlueFlower4 = new GraphNode(blueFlower, objectId);
+		BlueFlower4->Scale(0.1f);
+		BlueFlower4->Translate(glm::vec3(45.0f, 25.0f, 0.0f));
+		Scene1Dark->AddChild(BlueFlower4);
+		BlueFlowers[3] = BlueFlower4;
+
+		GraphNode* BlueFlower5 = new GraphNode(blueFlower, objectId);
+		BlueFlower5->Scale(0.1f);
+		BlueFlower5->Translate(glm::vec3(45.0f, 35.0f, 0.0f));
+		Scene1Dark->AddChild(BlueFlower5);
+		BlueFlowers[4] = BlueFlower5;
+#pragma endregion
 
 		GraphNode* BluePot = CreateNode("res/models/zagadka_kwiaty/donica_niebieska.fbx", defaultShader);
 		BluePot->Scale(0.1f);
 		BluePot->Translate(glm::vec3(45.0f, 0.0f, 0.0f));
 		Scene1Bright->AddChild(BluePot);
-		BluePot->AddScript(new GrowPlantScript(BluePot, 4, puzzleState, BlueFlower));
+		BluePot->AddScript(new GrowPlantScript(BluePot, 4, puzzleState, BlueFlowers));
 
 		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
 		BlueStripes->Scale(0.1f);
 		BlueStripes->Translate(glm::vec3(45.0f, 0.0f, 0.0f));
 		Scene1Dark->AddChild(BlueStripes);
 
+#pragma region Green Flowers
+		GraphNode* GreenFlowers[5];
 
-		GraphNode* GreenFlower = CreateNode("res/models/zagadka_kwiaty/kwiatek_zielony.fbx", defaultShader);
-		GreenFlower->Scale(0.1f);
-		GreenFlower->Translate(glm::vec3(10.0f, -20.0f, -5.0f));
-		Scene1Dark->AddChild(GreenFlower);
+		GraphNode* GreenFlower1 = new GraphNode(greenFlower, objectId);
+		GreenFlower1->Scale(0.1f);
+		GreenFlower1->Translate(glm::vec3(10.0f, -5.0f, -5.0f));
+		Scene1Dark->AddChild(GreenFlower1);
+		GreenFlowers[0] = GreenFlower1;
+
+		GraphNode* GreenFlower2 = new GraphNode(greenFlower, objectId);
+		GreenFlower2->Scale(0.1f);
+		GreenFlower2->Translate(glm::vec3(10.0f, 5.0f, -5.0f));
+		Scene1Dark->AddChild(GreenFlower2);
+		GreenFlowers[1] = GreenFlower2;
+
+		GraphNode* GreenFlower3 = new GraphNode(greenFlower, objectId);
+		GreenFlower3->Scale(0.1f);
+		GreenFlower3->Translate(glm::vec3(10.0f, 15.0f, -5.0f));
+		Scene1Dark->AddChild(GreenFlower3);
+		GreenFlowers[2] = GreenFlower3;
+
+		GraphNode* GreenFlower4 = new GraphNode(greenFlower, objectId);
+		GreenFlower4->Scale(0.1f);
+		GreenFlower4->Translate(glm::vec3(10.0f, 25.0f, -5.0f));
+		Scene1Dark->AddChild(GreenFlower4);
+		GreenFlowers[3] = GreenFlower4;
+
+		GraphNode* GreenFlower5 = new GraphNode(greenFlower, objectId);
+		GreenFlower5->Scale(0.1f);
+		GreenFlower5->Translate(glm::vec3(10.0f, 35.0f, -5.0f));
+		Scene1Dark->AddChild(GreenFlower5);
+		GreenFlowers[4] = GreenFlower5;
+#pragma endregion
 
 		GraphNode* GreenPot = CreateNode("res/models/zagadka_kwiaty/donica_zielona.fbx", defaultShader);
 		GreenPot->Scale(0.1f);
 		GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(GreenPot);
-		GreenPot->AddScript(new GrowPlantScript(GreenPot, 2, puzzleState, GreenFlower));
+		GreenPot->AddScript(new GrowPlantScript(GreenPot, 2, puzzleState, GreenFlowers));
 
 		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
 		GreenStripes->Scale(0.1f);
@@ -488,12 +594,13 @@ public:
 		WhitePot->AddScript(new PlantPuzzleController(WhitePot, puzzleState, plantPuzzlePrizes));
 		Scene1Dark->AddChild(plantPuzzlePrizes);
 
-
 		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
 		Tap->Scale(0.1f);
-		Tap->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		Tap->Translate(glm::vec3(10.0f, 0.0f, -25.0f));
 		Scene1Dark->AddChild(Tap);
+#pragma endregion
 
+#pragma region UI Tap Door Drawers
 		//--------------------------------UI-AND-INVENTORY--------------------------------
 		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/gui_panel.png", textureShader);
@@ -545,16 +652,20 @@ public:
 		door->Translate(glm::vec3(40.0, 0.0, 120.0));
 		Scene1->AddChild(door);
 		door->AddScript(new RoomSwapManager(door, Scene1Bright, Scene1Dark, window, Scene1, Scene2, isBright, &engageSwap));
+#pragma endregion
 
+#pragma region Scales Puzzle
 		//SCALES PUZZLE
 		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
 		scalesPlantLeft->Scale(0.1f);
 		Scene1Dark->AddChild(scalesPlantLeft);
 		scalesPlantLeft->Translate(glm::vec3(0.0f, 0.0f, 60.0f));
+		scalesPlantLeft->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
 		scalesPlantRight->Scale(0.1f);
 		Scene1Dark->AddChild(scalesPlantRight);
 		scalesPlantRight->Translate(glm::vec3(0.0f, 0.0f, -30.0f));
+		scalesPlantRight->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		GraphNode* ScalesPuzzle = new GraphNode();
 		ScalesPuzzle->Scale(0.1);
@@ -572,6 +683,7 @@ public:
 		ScalesPuzzle->AddChild(rightScales);
 		rightScales->Translate(glm::vec3(0.0f, 0.0f, -236.0f));
 
+#pragma region Weights
 		Model* weight = new Model("res/models/ciezarek.fbx");
 		weight->SetShader(defaultShader);
 		GraphNode* weight1l = new GraphNode(weight, objectId++);
@@ -640,6 +752,7 @@ public:
 		scalesTab[6] = weight1;
 		scalesTab[7] = weight2;
 		scalesTab[8] = weight3;
+#pragma endregion
 
 		GraphNode* scalesPuzzlePrizes = new GraphNode();
 
@@ -648,6 +761,7 @@ public:
 		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
 		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab));
 		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab));
+#pragma endregion
 	}
 
 	void PostProcessSetup()
