@@ -126,7 +126,7 @@ public:
 			ApTime::instance().currentPuzzleState = 3;
 			if (prize1 != NULL)
 			{
-				prize1->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
+				prize1->GetNode()->Translate(glm::vec3(400.0f, 0.0f, 0.0f));
 				prize1->GetNode()->isHoverable = true;
 				prize1->enabled = true;
 			}
@@ -137,7 +137,7 @@ public:
 			ApTime::instance().currentPuzzleState = 4;
 			if (prize2 != NULL)
 			{
-				prize2->GetNode()->Translate(glm::vec3(400.0f, 0.0f, 0.0f));
+				prize2->GetNode()->Translate(glm::vec3(300.0f, 0.0f, 0.0f));
 				prize2->GetNode()->isHoverable = true;
 				prize2->enabled = true;
 			}
