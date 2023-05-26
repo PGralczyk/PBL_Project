@@ -49,6 +49,8 @@ private:
 	float timeCounter;
 
 	bool engageSwap;
+	bool phase;
+	bool poof; //phase change peak checker
 
 public:
 	GraphNode* world;
@@ -84,6 +86,8 @@ public:
 		world = new GraphNode();
 		UI = new GraphNode();
 		timeCounter = 0.0f;
+		phase = true;
+		poof = false;
 		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
 		Loading("res/models/everest.jpg");
 		PostProcessSetup();
@@ -95,6 +99,8 @@ public:
 	{
 		world->Update(currentlyPicked, singleMouse, window);
 		UI->Update(currentlyPicked, singleMouse, window);
+				if (poof)
+			poof = false;
 	}
 
 	void ExecuteStartScripts()
@@ -127,13 +133,23 @@ public:
 		if (engageSwap) {
 			BlurRender(currentlyPicked, timeCounter);
 			//count time
-			timeCounter += ApTime::instance().deltaTime;
-			if (timeCounter > 1.0f)
+
+			if (timeCounter >= 0.5f) {
+				phase = false;
+				timeCounter = 0.5f;
+				poof = true;
+			}
+			if(phase)
+				timeCounter += ApTime::instance().deltaTime;
+			else
+				timeCounter -= ApTime::instance().deltaTime;
+
+			if (timeCounter <= 0.0f)
 			{
 				engageSwap = false;
 				timeCounter = 0.0f;
+				phase = true;
 			}
-				
 		}
 		glDepthFunc(GL_ALWAYS);
 		UI->Draw(currentlyPicked);
@@ -223,7 +239,7 @@ public:
 			Model* _whitePawn = new Model("res/models/pionek_bialy.fbx");
 			_whitePawn->SetShader(defaultShader);
 			GraphNode* whitePawn = new GraphNode(_whitePawn, objectId++);
-			pieces[0] = new ChessPieceScript(whitePawn, window);
+			pieces[0] = new ChessPieceScript(whitePawn, window, &poof);
 			whitePawn->AddScript(pieces[0]);
 			whitePawn->Translate(glm::vec3(100.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whitePawn);
@@ -240,7 +256,7 @@ public:
 			Model* _blackPawn = new Model("res/models/pionek_czarny.fbx");
 			_blackPawn->SetShader(defaultShader);
 			GraphNode* blackPawn = new GraphNode(_blackPawn, objectId++);
-			pieces[1] = new ChessPieceScript(blackPawn, window);
+			pieces[1] = new ChessPieceScript(blackPawn, window, &poof);
 			blackPawn->AddScript(pieces[1]);
 			blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackPawn);
@@ -267,7 +283,7 @@ public:
 			Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
 			_whiteKing->SetShader(defaultShader);
 			GraphNode* whiteKing = new GraphNode(_whiteKing, objectId++);
-			pieces[2] = new ChessPieceScript(whiteKing, window);
+			pieces[2] = new ChessPieceScript(whiteKing, window, &poof);
 			whiteKing->AddScript(pieces[2]);
 			whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKing);
@@ -283,7 +299,7 @@ public:
 			Model* _blackKing = new Model("res/models/krol_czarny.fbx");
 			_blackKing->SetShader(defaultShader);
 			GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
-			pieces[3] = new ChessPieceScript(blackKing, window);
+			pieces[3] = new ChessPieceScript(blackKing, window, &poof);
 			blackKing->AddScript(pieces[3]);
 			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(blackKing);
@@ -305,7 +321,7 @@ public:
 			Model* _whiteQueen = new Model("res/models/krolowa_biala.fbx");
 			_whiteQueen->SetShader(defaultShader);
 			GraphNode* whiteQueen = new GraphNode(_whiteQueen, objectId++);
-			pieces[4] = new ChessPieceScript(whiteQueen, window);
+			pieces[4] = new ChessPieceScript(whiteQueen, window, &poof);
 			whiteQueen->AddScript(pieces[4]);
 			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteQueen);
@@ -314,7 +330,7 @@ public:
 			Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
 			_blackQueen->SetShader(defaultShader);
 			GraphNode* blackQueen = new GraphNode(_blackQueen, objectId++);
-			pieces[5] = new ChessPieceScript(blackQueen, window);
+			pieces[5] = new ChessPieceScript(blackQueen, window, &poof);
 			blackQueen->AddScript(pieces[5]);
 			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
 			if (ApTime::instance().isEasyMode == false)
@@ -322,14 +338,14 @@ public:
 
 			//------------------------------------------------------------------------
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
-			pieces[6] = new ChessPieceScript(whiteKnight, window);
+			pieces[6] = new ChessPieceScript(whiteKnight, window, &poof);
 			whiteKnight->AddScript(pieces[6]);
 			whiteKnight->Translate(glm::vec3(1300.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKnight);
 
 			//------------------------------------------------------------------------
 			GraphNode* blackKnight = CreateNode("res/models/konik_czarny.fbx", defaultShader);
-			pieces[7] = new ChessPieceScript(blackKnight, window);
+			pieces[7] = new ChessPieceScript(blackKnight, window, &poof);
 			blackKnight->AddScript(pieces[7]);
 			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
 			if (ApTime::instance().isEasyMode == false)
@@ -337,14 +353,14 @@ public:
 
 			//------------------------------------------------------------------------
 			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
-			pieces[8] = new ChessPieceScript(whiteRook, window);
+			pieces[8] = new ChessPieceScript(whiteRook, window, &poof);
 			whiteRook->AddScript(pieces[8]);
 			whiteRook->Translate(glm::vec3(1700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteRook);
 
 			//------------------------------------------------------------------------
 			GraphNode* blackRook = CreateNode("res/models/wieza_czarna.fbx", defaultShader);
-			pieces[9] = new ChessPieceScript(blackRook, window);
+			pieces[9] = new ChessPieceScript(blackRook, window, &poof);
 			blackRook->AddScript(pieces[9]);
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
 			if (ApTime::instance().isEasyMode == false)
@@ -643,7 +659,7 @@ public:
 		door->Rotate(70, glm::vec3(0.0, 1.0, 0.0));
 		door->Translate(glm::vec3(40.0, 0.0, 120.0));
 		Scene1->AddChild(door);
-		door->AddScript(new RoomSwapManager(door, Scene1Bright, Scene1Dark, window, Scene1, Scene2, isBright, &engageSwap));
+		door->AddScript(new RoomSwapManager(door, Scene1Bright, Scene1Dark, window, Scene1, Scene2, isBright, &engageSwap, &poof));
 #pragma endregion
 
 #pragma region Scales Puzzle

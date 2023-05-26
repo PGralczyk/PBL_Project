@@ -24,18 +24,20 @@ private:
 	bool controlPressed = false;
 
 	bool* lightVersion;
+	bool* poof;
 
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
 		GLFWwindow* givenWindow, GraphNode* _currentScene, GraphNode* _otherScene,
-		bool* givenVersion, bool* swapPostman = nullptr): RealtimeScript(nodePointer)
+		bool* givenVersion, bool* swapPostman = nullptr, bool* poof = nullptr): RealtimeScript(nodePointer)
 	{
 		brightWorld = brightNode;
 		darkWorld = darkNode;
 		window = givenWindow;
 		lightVersion = givenVersion;
 		this->swapPostman = swapPostman;
+		this->poof = poof;
 		currentScene = _currentScene;
 		otherScene = _otherScene;
 	}
@@ -49,6 +51,21 @@ public:
 
 	void Update()
 	{
+		if (*poof) {
+			darkWorld->SetActive(!darkWorld->GetActive());
+			brightWorld->SetActive(!brightWorld->GetActive());
+
+			if (brightWorld->GetActive())
+			{
+				*lightVersion = true;
+				ApTime::instance().brightWorld = true;
+			}
+			else
+			{
+				*lightVersion = false;
+				ApTime::instance().brightWorld = false;
+			}
+		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
 			if (!keyPressed)
@@ -56,18 +73,6 @@ public:
 				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
-				darkWorld->SetActive(!darkWorld->GetActive());
-				brightWorld->SetActive(!brightWorld->GetActive());
-				if (brightWorld->GetActive())
-				{
-					*lightVersion = true;
-					ApTime::instance().brightWorld = true;
-				}
-				else
-				{
-					*lightVersion = false;
-					ApTime::instance().brightWorld = false;
-				}
 			}
 		}
 		else
