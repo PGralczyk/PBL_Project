@@ -634,6 +634,10 @@ public:
 			"res/models/hud/normal_world/hud_bg_s1.png", textureShader);
 		bottomPanel->AddChild(brightBackground);
 
+		GraphNode* brightLeaves1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_leaves1_s1.png", textureShader);
+		bottomPanel->AddChild(brightLeaves1);
+
 		GraphNode* brightJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_journal_s1.png", textureShader);
 		bottomPanel->AddChild(brightJournal);
@@ -672,10 +676,6 @@ public:
 		brightMenuHover->SetActive(false);
 		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
-
-		GraphNode* brightLeaves1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hud/normal_world/hud_leaves1_s1.png", textureShader);
-		bottomPanel->AddChild(brightLeaves1);
 
 		GraphNode* brightLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_leaves2_s1.png", textureShader);
