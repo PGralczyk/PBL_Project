@@ -25,12 +25,14 @@ private:
 
 	bool* lightVersion;
 	bool* poof;
+	bool* singleClick;
+	bool forceSwap = false;
 
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
 		GLFWwindow* givenWindow, GraphNode* _currentScene, GraphNode* _otherScene,
-		bool* givenVersion, bool* swapPostman = nullptr, bool* poof = nullptr): RealtimeScript(nodePointer)
+		bool* givenVersion, bool* _singleClick, bool* swapPostman = nullptr, bool* poof = nullptr): RealtimeScript(nodePointer)
 	{
 		brightWorld = brightNode;
 		darkWorld = darkNode;
@@ -40,6 +42,7 @@ public:
 		this->poof = poof;
 		currentScene = _currentScene;
 		otherScene = _otherScene;
+		singleClick = _singleClick;
 	}
 
 	~RoomSwapManager() = default;
@@ -66,10 +69,11 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || forceSwap))
 		{
 			if (!keyPressed)
 			{
+				forceSwap = false;
 				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
@@ -93,7 +97,7 @@ public:
 			controlPressed = false;
 		}
 
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+		if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && *singleClick) || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 		{
 			ApTime::instance().adviseWindow = 0.0f;
 		}
@@ -106,5 +110,10 @@ public:
 		darkWorld->SetActive(false);
 		currentScene->SetActive(false);
 		otherScene->SetActive(true);
+	}
+
+	void SetForceSwap()
+	{
+		forceSwap = true;
 	}
 };

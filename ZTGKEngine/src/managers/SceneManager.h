@@ -32,6 +32,10 @@
 #include "../scripts/PlantPuzzleController.h";
 #include "../scripts/GrowPlantScript.h";
 #include "../scripts/CraneScript.h";
+#include "../scripts/ActivateOnHoverScript.h";
+#include "../scripts/DeactivateOnMouseLeave.h";
+#include "../scripts/HintButton.h";
+#include "../scripts/SwapButton.h";
 
 class SceneManager
 {
@@ -610,11 +614,72 @@ public:
 
 #pragma region UI Tap Door Drawers
 		//--------------------------------UI-AND-INVENTORY--------------------------------
-		GraphNode* bottomPanel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/gui_panel.png", textureShader);
-		UI->AddChild(bottomPanel);
-		bottomPanel->AddScript(new OtherTestRealtimeScript(bottomPanel));
+		GraphNode* door = CreateNode("res/models/drzwi.fbx", defaultShader);
+		door->Scale(0.15f);
+		door->Rotate(70, glm::vec3(0.0, 1.0, 0.0));
+		door->Translate(glm::vec3(40.0, 0.0, 120.0));
+		Scene1->AddChild(door);
+		
 
+		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, window,
+			Scene1, Scene2, isBright, singleClick, &engageSwap, &poof);
+		door->AddScript(manager1);
+
+		GraphNode* bottomPanel = new GraphNode();
+		UI->AddChild(bottomPanel);
+
+		GraphNode* brightBackground = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_bg_s1.png", textureShader);
+		bottomPanel->AddChild(brightBackground);
+
+		GraphNode* brightJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_journal_s1.png", textureShader);
+		bottomPanel->AddChild(brightJournal);
+
+		GraphNode* brightPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_plant_s1.png", textureShader);
+		bottomPanel->AddChild(brightPlant);
+
+		GraphNode* brightPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_plant__hover_s1.png", textureShader);
+		bottomPanel->AddChild(brightPlantHover);
+		brightPlantHover->SetActive(false);
+		brightPlant->AddScript(new ActivateOnHoverScript(brightPlant, brightPlantHover));
+		brightPlantHover->AddScript(new DeactivateOnMouseLeave(brightPlantHover));
+		brightPlantHover->AddScript(new SwapButton(brightPlantHover, manager1));
+
+		GraphNode* brightHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_hint_s1.png", textureShader);
+		bottomPanel->AddChild(brightHint);
+
+		GraphNode* brightHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
+		bottomPanel->AddChild(brightHintHover);
+		brightHintHover->SetActive(false);
+		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, ApTime::instance().isEasyMode));
+		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
+		brightHintHover->AddScript(new HintButton(brightHintHover));
+
+		GraphNode* brightMenu = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_menu_s1.png", textureShader);
+		bottomPanel->AddChild(brightMenu);
+
+		GraphNode* brightMenuHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_menu_hover_s1.png", textureShader);
+		bottomPanel->AddChild(brightMenuHover);
+		brightMenuHover->SetActive(false);
+		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
+		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
+
+		GraphNode* brightLeaves1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_leaves1_s1.png", textureShader);
+		bottomPanel->AddChild(brightLeaves1);
+
+		GraphNode* brightLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_leaves2_s1.png", textureShader);
+		bottomPanel->AddChild(brightLeaves2);
+
+		//---------------------------------------------------------------------------
 		GraphNode* scissors = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/nozyce.png", textureShader);
 		UI->AddChild(scissors);
@@ -654,121 +719,115 @@ public:
 
 		puzzle->SetPrizes(drawer3Script, drawer2Script);
 
-		GraphNode* door = CreateNode("res/models/drzwi.fbx", defaultShader);
-		door->Scale(0.15f);
-		door->Rotate(70, glm::vec3(0.0, 1.0, 0.0));
-		door->Translate(glm::vec3(40.0, 0.0, 120.0));
-		Scene1->AddChild(door);
-		door->AddScript(new RoomSwapManager(door, Scene1Bright, Scene1Dark, window, Scene1, Scene2, isBright, &engageSwap, &poof));
 #pragma endregion
 
 #pragma region Scales Puzzle
-//		//SCALES PUZZLE
-//		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
-//		scalesPlantLeft->Scale(0.1f);
-//		Scene1Dark->AddChild(scalesPlantLeft);
-//		scalesPlantLeft->Translate(glm::vec3(0.0f, 0.0f, 60.0f));
-//		scalesPlantLeft->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-//		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
-//		scalesPlantRight->Scale(0.1f);
-//		Scene1Dark->AddChild(scalesPlantRight);
-//		scalesPlantRight->Translate(glm::vec3(0.0f, 0.0f, -30.0f));
-//		scalesPlantRight->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-//
-//		GraphNode* ScalesPuzzle = new GraphNode();
-//		ScalesPuzzle->Scale(0.1);
-//		ScalesPuzzle->Translate(glm::vec3(70.0f, 40.0f, 0.0f));
-//		Scene1Bright->AddChild(ScalesPuzzle);
-//
-//		GraphNode* staticScales = CreateNode("res/models/stojak.fbx", defaultShader);
-//		ScalesPuzzle->AddChild(staticScales);
-//		GraphNode* rotatingScales = CreateNode("res/models/bujak.fbx", defaultShader);
-//		rotatingScales->Translate(glm::vec3(0.0f, 188.0f, 0.0f));
-//		ScalesPuzzle->AddChild(rotatingScales);
-//		GraphNode* leftScales = CreateNode("res/models/szalka.fbx", defaultShader);
-//		ScalesPuzzle->AddChild(leftScales);
-//		GraphNode* rightScales = CreateNode("res/models/szalka.fbx", defaultShader);
-//		ScalesPuzzle->AddChild(rightScales);
-//		rightScales->Translate(glm::vec3(0.0f, 0.0f, -236.0f));
-//
-//#pragma region Weights
-//		Model* weight = new Model("res/models/ciezarek.fbx");
-//		weight->SetShader(defaultShader);
-//		GraphNode* weight1l = new GraphNode(weight, objectId++);
-//		leftScales->AddChild(weight1l);
-//		weight1l->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
-//		weight1l->Scale(0.75);
-//		weight1l->SetActive(false);
-//
-//		GraphNode* weight2l = new GraphNode(weight, objectId++);
-//		leftScales->AddChild(weight2l);
-//		weight2l->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
-//		weight2l->Scale(0.75);
-//		weight2l->SetActive(false);
-//
-//		GraphNode* weight3l = new GraphNode(weight, objectId++);
-//		leftScales->AddChild(weight3l);
-//		weight3l->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
-//		weight3l->Scale(0.75);
-//		weight3l->SetActive(false);
-//
-//		GraphNode* weight1r = new GraphNode(weight, objectId++);
-//		rightScales->AddChild(weight1r);
-//		weight1r->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
-//		weight1r->Scale(0.75);
-//		weight1r->SetActive(false);
-//
-//		GraphNode* weight2r = new GraphNode(weight, objectId++);
-//		rightScales->AddChild(weight2r);
-//		weight2r->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
-//		weight2r->Scale(0.75);
-//		weight2r->SetActive(false);
-//
-//		GraphNode* weight3r = new GraphNode(weight, objectId++);
-//		rightScales->AddChild(weight3r);
-//		weight3r->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
-//		weight3r->Scale(0.75);
-//		weight3r->SetActive(false);
-//
-//		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-//		weight1->Scale(0.5);
-//		weight1->Translate(glm::vec3(450, -200, 0));
-//		UI->AddChild(weight1);
-//		weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
-//
-//		GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-//			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-//		weight2->Scale(0.5);
-//		weight2->Translate(glm::vec3(600, -200, 0));
-//		UI->AddChild(weight2);
-//		weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
-//
-//		GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-//			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-//		weight3->Scale(0.5);
-//		weight3->Translate(glm::vec3(750, -200, 0));
-//		UI->AddChild(weight3);
-//		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
-//
-//		GraphNode* scalesTab[9];
-//		scalesTab[0] = weight1l;
-//		scalesTab[1] = weight2l;
-//		scalesTab[2] = weight3l;
-//		scalesTab[3] = weight1r;
-//		scalesTab[4] = weight2r;
-//		scalesTab[5] = weight3r;
-//		scalesTab[6] = weight1;
-//		scalesTab[7] = weight2;
-//		scalesTab[8] = weight3;
-//#pragma endregion
-//
-//		GraphNode* scalesPuzzlePrizes = new GraphNode();
-//
-//		int* scalesPuzzleController = new int;
-//		*scalesPuzzleController = 3;
-//		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
-//		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab));
-//		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab));
+		//SCALES PUZZLE
+		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
+		scalesPlantLeft->Scale(0.1f);
+		Scene1Dark->AddChild(scalesPlantLeft);
+		scalesPlantLeft->Translate(glm::vec3(0.0f, 0.0f, 60.0f));
+		scalesPlantLeft->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
+		scalesPlantRight->Scale(0.1f);
+		Scene1Dark->AddChild(scalesPlantRight);
+		scalesPlantRight->Translate(glm::vec3(0.0f, 0.0f, -30.0f));
+		scalesPlantRight->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		GraphNode* ScalesPuzzle = new GraphNode();
+		ScalesPuzzle->Scale(0.1);
+		ScalesPuzzle->Translate(glm::vec3(70.0f, 40.0f, 0.0f));
+		Scene1Bright->AddChild(ScalesPuzzle);
+
+		GraphNode* staticScales = CreateNode("res/models/stojak.fbx", defaultShader);
+		ScalesPuzzle->AddChild(staticScales);
+		GraphNode* rotatingScales = CreateNode("res/models/bujak.fbx", defaultShader);
+		rotatingScales->Translate(glm::vec3(0.0f, 188.0f, 0.0f));
+		ScalesPuzzle->AddChild(rotatingScales);
+		GraphNode* leftScales = CreateNode("res/models/szalka.fbx", defaultShader);
+		ScalesPuzzle->AddChild(leftScales);
+		GraphNode* rightScales = CreateNode("res/models/szalka.fbx", defaultShader);
+		ScalesPuzzle->AddChild(rightScales);
+		rightScales->Translate(glm::vec3(0.0f, 0.0f, -236.0f));
+
+#pragma region Weights
+		Model* weight = new Model("res/models/ciezarek.fbx");
+		weight->SetShader(defaultShader);
+		GraphNode* weight1l = new GraphNode(weight, objectId++);
+		leftScales->AddChild(weight1l);
+		weight1l->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
+		weight1l->Scale(0.75);
+		weight1l->SetActive(false);
+
+		GraphNode* weight2l = new GraphNode(weight, objectId++);
+		leftScales->AddChild(weight2l);
+		weight2l->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
+		weight2l->Scale(0.75);
+		weight2l->SetActive(false);
+
+		GraphNode* weight3l = new GraphNode(weight, objectId++);
+		leftScales->AddChild(weight3l);
+		weight3l->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
+		weight3l->Scale(0.75);
+		weight3l->SetActive(false);
+
+		GraphNode* weight1r = new GraphNode(weight, objectId++);
+		rightScales->AddChild(weight1r);
+		weight1r->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
+		weight1r->Scale(0.75);
+		weight1r->SetActive(false);
+
+		GraphNode* weight2r = new GraphNode(weight, objectId++);
+		rightScales->AddChild(weight2r);
+		weight2r->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
+		weight2r->Scale(0.75);
+		weight2r->SetActive(false);
+
+		GraphNode* weight3r = new GraphNode(weight, objectId++);
+		rightScales->AddChild(weight3r);
+		weight3r->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
+		weight3r->Scale(0.75);
+		weight3r->SetActive(false);
+
+		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		weight1->Scale(0.5);
+		weight1->Translate(glm::vec3(450, -200, 0));
+		UI->AddChild(weight1);
+		weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
+
+		GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		weight2->Scale(0.5);
+		weight2->Translate(glm::vec3(600, -200, 0));
+		UI->AddChild(weight2);
+		weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
+
+		GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		weight3->Scale(0.5);
+		weight3->Translate(glm::vec3(750, -200, 0));
+		UI->AddChild(weight3);
+		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
+
+		GraphNode* scalesTab[9];
+		scalesTab[0] = weight1l;
+		scalesTab[1] = weight2l;
+		scalesTab[2] = weight3l;
+		scalesTab[3] = weight1r;
+		scalesTab[4] = weight2r;
+		scalesTab[5] = weight3r;
+		scalesTab[6] = weight1;
+		scalesTab[7] = weight2;
+		scalesTab[8] = weight3;
+#pragma endregion
+
+		GraphNode* scalesPuzzlePrizes = new GraphNode();
+
+		int* scalesPuzzleController = new int;
+		*scalesPuzzleController = 3;
+		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
+		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab));
+		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab));
 #pragma endregion
 	}
 
