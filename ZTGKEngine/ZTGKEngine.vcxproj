@@ -113,13 +113,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\freetype\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\openal\include;$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\libsndfile\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;freetype.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;$(SolutionDir)libraries\libsndfile\lib;$(SolutionDir)libraries\openal\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;common.lib;ex-common.lib;OpenAL32.lib;sndfile.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,6 +166,9 @@
     <ClInclude Include="src\scripts\ScalesBalance.h" />
     <ClInclude Include="src\scripts\SingleScaleScript.h" />
     <ClInclude Include="src\scripts\SwapButton.h" />
+    <ClInclude Include="src\SoundBuffer.h" />
+    <ClInclude Include="src\SoundDevice.h" />
+    <ClInclude Include="src\SoundSource.h" />
     <ClInclude Include="src\UI\ApRectangle.h" />
     <ClInclude Include="src\UI\Primitive.h" />
     <ClInclude Include="src\Camera.h" />

@@ -1,7 +1,9 @@
 #include "./managers/SceneManager.h"
+#include "SoundBuffer.h"
 #include "./UI/Text.h"
 #include "./UI/ApRectangle.h"
 #include <thread>
+#include "SoundDevice.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -85,6 +87,7 @@ int main(void)
 #pragma region Initialization
 
     GLFWwindow* window;
+    
 
     /* Initialize the library */
     if (!glfwInit())
@@ -117,6 +120,11 @@ int main(void)
         return -1;
     }
 
+    //Sound init
+
+    SoundDevice* mysounddevice = SoundDevice::get();
+    SoundSource* speaker = new SoundSource();
+
 #pragma endregion
 
     glEnable(GL_DEPTH_TEST);
@@ -148,6 +156,11 @@ int main(void)
     Shader mixShader("res/shaders/mixer/mixer.vert", "res/shaders/mixer/mixer.frag");
     Shader fadeShader("res/shaders/fade.vert", "res/shaders/fade.frag");
 
+    //Sounds
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav","test");
+    SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "spell");
+    SoundBuffer::get()->addSoundEffect("res/sounds/sneakyTheme.wav", "sneaky");
+
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
     //-----------------------------------------------------------------------------
@@ -163,7 +176,7 @@ int main(void)
 
     ApTime::instance().isEasyMode = true;
 
-    sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
+    sceneManager.Setup(window, speaker, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
 
@@ -172,6 +185,8 @@ int main(void)
     //Scene1Dark->SetActive(false);
 
 #pragma endregion
+
+    speaker->Play(SoundBuffer::get()->getSound("sneaky"));
 
 #pragma region Game Loop
 
@@ -382,6 +397,7 @@ int main(void)
 #pragma endregion
 
     glfwTerminate();
+    delete speaker;
     return 0;
 }
 
