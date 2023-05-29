@@ -41,6 +41,8 @@ class SceneManager
 {
 private:
 	GraphNode* UI;
+	GraphNode* UIBright = new GraphNode();
+	GraphNode* UIDark = new GraphNode();
 	GLFWwindow* window;
 	FadeOut* fade;
 	SoundSource* speaker;
@@ -91,6 +93,9 @@ public:
 		isBright = brightReference;
 		world = new GraphNode();
 		UI = new GraphNode();
+		UI->AddChild(UIBright);
+		UI->AddChild(UIDark);
+		UIDark->SetActive(false);
 		timeCounter = 0.0f;
 		phase = true;
 		poof = false;
@@ -98,6 +103,7 @@ public:
 		Loading("res/models/everest.jpg");
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
+		Scene2Setup(&otherShaders);
 		ExecuteStartScripts();
 	}
 
@@ -388,7 +394,7 @@ public:
 #pragma endregion
 
 #pragma region World Configuration
-		GraphNode* SceneBackground = CreateNode("res/models/pokoj_export.fbx", defaultShader);
+		GraphNode* Scene1MainObject = CreateNode("res/models/pokoj_export.fbx", defaultShader);
 		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0]);
 		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0]);
 
@@ -399,8 +405,8 @@ public:
 		Scene1Bright->AddChild(SceneOutsideBright);
 		Scene1Dark->AddChild(SceneOutsideDark);
 		world->AddChild(bulb);
-		Scene1->AddChild(SceneBackground);
-		SceneBackground->Scale(0.1f);
+		Scene1->AddChild(Scene1MainObject);
+		Scene1MainObject->Scale(0.1f);
 
 		Scene1->AddChild(ChessMainObject);
 
@@ -618,37 +624,38 @@ public:
 		//--------------------------------UI-AND-INVENTORY--------------------------------
 		GraphNode* door = CreateNode("res/models/drzwi.fbx", defaultShader);
 		door->Scale(0.15f);
-		door->Rotate(70, glm::vec3(0.0, 1.0, 0.0));
-		door->Translate(glm::vec3(40.0, 0.0, 120.0));
+		//door->Rotate(-150, glm::vec3(0.0, 1.0, 0.0));
+		door->Translate(glm::vec3(55.0, 0.0, 250.0));
 		Scene1->AddChild(door);
 		
 
-		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, window,
-			Scene1, Scene2, isBright, singleClick, &engageSwap, &poof);
+		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark, 
+			window, Scene1, Scene2, isBright, singleClick, &engageSwap, &poof);
 		door->AddScript(manager1);
 
-		GraphNode* bottomPanel = new GraphNode();
-		UI->AddChild(bottomPanel);
+#pragma region Bright HUD
+		GraphNode* bottomPanelBright = new GraphNode();
+		UIBright->AddChild(bottomPanelBright);
 
 		GraphNode* brightBackground = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_bg_s1.png", textureShader);
-		bottomPanel->AddChild(brightBackground);
+		bottomPanelBright->AddChild(brightBackground);
 
 		GraphNode* brightLeaves1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_leaves1_s1.png", textureShader);
-		bottomPanel->AddChild(brightLeaves1);
+		bottomPanelBright->AddChild(brightLeaves1);
 
 		GraphNode* brightJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_journal_s1.png", textureShader);
-		bottomPanel->AddChild(brightJournal);
+		bottomPanelBright->AddChild(brightJournal);
 
 		GraphNode* brightPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant_s1.png", textureShader);
-		bottomPanel->AddChild(brightPlant);
+		bottomPanelBright->AddChild(brightPlant);
 
 		GraphNode* brightPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant__hover_s1.png", textureShader);
-		bottomPanel->AddChild(brightPlantHover);
+		bottomPanelBright->AddChild(brightPlantHover);
 		brightPlantHover->SetActive(false);
 		brightPlant->AddScript(new ActivateOnHoverScript(brightPlant, brightPlantHover));
 		brightPlantHover->AddScript(new DeactivateOnMouseLeave(brightPlantHover));
@@ -656,11 +663,11 @@ public:
 
 		GraphNode* brightHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_s1.png", textureShader);
-		bottomPanel->AddChild(brightHint);
+		bottomPanelBright->AddChild(brightHint);
 
 		GraphNode* brightHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
-		bottomPanel->AddChild(brightHintHover);
+		bottomPanelBright->AddChild(brightHintHover);
 		brightHintHover->SetActive(false);
 		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, ApTime::instance().isEasyMode));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
@@ -668,18 +675,75 @@ public:
 
 		GraphNode* brightMenu = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_menu_s1.png", textureShader);
-		bottomPanel->AddChild(brightMenu);
+		bottomPanelBright->AddChild(brightMenu);
 
 		GraphNode* brightMenuHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_menu_hover_s1.png", textureShader);
-		bottomPanel->AddChild(brightMenuHover);
+		bottomPanelBright->AddChild(brightMenuHover);
 		brightMenuHover->SetActive(false);
 		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
 
 		GraphNode* brightLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_leaves2_s1.png", textureShader);
-		bottomPanel->AddChild(brightLeaves2);
+		bottomPanelBright->AddChild(brightLeaves2);
+#pragma endregion
+
+#pragma region Dark HUD
+		GraphNode* bottomPanelDark = new GraphNode();
+		UIDark->AddChild(bottomPanelDark);
+
+		GraphNode* darkBackground = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_bg_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkBackground);
+
+		GraphNode* darktLeaves1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_leaves1_s2.png", textureShader);
+		bottomPanelDark->AddChild(darktLeaves1);
+
+		GraphNode* darkJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_journal_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkJournal);
+
+		GraphNode* darkPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_plant_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkPlant);
+
+		GraphNode* darkPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_plant_hover_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkPlantHover);
+		darkPlantHover->SetActive(false);
+		darkPlant->AddScript(new ActivateOnHoverScript(darkPlant, darkPlantHover));
+		darkPlantHover->AddScript(new DeactivateOnMouseLeave(darkPlantHover));
+		darkPlantHover->AddScript(new SwapButton(darkPlantHover, manager1));
+
+		GraphNode* darkHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_hint_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkHint);
+
+		GraphNode* darkHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkHintHover);
+		darkHintHover->SetActive(false);
+		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, ApTime::instance().isEasyMode));
+		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
+		darkHintHover->AddScript(new HintButton(darkHintHover));
+
+		GraphNode* darkMenu = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_menu_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkMenu);
+
+		GraphNode* darkMenuHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_menu_hover_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkMenuHover);
+		darkMenuHover->SetActive(false);
+		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover));
+		darkMenuHover->AddScript(new DeactivateOnMouseLeave(darkMenuHover));
+
+		GraphNode* darkLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_leaves2_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkLeaves2);
+#pragma endregion
 
 		//---------------------------------------------------------------------------
 		GraphNode* scissors = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
@@ -831,6 +895,21 @@ public:
 		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab));
 		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab));
 #pragma endregion
+	}
+
+	void Scene2Setup(Shader* additionalShaders[] = nullptr)
+	{
+		world->AddChild(Scene2);
+		Scene2->Scale(0.005f);
+		Scene2->SetActive(false);
+		//BRIGHT_WORLD:
+		GraphNode* Scene2Bright = new GraphNode();
+		//DARK_WORLD:
+		GraphNode* Scene2Dark = new GraphNode();
+
+		GraphNode* Scene2MainObject = CreateNode("res/models/lab.fbx", defaultShader);
+		Scene2MainObject->Scale(0.2f);
+		Scene2->AddChild(Scene2MainObject);
 	}
 
 	void PostProcessSetup()

@@ -198,32 +198,33 @@ int main(void)
         //Counting new deltaTime
         ApTime::instance().Update();
 
-        glm::mat4 projection, view;
+
 
 #pragma region Camera Setup
 
-        if (!ApTime::instance().isChessPosition)
-        {
-            projection = defaultCameraPosition.projection;
-            view = defaultCameraPosition.view;
-            camera.Position = defaultCameraPosition.position;
+        //    glm::mat4 projection, view;
+        //if (!ApTime::instance().isChessPosition)
+        //{
+        //    projection = defaultCameraPosition.projection;
+        //    view = defaultCameraPosition.view;
+        //    camera.Position = defaultCameraPosition.position;
 
-        }
-        else
-        {
-            projection = chessCameraPosition.projection;
-            view = chessCameraPosition.view;
-            camera.Position = chessCameraPosition.position;
-        }
+        //}
+        //else
+        //{
+        //    projection = chessCameraPosition.projection;
+        //    view = chessCameraPosition.view;
+        //    camera.Position = chessCameraPosition.position;
+        //}
 
 #pragma endregion
 
 #pragma region Camera Setup Debug
 
-        //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        //glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
 
-   /*     std::cout << "Projection:\n";
+        /*std::cout << "Projection:\n";
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -406,14 +407,14 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
-    //if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
-    //if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
-    //if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS && oldMouseButtonState == GLFW_RELEASE) {
         if (isMouseActive) {
@@ -459,42 +460,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    //camera.ProcessMouseMovement(xoffset, yoffset);
+    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    //camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view)
-{
-    //GETTING MOUSE POSITION
-    double mouseXd;
-    double mouseYd;
-    glfwGetCursorPos(window, &mouseXd, &mouseYd);
-    float mouseX = (float)mouseXd;
-    float mouseY = (float)mouseYd;
-
-    //NORMALIZING THEM
-    float normalizedX = (2.0f * mouseX) / SCR_WIDTH - 1.0f;
-    float normalizedY = 1.0f - (2.0f * mouseY) / SCR_HEIGHT;
-    glm::vec2 normalizedCoords = glm::vec2(normalizedX, normalizedY);
-
-    //CONVERTING TO CLIP SPACE(we just add 1 at z, so that our ray faces into the screen)
-    glm::vec4 clipCoords = glm::vec4(normalizedCoords.x, normalizedCoords.y, 1.0f, 1.0f);
-
-    //CONVERTING TO EYE SPACE (by using inverse projection matrix)
-    glm::mat4 invProjection = glm::inverse(projection);
-    glm::vec4 eyeCoords = invProjection * clipCoords;
-
-    //CONVERTING TO WORLD SPACE
-    glm::mat4 invView = glm::inverse(view);
-    glm::vec4 worldCoords = invView * eyeCoords;
-
-    //CONVERTING 4D VECTOR TO 3D(since we no longer need it to be in 4D)
-    glm::vec3 castedRay = glm::vec3(worldCoords.x, worldCoords.y, worldCoords.z);
-    castedRay = glm::normalize(castedRay);
-    return castedRay;
+    camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
