@@ -899,9 +899,11 @@ public:
 
 	void Scene2Setup(Shader* additionalShaders[] = nullptr)
 	{
+#pragma region World Setup and Room Swap
 		world->AddChild(Scene2);
 		Scene2->Scale(0.005f);
 		Scene2->SetActive(false);
+		Scene2->Translate(glm::vec3(-0.5f, -0.15f, 0.0f));
 		//BRIGHT_WORLD:
 		GraphNode* Scene2Bright = new GraphNode();
 		//DARK_WORLD:
@@ -910,6 +912,23 @@ public:
 		GraphNode* Scene2MainObject = CreateNode("res/models/lab.fbx", defaultShader);
 		Scene2MainObject->Scale(0.2f);
 		Scene2->AddChild(Scene2MainObject);
+
+		GraphNode* door2 = CreateNode("res/models/drzwi.fbx", defaultShader);
+		door2->Scale(0.2f);
+		door2->Translate(glm::vec3(0.0f, 0.0f, 1.0f));
+		Scene2->AddChild(door2);
+
+		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
+			window, Scene2, Scene1, isBright, singleClick, &engageSwap, &poof);
+		door2->AddScript(manager2);
+#pragma endregion
+
+#pragma region Door Puzzle
+		GraphNode* GiantDoor = CreateNode("res/models/drzwi_sejf.fbx", defaultShader);
+		Scene2->AddChild(GiantDoor);
+		GiantDoor->Translate(glm::vec3(0.0f, 0.0f, -2.0f));
+		GiantDoor->Scale(0.2f);
+#pragma endregion
 	}
 
 	void PostProcessSetup()

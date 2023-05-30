@@ -34,9 +34,10 @@ Camera camera(glm::vec3(0.75f, 0.5f, 0.0f));
 SceneManager sceneManager;
 
 struct PLight {
-    glm::vec3 position = { 0.4f, 0.5f, 0.0f };
+    //glm::vec3 position = { 0.4f, 0.5f, 0.0f };
+    glm::vec3 position = { 0.5f, 1.4f, 0.0f };
     float color[3] = { 1.0f, 1.0f, 1.0f };
-    float color2[3] = { 0.7f, 1.0f, 1.0f };
+    float color2[3] = { 0.5f, 1.0f, 1.0f };
 
     float constant;
     float linear;
@@ -186,7 +187,7 @@ int main(void)
 
 #pragma endregion
 
-    speaker->Play(SoundBuffer::get()->getSound("sneaky"));
+    //speaker->Play(SoundBuffer::get()->getSound("sneaky"));
 
 #pragma region Game Loop
 
