@@ -202,27 +202,27 @@ int main(void)
 
 #pragma region Camera Setup
 
-        //    glm::mat4 projection, view;
-        //if (!ApTime::instance().isChessPosition)
-        //{
-        //    projection = defaultCameraPosition.projection;
-        //    view = defaultCameraPosition.view;
-        //    camera.Position = defaultCameraPosition.position;
+        glm::mat4 projection, view;
+        if (!ApTime::instance().isChessPosition)
+        {
+            projection = defaultCameraPosition.projection;
+            view = defaultCameraPosition.view;
+            camera.Position = defaultCameraPosition.position;
 
-        //}
-        //else
-        //{
-        //    projection = chessCameraPosition.projection;
-        //    view = chessCameraPosition.view;
-        //    camera.Position = chessCameraPosition.position;
-        //}
+        }
+        else
+        {
+            projection = chessCameraPosition.projection;
+            view = chessCameraPosition.view;
+            camera.Position = chessCameraPosition.position;
+        }
 
 #pragma endregion
 
 #pragma region Camera Setup Debug
 
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+        //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        //glm::mat4 view = camera.GetViewMatrix();
 
         /*std::cout << "Projection:\n";
         for (int i = 0; i < 4; i++)
@@ -407,14 +407,14 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(BACKWARD, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(LEFT, ApTime::instance().deltaTime);
+    //if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(RIGHT, ApTime::instance().deltaTime);
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS && oldMouseButtonState == GLFW_RELEASE) {
         if (isMouseActive) {
@@ -460,11 +460,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    //camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
+    //camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
