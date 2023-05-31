@@ -47,10 +47,12 @@ public:
 		window = _window;
 	}
 
-	void SetPrizes(OneTimeActivatorScript* givenPrize1, OneTimeActivatorScript* givenPrize2)
+	void SetPrizes(OneTimeActivatorScript* givenPrize1, OneTimeActivatorScript* givenPrize2, 
+		OneTimeActivatorScript* givenPrize3)
 	{
 		prize1 = givenPrize1;
 		prize2 = givenPrize2;
+		prize3 = givenPrize3;
 	}
 
 	void Start()

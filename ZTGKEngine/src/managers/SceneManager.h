@@ -36,6 +36,7 @@
 #include "../scripts/DeactivateOnMouseLeave.h";
 #include "../scripts/HintButton.h";
 #include "../scripts/SwapButton.h";
+#include "../scripts/Papers.h";
 
 class SceneManager
 {
@@ -771,6 +772,28 @@ public:
 		bucketEmpty->AddScript(new InventoryItemScript(bucketEmpty, "bucketEmpty", window, singleClick));
 		bucketEmpty->SetActive(false);
 
+		GraphNode* pieceOfPaper = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/kartka_inventory.png", textureShader);
+		pieceOfPaper->Scale(0.75);
+		pieceOfPaper->Translate(glm::vec3(400, 40, 0));
+		UI->AddChild(pieceOfPaper);
+		pieceOfPaper->AddScript(new InventoryItemScript(pieceOfPaper, "paper", window, singleClick, false));
+		pieceOfPaper->SetActive(false);
+
+		GraphNode* PaperBright = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/Kartka_Z_Kodem1.png", textureShader);
+		UIBright->AddChild(PaperBright);
+		PaperBright->SetActive(false);
+		PaperBright->Translate(glm::vec3(0.0f, 80.0f, 0.0f));
+
+		GraphNode* PaperDark = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/Kartka_Z_Kodem2.png", textureShader);
+		UIDark->AddChild(PaperDark);
+		PaperDark->SetActive(false);
+		PaperDark->Translate(glm::vec3(0.0f, 80.0f, 0.0f));
+
+		pieceOfPaper->AddScript(new Papers(pieceOfPaper, PaperBright, PaperDark));
+
 		Tap->AddScript(new CraneScript(Tap, bucketEmpty, bucket, speaker));
 
 		//Scripting for obtaining objects to inventory
@@ -784,7 +807,12 @@ public:
 		drawer2MovableSegment->AddScript(drawer2Script);
 		drawer2MovableSegment->isHoverable = false;
 
-		puzzle->SetPrizes(drawer3Script, drawer2Script);
+		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, false, true);
+		drawer1Script->enabled = false;
+		drawer1MovableSegment->AddScript(drawer1Script);
+		drawer1MovableSegment->isHoverable = false;
+
+		puzzle->SetPrizes(drawer3Script, drawer2Script, drawer1Script);
 
 #pragma endregion
 	}
