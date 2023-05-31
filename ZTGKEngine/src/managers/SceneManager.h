@@ -787,24 +787,56 @@ public:
 		puzzle->SetPrizes(drawer3Script, drawer2Script);
 
 #pragma endregion
+	}
+
+	void Scene2Setup(Shader* additionalShaders[] = nullptr)
+	{
+#pragma region World Setup and Room Swap
+		world->AddChild(Scene2);
+		Scene2->Scale(0.005f);
+		Scene1->SetActive(false);
+		Scene2->Translate(glm::vec3(-0.5f, -0.15f, 0.0f));
+
+		//BRIGHT_WORLD:
+		GraphNode* Scene2Bright = new GraphNode();
+		Scene2->AddChild(Scene2Bright);
+
+		//DARK_WORLD:
+		GraphNode* Scene2Dark = new GraphNode();
+		Scene2->AddChild(Scene2Dark);
+
+		GraphNode* Scene2MainObject = CreateNode("res/models/lab.fbx", defaultShader);
+		Scene2MainObject->Scale(0.2f);
+		Scene2->AddChild(Scene2MainObject);
+
+		GraphNode* door2 = CreateNode("res/models/drzwi.fbx", defaultShader);
+		door2->Scale(0.2f);
+		door2->Translate(glm::vec3(0.0f, 0.0f, 1.0f));
+		Scene2->AddChild(door2);
+
+		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
+			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, false);
+		door2->AddScript(manager2);
+#pragma endregion
 
 #pragma region Scales Puzzle
 		//SCALES PUZZLE
 		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
-		scalesPlantLeft->Scale(0.1f);
-		Scene1Dark->AddChild(scalesPlantLeft);
-		scalesPlantLeft->Translate(glm::vec3(0.0f, 0.0f, 60.0f));
-		scalesPlantLeft->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		scalesPlantLeft->Scale(0.15f);
+		Scene2Dark->AddChild(scalesPlantLeft);
+		scalesPlantLeft->Translate(glm::vec3(100.0f, 0.0f, 0.0f));
+		scalesPlantLeft->Rotate(-20.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
 		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
-		scalesPlantRight->Scale(0.1f);
-		Scene1Dark->AddChild(scalesPlantRight);
-		scalesPlantRight->Translate(glm::vec3(0.0f, 0.0f, -30.0f));
-		scalesPlantRight->Rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		scalesPlantRight->Scale(0.15f);
+		Scene2Dark->AddChild(scalesPlantRight);
+		scalesPlantRight->Translate(glm::vec3(100.0f, 0.0f, -40.0f));
+		scalesPlantRight->Rotate(140.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		GraphNode* ScalesPuzzle = new GraphNode();
 		ScalesPuzzle->Scale(0.1);
-		ScalesPuzzle->Translate(glm::vec3(70.0f, 40.0f, 0.0f));
-		Scene1Bright->AddChild(ScalesPuzzle);
+		ScalesPuzzle->Translate(glm::vec3(100.0f, 6.0f, -20.0f));
+		Scene2Bright->AddChild(ScalesPuzzle);
 
 		GraphNode* staticScales = CreateNode("res/models/stojak.fbx", defaultShader);
 		ScalesPuzzle->AddChild(staticScales);
@@ -842,39 +874,42 @@ public:
 		rightScales->AddChild(weight1r);
 		weight1r->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
 		weight1r->Scale(0.75);
-		weight1r->SetActive(false);
+		//weight1r->SetActive(false);
 
 		GraphNode* weight2r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight2r);
 		weight2r->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
 		weight2r->Scale(0.75);
-		weight2r->SetActive(false);
+		//weight2r->SetActive(false);
 
 		GraphNode* weight3r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight3r);
 		weight3r->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
 		weight3r->Scale(0.75);
-		weight3r->SetActive(false);
+		//weight3r->SetActive(false);
 
-		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
+		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		weight1->Scale(0.5);
-		weight1->Translate(glm::vec3(450, -200, 0));
+		weight1->Translate(glm::vec3(150, -200, 0));
 		UI->AddChild(weight1);
 		weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
+		weight1->SetActive(false);
 
 		GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		weight2->Scale(0.5);
-		weight2->Translate(glm::vec3(600, -200, 0));
+		weight2->Translate(glm::vec3(300, -200, 0));
 		UI->AddChild(weight2);
 		weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
+		weight2->SetActive(false);
 
 		GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
 		weight3->Scale(0.5);
-		weight3->Translate(glm::vec3(750, -200, 0));
+		weight3->Translate(glm::vec3(450, -200, 0));
 		UI->AddChild(weight3);
 		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
+		weight3->SetActive(false);
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
@@ -893,35 +928,8 @@ public:
 		int* scalesPuzzleController = new int;
 		*scalesPuzzleController = 3;
 		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
-		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab));
-		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab));
-#pragma endregion
-	}
-
-	void Scene2Setup(Shader* additionalShaders[] = nullptr)
-	{
-#pragma region World Setup and Room Swap
-		world->AddChild(Scene2);
-		Scene2->Scale(0.005f);
-		Scene2->SetActive(false);
-		Scene2->Translate(glm::vec3(-0.5f, -0.15f, 0.0f));
-		//BRIGHT_WORLD:
-		GraphNode* Scene2Bright = new GraphNode();
-		//DARK_WORLD:
-		GraphNode* Scene2Dark = new GraphNode();
-
-		GraphNode* Scene2MainObject = CreateNode("res/models/lab.fbx", defaultShader);
-		Scene2MainObject->Scale(0.2f);
-		Scene2->AddChild(Scene2MainObject);
-
-		GraphNode* door2 = CreateNode("res/models/drzwi.fbx", defaultShader);
-		door2->Scale(0.2f);
-		door2->Translate(glm::vec3(0.0f, 0.0f, 1.0f));
-		Scene2->AddChild(door2);
-
-		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
-			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof);
-		door2->AddScript(manager2);
+		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab, manager2));
+		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab, manager2));
 #pragma endregion
 
 #pragma region Door Puzzle

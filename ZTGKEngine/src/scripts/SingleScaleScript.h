@@ -14,11 +14,14 @@ private:
 	bool isLeft;
 	glm::vec3 startPosition;
 	GraphNode* weightsTab[9];
+	RoomSwapManager* manager;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9]) : RealtimeScript(nodePointer)
+	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9],
+		RoomSwapManager* _manager) : RealtimeScript(nodePointer)
 	{
+		manager = _manager;
 		this->scalesPuzzleController = _scalesPuzzleController;
 		this->isLeft = _isLeft;
 		startPosition = node->getTranslation();
@@ -44,6 +47,9 @@ public:
 		else if (*scalesPuzzleController == 0)
 		{
 			node->setTranslate(startPosition);
+			manager->MakeClickable();
+			manager->GetNode()->Rotate(-40.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			manager->GetNode()->Translate(glm::vec3(-100.0f, 0.0f, -30.0f));
 			enabled = false;
 			node->isHoverable = false;
 		}

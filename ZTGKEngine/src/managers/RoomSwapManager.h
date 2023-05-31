@@ -29,13 +29,14 @@ private:
 	bool* poof;
 	bool* singleClick;
 	bool* forceSwap;
+	bool canClick;
 
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
 		GraphNode* brightUInode, GraphNode* darkUInode,GLFWwindow* givenWindow, GraphNode* _currentScene,
-		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* _forceSwap, bool* swapPostman = nullptr,
-		bool* poof = nullptr): RealtimeScript(nodePointer)
+		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* _forceSwap,
+		bool* swapPostman = nullptr, bool* poof = nullptr, bool _canClick = true): RealtimeScript(nodePointer)
 	{
 		brightWorld = brightNode;
 		darkWorld = darkNode;
@@ -49,6 +50,7 @@ public:
 		brightUI = brightUInode;
 		darkUI = darkUInode;
 		forceSwap = _forceSwap;
+		canClick = _canClick;
 	}
 
 	~RoomSwapManager() = default;
@@ -113,15 +115,23 @@ public:
 
 	void OnMouseClicked()
 	{
-		ApTime::instance().brightWorld = true;
-		brightWorld->SetActive(true);
-		darkWorld->SetActive(false);
-		currentScene->SetActive(false);
-		otherScene->SetActive(true);
+		if (canClick)
+		{
+			ApTime::instance().brightWorld = true;
+			brightWorld->SetActive(true);
+			darkWorld->SetActive(false);
+			currentScene->SetActive(false);
+			otherScene->SetActive(true);
+		}
 	}
 
 	void SetForceSwap()
 	{
 		*forceSwap = true;
+	}
+
+	void MakeClickable()
+	{
+		canClick = true;
 	}
 };
