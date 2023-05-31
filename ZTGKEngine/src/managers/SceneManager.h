@@ -58,6 +58,7 @@ private:
 	bool engageSwap;
 	bool phase;
 	bool poof; //phase change peak checker
+	bool forceSwap = false;
 
 public:
 	GraphNode* world;
@@ -630,7 +631,7 @@ public:
 		
 
 		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark, 
-			window, Scene1, Scene2, isBright, singleClick, &engageSwap, &poof);
+			window, Scene1, Scene2, isBright, singleClick, &forceSwap, &engageSwap, &poof);
 		door->AddScript(manager1);
 
 #pragma region Bright HUD
@@ -659,7 +660,7 @@ public:
 		brightPlantHover->SetActive(false);
 		brightPlant->AddScript(new ActivateOnHoverScript(brightPlant, brightPlantHover));
 		brightPlantHover->AddScript(new DeactivateOnMouseLeave(brightPlantHover));
-		brightPlantHover->AddScript(new SwapButton(brightPlantHover, manager1));
+		brightPlantHover->AddScript(new SwapButton(brightPlantHover, &forceSwap));
 
 		GraphNode* brightHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_s1.png", textureShader);
@@ -715,7 +716,7 @@ public:
 		darkPlantHover->SetActive(false);
 		darkPlant->AddScript(new ActivateOnHoverScript(darkPlant, darkPlantHover));
 		darkPlantHover->AddScript(new DeactivateOnMouseLeave(darkPlantHover));
-		darkPlantHover->AddScript(new SwapButton(darkPlantHover, manager1));
+		darkPlantHover->AddScript(new SwapButton(darkPlantHover, &forceSwap));
 
 		GraphNode* darkHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_hint_s2.png", textureShader);
@@ -919,7 +920,7 @@ public:
 		Scene2->AddChild(door2);
 
 		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
-			window, Scene2, Scene1, isBright, singleClick, &engageSwap, &poof);
+			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof);
 		door2->AddScript(manager2);
 #pragma endregion
 

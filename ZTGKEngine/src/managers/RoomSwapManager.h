@@ -28,13 +28,13 @@ private:
 	bool* lightVersion;
 	bool* poof;
 	bool* singleClick;
-	bool forceSwap = false;
+	bool* forceSwap;
 
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
 		GraphNode* brightUInode, GraphNode* darkUInode,GLFWwindow* givenWindow, GraphNode* _currentScene,
-		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* swapPostman = nullptr,
+		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* _forceSwap, bool* swapPostman = nullptr,
 		bool* poof = nullptr): RealtimeScript(nodePointer)
 	{
 		brightWorld = brightNode;
@@ -48,6 +48,7 @@ public:
 		singleClick = _singleClick;
 		brightUI = brightUInode;
 		darkUI = darkUInode;
+		forceSwap = _forceSwap;
 	}
 
 	~RoomSwapManager() = default;
@@ -76,11 +77,11 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || forceSwap))
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || *forceSwap))
 		{
 			if (!keyPressed)
 			{
-				forceSwap = false;
+				*forceSwap = false;
 				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
@@ -117,11 +118,10 @@ public:
 		darkWorld->SetActive(false);
 		currentScene->SetActive(false);
 		otherScene->SetActive(true);
-		std::cout << otherScene->GetActive() << std::endl;
 	}
 
 	void SetForceSwap()
 	{
-		forceSwap = true;
+		*forceSwap = true;
 	}
 };

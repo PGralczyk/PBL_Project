@@ -13,18 +13,18 @@ class SwapButton : public RealtimeScript {
 
 public:
 	int deactivate = 0;
-	RoomSwapManager* manager;
+	bool* forceSwap;
 
 	//Constructor, here assign all the fields from the private section
-	SwapButton(GraphNode* nodePointer, RoomSwapManager* _manager) : RealtimeScript(nodePointer)
+	SwapButton(GraphNode* nodePointer, bool* _forceSwap) : RealtimeScript(nodePointer)
 	{
-		manager = _manager;
+		forceSwap = _forceSwap;
 	}
 
 	~SwapButton() = default;
 
 	void OnMouseClicked()
 	{
-		manager->SetForceSwap();
+		*forceSwap = true;
 	}
 };
