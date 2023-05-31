@@ -72,6 +72,9 @@ public:
 	Shader* blurShader;
 	Shader* mixShader;
 	Shader* fadeShader;
+	Shader* brightShader;
+	Shader* bloomMixShader;
+
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
@@ -142,7 +145,8 @@ public:
 
 	void Render(unsigned int currentlyPicked)
 	{
-		world->Draw(currentlyPicked);
+		//world->Draw(currentlyPicked);
+		BloomRender(currentlyPicked);
 		
 		if (engageSwap) {
 			BlurRender(currentlyPicked, timeCounter);
@@ -1027,8 +1031,11 @@ public:
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		}
 		glBindVertexArray(quadVAO);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
 	}
 
 	void BlurRender(unsigned int currentlyPicked, float scale) { // for later when we have a specific object to render
@@ -1072,6 +1079,56 @@ public:
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
 		renderQuad();
 		//glClearColor(0.0f, 0.0f, 0.0f, 0.00f);
+	}
+
+	void BloomRender(unsigned int currentlyPicked)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
+		glClearColor(1.0f, 1.0f, 1.0f, 0.00f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[1]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		world->Draw(currentlyPicked);
+
+		brightShader->use();
+		brightShader->setInt("scene", 0);
+		glBindTexture(GL_TEXTURE_2D, textureBuffers[0]);
+		renderQuad();
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		bool horizontal = true;
+		unsigned int amount = 1;
+		blurShader->use();
+		blurShader->setInt("image", 0);
+		for (unsigned int i = 0; i < amount; i++)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
+			blurShader->setInt("horizontal", horizontal);
+			glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+			renderQuad();
+			horizontal = !horizontal;
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
+		world->Draw(currentlyPicked);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		bloomMixShader->use();
+		bloomMixShader->setInt("scene", 0);
+		bloomMixShader->setInt("highlightParts", 1);
+		bloomMixShader->setFloat("strength", 0.6);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureBuffers[horizontal]);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
+		renderQuad();
 	}
 
 private:

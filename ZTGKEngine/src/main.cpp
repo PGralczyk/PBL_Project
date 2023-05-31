@@ -156,6 +156,8 @@ int main(void)
     Shader blurShader("res/shaders/blur/blur.vert", "res/shaders/blur/blur.frag");
     Shader mixShader("res/shaders/mixer/mixer.vert", "res/shaders/mixer/mixer.frag");
     Shader fadeShader("res/shaders/fade.vert", "res/shaders/fade.frag");
+    Shader brightShader("res/shaders/bright/bright.vert", "res/shaders/bright/bright.frag");
+    Shader bloomMixShader("res/shaders/bloomMixer/bloomMixer.vert", "res/shaders/bloomMixer/bloomMixer.frag");
 
     //Sounds
     SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav","test");
@@ -173,6 +175,8 @@ int main(void)
     sceneManager.outlineShader = &outlineShader;
     sceneManager.blurShader = &blurShader;
     sceneManager.mixShader = &mixShader;
+    sceneManager.brightShader = &brightShader;
+    sceneManager.bloomMixShader = &bloomMixShader;
     sceneManager.singleClick = &singleClick;
 
     ApTime::instance().isEasyMode = true;
