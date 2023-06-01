@@ -157,6 +157,8 @@
     <ClInclude Include="src\scripts\ChessPieceScript.h" />
     <ClInclude Include="src\scripts\CraneScript.h" />
     <ClInclude Include="src\scripts\DeactivateOnMouseLeave.h" />
+    <ClInclude Include="src\scripts\DoorButton.h" />
+    <ClInclude Include="src\scripts\DoorPuzzle.h" />
     <ClInclude Include="src\scripts\GrowPlantScript.h" />
     <ClInclude Include="src\scripts\HintButton.h" />
     <ClInclude Include="src\scripts\InventoryItemScript.h" />

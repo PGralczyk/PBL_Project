@@ -120,6 +120,9 @@ public:
 			ApTime::instance().brightWorld = true;
 			brightWorld->SetActive(true);
 			darkWorld->SetActive(false);
+			brightUI->SetActive(true);
+			darkUI->SetActive(false);
+			*lightVersion = true;
 			currentScene->SetActive(false);
 			otherScene->SetActive(true);
 		}

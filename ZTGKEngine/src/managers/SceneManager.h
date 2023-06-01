@@ -37,6 +37,8 @@
 #include "../scripts/HintButton.h";
 #include "../scripts/SwapButton.h";
 #include "../scripts/Papers.h";
+#include "../scripts/DoorPuzzle.h";
+#include "../scripts/DoorButton.h";
 
 class SceneManager
 {
@@ -416,6 +418,10 @@ public:
 
 		Scene1->AddChild(ChessMainObject);
 
+		GraphNode* veins = CreateNode("res/models/pnacza_pokoj1.fbx", defaultShader);
+		Scene1Dark->AddChild(veins);
+		veins->Scale(0.1f);
+
 		Scene1->Scale(0.005f);
 		bulb->Scale(0.01f);
 		bulb->Translate(glm::vec3(0.4f, 0.5f, 0.0f));
@@ -622,7 +628,7 @@ public:
 
 		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
 		Tap->Scale(0.1f);
-		Tap->Translate(glm::vec3(10.0f, 0.0f, -25.0f));
+		Tap->Translate(glm::vec3(20.0f, 0.0f, -30.0f));
 		Scene1Dark->AddChild(Tap);
 #pragma endregion
 
@@ -849,6 +855,10 @@ public:
 		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
 			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, false);
 		door2->AddScript(manager2);
+
+		GraphNode* vains = CreateNode("res/models/pnacza_lab.fbx", defaultShader);
+		Scene2Dark->AddChild(vains);
+		vains->Scale(0.2);
 #pragma endregion
 
 #pragma region Scales Puzzle
@@ -920,25 +930,25 @@ public:
 		weight3r->Scale(0.75);
 		//weight3r->SetActive(false);
 
-		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		weight1->Scale(0.5);
-		weight1->Translate(glm::vec3(150, -200, 0));
+		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/odwaznik_4.png", textureShader);
+		//weight1->Scale(0.5);
+		weight1->Translate(glm::vec3(-150, 0, 0));
 		UI->AddChild(weight1);
 		weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
 		weight1->SetActive(false);
 
 		GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		weight2->Scale(0.5);
-		weight2->Translate(glm::vec3(300, -200, 0));
+			"res/models/odwaznik_5.png", textureShader);
+		//weight2->Scale(0.5);
+		weight2->Translate(glm::vec3(-120, 0, 0));
 		UI->AddChild(weight2);
 		weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
 		weight2->SetActive(false);
 
 		GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hopa_u_dzoszuly/wazon_z_roza.png", textureShader);
-		weight3->Scale(0.5);
-		weight3->Translate(glm::vec3(450, -200, 0));
+			"res/models/odwaznik_6.png", textureShader);
+		//weight3->Scale(0.5);
+		weight3->Translate(glm::vec3(-90, 0, 0));
 		UI->AddChild(weight3);
 		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
 		weight3->SetActive(false);
@@ -969,6 +979,65 @@ public:
 		Scene2->AddChild(GiantDoor);
 		GiantDoor->Translate(glm::vec3(0.0f, 0.0f, -2.0f));
 		GiantDoor->Scale(0.2f);
+
+		string* password = new string;
+		*password = "";
+		bool* isWon = new bool;
+		*isWon = false;
+		GraphNode* DoorPuzzleObject = new GraphNode();
+		UI->AddChild(DoorPuzzleObject);
+		DoorPuzzleObject->SetActive(false);
+		GiantDoor->AddScript(new DoorPuzzle(GiantDoor, DoorPuzzleObject, window, password, isWon));
+
+		GraphNode* MainDoor = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/drzwi_kodowe.png", textureShader);
+		DoorPuzzleObject->AddChild(MainDoor);
+
+		GraphNode* Number1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/1.png", textureShader);
+		DoorPuzzleObject->AddChild(Number1);
+		Number1->AddScript(new DoorButton(Number1, password, isWon, "1"));
+
+		GraphNode* Number2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/2.png", textureShader);
+		DoorPuzzleObject->AddChild(Number2);
+		Number2->AddScript(new DoorButton(Number1, password, isWon, "2"));
+
+		GraphNode* Number3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/3.png", textureShader);
+		DoorPuzzleObject->AddChild(Number3);
+		Number3->AddScript(new DoorButton(Number1, password, isWon, "3"));
+
+		GraphNode* Number4 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/4.png", textureShader);
+		DoorPuzzleObject->AddChild(Number4);
+		Number4->AddScript(new DoorButton(Number1, password, isWon, "4"));
+
+		GraphNode* Number5 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/5.png", textureShader);
+		DoorPuzzleObject->AddChild(Number5);
+		Number5->AddScript(new DoorButton(Number1, password, isWon, "5"));
+
+		GraphNode* Number6 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/6.png", textureShader);
+		DoorPuzzleObject->AddChild(Number6);
+		Number6->AddScript(new DoorButton(Number1, password, isWon, "6"));
+
+		GraphNode* Number7 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/7.png", textureShader);
+		DoorPuzzleObject->AddChild(Number7);
+		Number7->AddScript(new DoorButton(Number1, password, isWon, "7"));
+
+		GraphNode* Number8 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/8.png", textureShader);
+		DoorPuzzleObject->AddChild(Number8);
+		Number8->AddScript(new DoorButton(Number1, password, isWon, "8"));
+
+		GraphNode* Number9 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/drzwi_kodowe/9.png", textureShader);
+		DoorPuzzleObject->AddChild(Number9);
+		Number9->AddScript(new DoorButton(Number1, password, isWon, "9"));
+
 #pragma endregion
 	}
 
