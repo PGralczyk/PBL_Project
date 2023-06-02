@@ -6,8 +6,7 @@
 #include "../ApTime.h"
 
 class ActivateOnHoverScript;
-//WHAT IS THIS CLASS?
-//A test of implementing realtime script
+
 class ActivateOnHoverScript : public RealtimeScript {
 private:
 	GraphNode* other;
@@ -27,5 +26,30 @@ public:
 	{
 		if(shouldWork)
 			other->SetActive(true);
+	}
+};
+
+class JournalScript;
+
+class DeactivateRMB : public RealtimeScript {
+
+public:
+	GraphNode* object;
+	GLFWwindow* window;
+
+	//Constructor, here assign all the fields from the private section
+	DeactivateRMB(GraphNode* nodePointer, GLFWwindow* _window) : RealtimeScript(nodePointer)
+	{
+		window = _window;
+	}
+
+	~DeactivateRMB() = default;
+
+	void Update()
+	{
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+		{
+			node->SetActive(false);
+		}
 	}
 };

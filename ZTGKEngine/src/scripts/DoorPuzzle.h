@@ -21,19 +21,21 @@ class DoorPuzzle : public RealtimeScript {
 private:
 	GraphNode* puzzle;
 	GLFWwindow* window;
+	GraphNode* finalScreen;
 	string* password;
-	string passwordAnswer = "24161834";
+	string passwordAnswer = "24121834";
 	bool* isWon;
 
 public:
 
 	//Constructor, here assign all the fields from the private section
-	DoorPuzzle(GraphNode* nodePointer, GraphNode* _puzzle, GLFWwindow* _window, string* _password, bool* _isWon) : RealtimeScript(nodePointer)
+	DoorPuzzle(GraphNode* nodePointer, GraphNode* _puzzle, GraphNode* _finalScreen, GLFWwindow* _window, string* _password, bool* _isWon) : RealtimeScript(nodePointer)
 	{
 		puzzle = _puzzle;
 		window = _window;
 		password = _password;
 		isWon = _isWon;
+		finalScreen = _finalScreen;
 	}
 
 	~DoorPuzzle() = default;
@@ -42,7 +44,7 @@ public:
 	{
 		if (*isWon)
 		{
-
+			finalScreen->SetActive(true);
 		}
 		else
 		{
@@ -56,9 +58,11 @@ public:
 		{
 			puzzle->SetActive(false);
 		}
-		if (*password == passwordAnswer)
+		if (*password == passwordAnswer && !*isWon)
 		{
 			*isWon = true;
+			node->Rotate(30, glm::vec3(0.0f, 1.0f, 0.0f));
+			node->Translate(glm::vec3(-74.0f, 0.0f, 30.0f));
 		}
 	}
 };

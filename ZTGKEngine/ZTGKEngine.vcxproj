@@ -162,6 +162,7 @@
     <ClInclude Include="src\scripts\GrowPlantScript.h" />
     <ClInclude Include="src\scripts\HintButton.h" />
     <ClInclude Include="src\scripts\InventoryItemScript.h" />
+    <ClInclude Include="src\scripts\JournalScript.h" />
     <ClInclude Include="src\scripts\OneTimeActivatorScript.h" />
     <ClInclude Include="src\managers\SceneManager.h" />
     <ClInclude Include="src\scripts\Papers.h" />

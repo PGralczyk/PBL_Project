@@ -39,6 +39,7 @@
 #include "../scripts/Papers.h";
 #include "../scripts/DoorPuzzle.h";
 #include "../scripts/DoorButton.h";
+#include "../scripts/JournalScript.h";
 
 class SceneManager
 {
@@ -661,6 +662,20 @@ public:
 			"res/models/hud/normal_world/hud_journal_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightJournal);
 
+		GraphNode* journal1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/journal1.png", textureShader);
+		UI->AddChild(journal1);
+		journal1->SetActive(false);
+		journal1->AddScript(new DeactivateRMB(journal1, window));
+
+		GraphNode* brightJournalHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/normal_world/hud_journal_hover_s1.png", textureShader);
+		bottomPanelBright->AddChild(brightJournalHover);
+		brightJournalHover->SetActive(false);
+		brightJournal->AddScript(new ActivateOnHoverScript(brightJournal, brightJournalHover));
+		brightJournalHover->AddScript(new DeactivateOnMouseLeave(brightJournalHover));
+		brightJournalHover->AddScript(new JournalScript(brightJournalHover, journal1));
+
 		GraphNode* brightPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightPlant);
@@ -716,6 +731,14 @@ public:
 		GraphNode* darkJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_journal_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkJournal);
+
+		GraphNode* darkJournalHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hud/fked_up_world/hud_journal_hover_s2.png", textureShader);
+		bottomPanelDark->AddChild(darkJournalHover);
+		darkJournalHover->SetActive(false);
+		darkJournal->AddScript(new ActivateOnHoverScript(darkJournal, darkJournalHover));
+		darkJournalHover->AddScript(new DeactivateOnMouseLeave(darkJournalHover));
+		darkJournalHover->AddScript(new JournalScript(darkJournalHover, journal1));
 
 		GraphNode* darkPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_plant_s2.png", textureShader);
@@ -980,6 +1003,24 @@ public:
 		GiantDoor->Translate(glm::vec3(0.0f, 0.0f, -2.0f));
 		GiantDoor->Scale(0.2f);
 
+		GraphNode* finalScreen = new GraphNode();
+		finalScreen->SetActive(false);
+		UI->AddChild(finalScreen);
+		GraphNode* Sanctum = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/Sanctum.png", textureShader);
+		finalScreen->AddChild(Sanctum);
+
+		GraphNode* paperSanctum = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/kartkaSanctum.png", textureShader);
+		finalScreen->AddChild(paperSanctum);
+
+		GraphNode* journal2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/journal2.png", textureShader);
+		UI->AddChild(journal2);
+		journal2->SetActive(false);
+
+		paperSanctum->AddScript(new OneTimeActivatorScript(paperSanctum, journal2, false));
+
 		string* password = new string;
 		*password = "";
 		bool* isWon = new bool;
@@ -987,7 +1028,7 @@ public:
 		GraphNode* DoorPuzzleObject = new GraphNode();
 		UI->AddChild(DoorPuzzleObject);
 		DoorPuzzleObject->SetActive(false);
-		GiantDoor->AddScript(new DoorPuzzle(GiantDoor, DoorPuzzleObject, window, password, isWon));
+		GiantDoor->AddScript(new DoorPuzzle(GiantDoor, DoorPuzzleObject, finalScreen, window, password, isWon));
 
 		GraphNode* MainDoor = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/drzwi_kodowe/drzwi_kodowe.png", textureShader);
