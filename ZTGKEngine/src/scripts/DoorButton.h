@@ -40,7 +40,7 @@ public:
 	{
 		if(!*isWon)
 		{
-			if (password->length() > 8)
+			if (password->length() >= 8)
 			{
 				*password = "";
 			}

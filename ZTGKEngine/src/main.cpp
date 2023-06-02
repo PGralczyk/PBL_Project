@@ -167,6 +167,8 @@ int main(void)
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
     //-----------------------------------------------------------------------------
+    sceneManager.text = &text;
+    sceneManager.textShader = &textShader;
 
     sceneManager.defaultShader = &defaultShader;
     sceneManager.lightShader = &lightShader;

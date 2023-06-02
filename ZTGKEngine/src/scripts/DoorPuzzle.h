@@ -8,6 +8,7 @@
 //for debug ------------------
 #include "../SoundBuffer.h"
 #include "../SoundSource.h"
+#include "../UI/Text.h"
 //-----------------------------
 
 class GraphNode;
@@ -25,17 +26,22 @@ private:
 	string* password;
 	string passwordAnswer = "24121834";
 	bool* isWon;
+	Text* text;
+	Shader* textShader;
 
 public:
 
 	//Constructor, here assign all the fields from the private section
-	DoorPuzzle(GraphNode* nodePointer, GraphNode* _puzzle, GraphNode* _finalScreen, GLFWwindow* _window, string* _password, bool* _isWon) : RealtimeScript(nodePointer)
+	DoorPuzzle(GraphNode* nodePointer, GraphNode* _puzzle, GraphNode* _finalScreen, GLFWwindow* _window,
+		string* _password, bool* _isWon, Text* _text, Shader* _textShader) : RealtimeScript(nodePointer)
 	{
 		puzzle = _puzzle;
 		window = _window;
 		password = _password;
 		isWon = _isWon;
 		finalScreen = _finalScreen;
+		text = _text;
+		textShader = _textShader;
 	}
 
 	~DoorPuzzle() = default;

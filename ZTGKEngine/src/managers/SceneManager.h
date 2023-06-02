@@ -63,6 +63,7 @@ private:
 	bool phase;
 	bool poof; //phase change peak checker
 	bool forceSwap = false;
+	string* password = new string;
 
 public:
 	GraphNode* world;
@@ -77,6 +78,9 @@ public:
 	Shader* fadeShader;
 	Shader* brightShader;
 	Shader* bloomMixShader;
+	Shader* textShader;
+	Text* text;
+	GraphNode* DoorPuzzleObject;
 
 
 	unsigned int frameBuffers[2];
@@ -175,6 +179,12 @@ public:
 		glDepthFunc(GL_ALWAYS);
 		UI->Draw(currentlyPicked);
 		glDepthFunc(GL_LESS);
+
+		//For door puzzle
+		if (DoorPuzzleObject->GetActive())
+		{
+			text->RenderText(*textShader, *password, 620, 730, 2, glm::vec3(1.0f, 0.0f, 0.0f));
+		}
 	}
 
 	void Scene1Setup(Shader* additionalShaders[] = nullptr)
@@ -1021,14 +1031,14 @@ public:
 
 		paperSanctum->AddScript(new OneTimeActivatorScript(paperSanctum, journal2, false));
 
-		string* password = new string;
 		*password = "";
 		bool* isWon = new bool;
 		*isWon = false;
-		GraphNode* DoorPuzzleObject = new GraphNode();
+		DoorPuzzleObject = new GraphNode();
 		UI->AddChild(DoorPuzzleObject);
 		DoorPuzzleObject->SetActive(false);
-		GiantDoor->AddScript(new DoorPuzzle(GiantDoor, DoorPuzzleObject, finalScreen, window, password, isWon));
+		GiantDoor->AddScript(new DoorPuzzle(GiantDoor, DoorPuzzleObject, finalScreen, window, password, isWon,
+			text, textShader));
 
 		GraphNode* MainDoor = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/drzwi_kodowe/drzwi_kodowe.png", textureShader);
