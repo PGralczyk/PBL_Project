@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -147,10 +147,12 @@
     <ClCompile Include="src\utils\clickPickUtils.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\utils\textureUtilscpp.cpp" />
+    <ClCompile Include="src\utils\soundUtils.cpp" />
+    <ClCompile Include="src\utils\textureUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FadeOut.h" />
+    <ClInclude Include="src\Music.h" />
     <ClInclude Include="src\scripts\ActivateOnHoverScript.h" />
     <ClInclude Include="src\scripts\ChandelierScript.h" />
     <ClInclude Include="src\scripts\ChessBoardPuzzle.h" />

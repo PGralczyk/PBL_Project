@@ -22,17 +22,15 @@ private:
 	GraphNode* toBeDisabled;
 	GraphNode* toBeEnabled;
 	//sound testing
-	SoundSource* speaker;
-	SoundSource testSpeaker;
+	SoundSource speaker;
 
 public:
 
 	//Constructor, here assign all the fields from the private section
-	CraneScript(GraphNode* nodePointer, GraphNode* _toBeDisabled, GraphNode* _toBeEnabled, SoundSource* _speaker) : RealtimeScript(nodePointer)
+	CraneScript(GraphNode* nodePointer, GraphNode* _toBeDisabled, GraphNode* _toBeEnabled) : RealtimeScript(nodePointer)
 	{
 		toBeDisabled = _toBeDisabled;
 		toBeEnabled = _toBeEnabled;
-		speaker = _speaker;
 	}
 
 	~CraneScript() = default;
@@ -40,7 +38,7 @@ public:
 	void OnMouseClicked()
 	{
 		// for testing sounds ------------------------------
-		testSpeaker.Play(SoundBuffer::get()->getSound("test"));
+		speaker.Play(SoundBuffer::get()->getSound("test"));
 		//speaker->Play(SoundBuffer::get()->getSound("test"));
 		//(*speaker).Play(SoundBuffer::get()->getSound("test"));
 		//---------------------------------------------------
