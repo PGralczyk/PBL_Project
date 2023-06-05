@@ -67,6 +67,7 @@ public:
 		if (*password == passwordAnswer && !*isWon)
 		{
 			*isWon = true;
+			puzzle->SetActive(false);
 			node->Rotate(30, glm::vec3(0.0f, 1.0f, 0.0f));
 			node->Translate(glm::vec3(-74.0f, 0.0f, 30.0f));
 		}
