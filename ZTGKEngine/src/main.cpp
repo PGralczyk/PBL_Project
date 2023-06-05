@@ -14,8 +14,8 @@ glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
 int oldMouseButtonState = GLFW_RELEASE,
     objectID = 1;
 
-unsigned int SCR_WIDTH = 1900,
-             SCR_HEIGHT = 1000,
+unsigned int SCR_WIDTH = 1920,
+             SCR_HEIGHT = 1009,
              currentlyPicked = 0;
 
 float lastX = SCR_WIDTH / 2.0f,
@@ -443,6 +443,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     SCR_WIDTH = width;
     SCR_HEIGHT = height;
+    std::cout << SCR_WIDTH << " " << SCR_HEIGHT << std::endl;
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);

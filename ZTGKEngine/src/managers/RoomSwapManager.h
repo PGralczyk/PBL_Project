@@ -111,12 +111,21 @@ public:
 		{
 			ApTime::instance().adviseWindow = 0.0f;
 		}
+
+		if ((ApTime::instance().currentPuzzleState == 1 || ApTime::instance().currentPuzzleState == 6) && ApTime::instance().adviseWindow > 0)
+		{
+			node->forceHover = true;
+		}
 	}
 
 	void OnMouseClicked()
 	{
 		if (canClick)
 		{
+			if (ApTime::instance().currentPuzzleState == 1 || ApTime::instance().currentPuzzleState == 6)
+			{
+				ApTime::instance().currentPuzzleState++;
+			}
 			ApTime::instance().brightWorld = true;
 			brightWorld->SetActive(true);
 			darkWorld->SetActive(false);

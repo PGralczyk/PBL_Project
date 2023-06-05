@@ -49,7 +49,7 @@ public:
 	//3 - show chandelier,
 	//4 - show crane,
 	//5 - show plants,
-	int currentPuzzleState = 2;
+	int currentPuzzleState = 0;
 	float adviseWindow = 0;
 
 	//Updates each frame

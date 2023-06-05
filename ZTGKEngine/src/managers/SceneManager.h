@@ -154,7 +154,7 @@ public:
 	{
 		//world->Draw(currentlyPicked);
 		BloomRender(currentlyPicked);
-		
+
 		if (engageSwap) {
 			BlurRender(currentlyPicked, timeCounter);
 			//count time
@@ -176,11 +176,12 @@ public:
 				phase = true;
 			}
 		}
+
 		glDepthFunc(GL_ALWAYS);
 		UI->Draw(currentlyPicked);
 		glDepthFunc(GL_LESS);
 
-		//For door puzzle
+		//For door puzzle(Don't mind it)
 		if (DoorPuzzleObject->GetActive())
 		{
 			text->RenderText(*textShader, *password, 620, 730, 2, glm::vec3(1.0f, 0.0f, 0.0f));

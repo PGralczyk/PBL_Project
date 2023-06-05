@@ -50,6 +50,7 @@ public:
 			manager->MakeClickable();
 			manager->GetNode()->Rotate(-40.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			manager->GetNode()->Translate(glm::vec3(-100.0f, 0.0f, -30.0f));
+			ApTime::instance().currentPuzzleState = 1;
 			enabled = false;
 			node->isHoverable = false;
 		}
@@ -63,6 +64,11 @@ public:
 			{
 				node->setTranslate(startPosition + glm::vec3(0, 20, 0));
 			}
+		}
+
+		if (ApTime::instance().currentPuzzleState == 0 && ApTime::instance().adviseWindow > 0)
+		{
+			node->forceHover = true;
 		}
 	}
 
