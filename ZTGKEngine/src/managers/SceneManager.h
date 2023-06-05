@@ -49,7 +49,6 @@ private:
 	GraphNode* UIDark = new GraphNode();
 	GLFWwindow* window;
 	FadeOut* fade;
-	SoundSource* speaker;
 	bool* isBright;
 	int objectId = 1;
 	unsigned int* SCR_HEIGHT;
@@ -95,10 +94,9 @@ public:
 		delete(UI);
 	}
 
-	void Setup(GLFWwindow* givenWindow, SoundSource* givenSpeaker, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
+	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
 	{
 		window = givenWindow;
-		speaker = givenSpeaker;
 		engageSwap = false;
 		this->SCR_HEIGHT = SCR_HEIGHT;
 		this->SCR_WIDTH = SCR_WIDTH;
@@ -838,7 +836,7 @@ public:
 
 		pieceOfPaper->AddScript(new Papers(pieceOfPaper, PaperBright, PaperDark));
 
-		Tap->AddScript(new CraneScript(Tap, bucketEmpty, bucket, speaker));
+		Tap->AddScript(new CraneScript(Tap, bucketEmpty, bucket));
 
 		//Scripting for obtaining objects to inventory
 		OneTimeActivatorScript* drawer3Script = new OneTimeActivatorScript(drawer3MovableSegment, scissors, false, true);

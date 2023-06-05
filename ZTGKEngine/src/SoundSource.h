@@ -52,5 +52,26 @@ public:
 		}
 		std::cout << "done playing sound\n";*/
 	}
+	void SetVolume(float newVolume)
+	{
+		if (0 <= newVolume && newVolume <= 1)
+		{
+			p_Gain = newVolume;
+			alSourcef(p_Source, AL_GAIN, newVolume);
+		}
+	}
+
+	float GetVolume()
+	{
+		float v;
+		alGetSourcef(p_Source, AL_GAIN, &v);
+		return v;
+	}
+
+	void Mute()
+	{
+		p_Gain = 0.0;
+		SetVolume(0.0);
+	}
 
 };

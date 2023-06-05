@@ -4,15 +4,20 @@
 #include "./UI/ApRectangle.h"
 #include <thread>
 #include "SoundDevice.h"
+#include "Music.h"
+//#include "./utils/soundUtils.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, Music* sneakyTheme);
 glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
+void setGlobalVolume(float v);
+float getGlobalVolume();
 
 int oldMouseButtonState = GLFW_RELEASE,
-    objectID = 1;
+    objectID = 1,
+    volumeMode = 0;
 
 unsigned int SCR_WIDTH = 1920,
              SCR_HEIGHT = 1009,
@@ -26,7 +31,8 @@ bool isMouseActive = false,
      firstMouse = true,
      lightVersion = true,
      isHoldingMouseButton = false,
-     singleClick = true;
+     singleClick = true,
+     canChangeMusic = true;
 
 glm::vec3 castedRay = glm::vec3(1);
 ClickPicker picker = ClickPicker();
@@ -122,9 +128,7 @@ int main(void)
     }
 
     //Sound init
-
     SoundDevice* mysounddevice = SoundDevice::get();
-    SoundSource* speaker = new SoundSource();
 
 #pragma endregion
 
@@ -162,7 +166,11 @@ int main(void)
     //Sounds
     SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav","test");
     SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "spell");
-    SoundBuffer::get()->addSoundEffect("res/sounds/sneakyTheme.wav", "sneaky");
+    Music sneakyTheme("res/sounds/whoosh.wav");
+    sneakyTheme.EnableLooping();
+    std::cout << "Volume: " << getGlobalVolume() << std::endl;
+    setGlobalVolume(0.02);
+    std::cout << "Change volume to: " << getGlobalVolume() << std::endl;
 
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
@@ -183,7 +191,7 @@ int main(void)
 
     ApTime::instance().isEasyMode = true;
 
-    sceneManager.Setup(window, speaker, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
+    sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
 
@@ -193,13 +201,16 @@ int main(void)
 
 #pragma endregion
 
-    //speaker->Play(SoundBuffer::get()->getSound("sneaky"));
+    sneakyTheme.Play();
 
 #pragma region Game Loop
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        //music update
+        sneakyTheme.UpdateBufferStream();
+
         time += ApTime::instance().deltaTime;
 
         //Counting new deltaTime
@@ -349,7 +360,7 @@ int main(void)
         
 
         //Processing input here
-        processInput(window);
+        processInput(window, &sneakyTheme);
 
 #pragma region Render
 
@@ -405,14 +416,67 @@ int main(void)
 #pragma endregion
 
     glfwTerminate();
-    delete speaker;
     return 0;
 }
 
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, Music* sneakyTheme)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    {
+        if (canChangeMusic)
+        {
+            ALint state = sneakyTheme->GetSourceState();
+            if (state == AL_PLAYING)
+            {
+               
+                switch (volumeMode)
+                {
+                case 0:
+                    setGlobalVolume(1.0);
+                    std::cout << "Volume: 1.0" << std::endl;
+                    volumeMode++;
+                    break;
+                case 1:
+                    setGlobalVolume(0.7);
+                    std::cout << "Volume: 0.7" << std::endl;
+                    volumeMode++;
+                    break;
+                case 2:
+                    setGlobalVolume(0.5);
+                    std::cout << "Volume: 0.5" << std::endl;
+                    volumeMode++;
+                    break;
+                case 3:
+                    setGlobalVolume(0.2);
+                    std::cout << "Volume: 0.2" << std::endl;
+                    volumeMode++;
+                    break;
+                case 4:
+                    setGlobalVolume(0.02);
+                    std::cout << "Volume: 0.02" << std::endl;
+                    volumeMode++;
+                    break;
+                case 5:
+                    setGlobalVolume(0.0);
+                    std::cout << "Volume: Muted" << std::endl;
+                    volumeMode = 0;
+                    break;
+                }
+            
+            }
+            canChangeMusic = false;
+            //std::cout << "Can changed: false" << std::endl;
+        }
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
+    {
+        canChangeMusic = true;
+        //std::cout << "Can changed: true" << std::endl;
+    }
 
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     //    camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
