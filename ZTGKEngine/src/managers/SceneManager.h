@@ -110,7 +110,7 @@ public:
 		phase = true;
 		poof = false;
 		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
-		Loading("res/models/everest.jpg");
+		Loading("res/models/everest.png");
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		Scene2Setup(&otherShaders);
@@ -151,7 +151,7 @@ public:
 	void Render(unsigned int currentlyPicked)
 	{
 		//world->Draw(currentlyPicked);
-		BloomRender(currentlyPicked);
+		
 
 		if (engageSwap) {
 			BlurRender(currentlyPicked, timeCounter);
@@ -174,11 +174,12 @@ public:
 				phase = true;
 			}
 		}
-
-		glDepthFunc(GL_ALWAYS);
-		UI->Draw(currentlyPicked);
-		glDepthFunc(GL_LESS);
-
+		else {
+			BloomRender(currentlyPicked);
+			glDepthFunc(GL_ALWAYS);
+			UI->Draw(currentlyPicked);
+			glDepthFunc(GL_LESS);
+		}
 		//For door puzzle(Don't mind it)
 		if (DoorPuzzleObject->GetActive())
 		{
@@ -538,44 +539,44 @@ public:
 
 		GraphNode* BlueFlower1 = new GraphNode(blueFlower, objectId);
 		BlueFlower1->Scale(0.1f);
-		BlueFlower1->Translate(glm::vec3(45.0f, -5.0f, 0.0f));
+		BlueFlower1->Translate(glm::vec3(45.0f, -5.0f, -80.0f));
 		Scene1Dark->AddChild(BlueFlower1);
 		BlueFlowers[0] = BlueFlower1;
 
 		GraphNode* BlueFlower2 = new GraphNode(blueFlower, objectId);
 		BlueFlower2->Scale(0.1f);
-		BlueFlower2->Translate(glm::vec3(45.0f, 5.0f, 0.0f));
+		BlueFlower2->Translate(glm::vec3(45.0f, 5.0f, -80.0f));
 		Scene1Dark->AddChild(BlueFlower2);
 		BlueFlowers[1] = BlueFlower2;
 
 		GraphNode* BlueFlower3 = new GraphNode(blueFlower, objectId);
 		BlueFlower3->Scale(0.1f);
-		BlueFlower3->Translate(glm::vec3(45.0f, 15.0f, 0.0f));
+		BlueFlower3->Translate(glm::vec3(45.0f, 15.0f, -80.0f));
 		Scene1Dark->AddChild(BlueFlower3);
 		BlueFlowers[2] = BlueFlower3;
 
 		GraphNode* BlueFlower4 = new GraphNode(blueFlower, objectId);
 		BlueFlower4->Scale(0.1f);
-		BlueFlower4->Translate(glm::vec3(45.0f, 25.0f, 0.0f));
+		BlueFlower4->Translate(glm::vec3(45.0f, 25.0f, -80.0f));
 		Scene1Dark->AddChild(BlueFlower4);
 		BlueFlowers[3] = BlueFlower4;
 
 		GraphNode* BlueFlower5 = new GraphNode(blueFlower, objectId);
 		BlueFlower5->Scale(0.1f);
-		BlueFlower5->Translate(glm::vec3(45.0f, 35.0f, 0.0f));
+		BlueFlower5->Translate(glm::vec3(45.0f, 35.0f, -80.0f));
 		Scene1Dark->AddChild(BlueFlower5);
 		BlueFlowers[4] = BlueFlower5;
 #pragma endregion
 
 		GraphNode* BluePot = CreateNode("res/models/zagadka_kwiaty/donica_niebieska.fbx", defaultShader);
 		BluePot->Scale(0.1f);
-		BluePot->Translate(glm::vec3(45.0f, 0.0f, 0.0f));
+		BluePot->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
 		Scene1Bright->AddChild(BluePot);
 		BluePot->AddScript(new GrowPlantScript(BluePot, 4, puzzleState, BlueFlowers));
 
 		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
 		BlueStripes->Scale(0.1f);
-		BlueStripes->Translate(glm::vec3(45.0f, 0.0f, 0.0f));
+		BlueStripes->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
 		Scene1Dark->AddChild(BlueStripes);
 
 #pragma region Green Flowers
@@ -1185,6 +1186,9 @@ public:
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
 		world->Draw(currentlyPicked);
+		glDepthFunc(GL_ALWAYS);
+		UI->Draw(currentlyPicked);
+		glDepthFunc(GL_LESS);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		mixShader->use();
