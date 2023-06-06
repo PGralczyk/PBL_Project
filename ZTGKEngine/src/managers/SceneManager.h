@@ -84,6 +84,8 @@ public:
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
+	unsigned int intermediateFBuffer;
+	unsigned int intermediateTBuffer;
 	unsigned int rbo;
 	bool* singleClick;
 
@@ -175,7 +177,7 @@ public:
 			}
 		}
 		else {
-			BloomRender(currentlyPicked);
+			BloomRender(currentlyPicked, 0);
 			glDepthFunc(GL_ALWAYS);
 			UI->Draw(currentlyPicked);
 			glDepthFunc(GL_LESS);
@@ -1107,7 +1109,8 @@ public:
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-
+		glGenFramebuffers(2, &intermediateFBuffer);
+		glGenTextures(1, &intermediateTBuffer);
 		glGenFramebuffers(2, frameBuffers);
 		glGenTextures(2, textureBuffers);
 		for (unsigned int i = 0; i < 2; i++)
@@ -1125,6 +1128,18 @@ public:
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				std::cout << "Framebuffer not complete!" << std::endl;
 		}
+		glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBuffer);
+		glBindTexture(GL_TEXTURE_2D, intermediateTBuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, intermediateTBuffer, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+		// also check if framebuffers are complete (no need for depth buffer)
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "Framebuffer not complete!" << std::endl;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
@@ -1159,6 +1174,7 @@ public:
 	}
 
 	void BlurRender(unsigned int currentlyPicked, float scale) { // for later when we have a specific object to render
+		BloomRender(currentlyPicked, intermediateFBuffer);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glClearColor(1.0f, 1.0f, 1.0f, 0.00f);
@@ -1184,11 +1200,6 @@ public:
 			horizontal = !horizontal;
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
-		world->Draw(currentlyPicked);
-		glDepthFunc(GL_ALWAYS);
-		UI->Draw(currentlyPicked);
-		glDepthFunc(GL_LESS);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		mixShader->use();
@@ -1197,14 +1208,14 @@ public:
 		mixShader->setInt("bloom", true);
 		mixShader->setFloat("exposure", 1.0f);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureBuffers[horizontal]);
+		glBindTexture(GL_TEXTURE_2D, intermediateTBuffer);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
 		renderQuad();
-		//glClearColor(0.0f, 0.0f, 0.0f, 0.00f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.00f);
 	}
 
-	void BloomRender(unsigned int currentlyPicked)
+	void BloomRender(unsigned int currentlyPicked, unsigned int bufferNumber)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glClearColor(1.0f, 1.0f, 1.0f, 0.00f);
@@ -1241,7 +1252,7 @@ public:
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[horizontal]);
 		world->Draw(currentlyPicked);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, bufferNumber);
 		bloomMixShader->use();
 		bloomMixShader->setInt("scene", 0);
 		bloomMixShader->setInt("highlightParts", 1);
@@ -1252,6 +1263,11 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
 		renderQuad();
+		if (bufferNumber != 0) {
+			glDepthFunc(GL_ALWAYS);
+			UI->Draw(currentlyPicked);
+			glDepthFunc(GL_LESS);
+		}
 	}
 
 private:
