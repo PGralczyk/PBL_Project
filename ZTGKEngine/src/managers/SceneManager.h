@@ -676,7 +676,7 @@ public:
 			"res/models/journal1.png", textureShader);
 		UI->AddChild(journal1);
 		journal1->SetActive(false);
-		journal1->AddScript(new DeactivateRMB(journal1, window));
+		journal1->AddScript(new DeactivateRMB(journal1, window, "bookClose"));
 
 		GraphNode* brightJournalHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_journal_hover_s1.png", textureShader);

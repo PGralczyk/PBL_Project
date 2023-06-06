@@ -28,16 +28,18 @@ float lastX = SCR_WIDTH / 2.0f,
       texOffset = 0;
 
 bool isMouseActive = false,
-     firstMouse = true,
-     lightVersion = true,
-     isHoldingMouseButton = false,
-     singleClick = true,
-     canChangeMusic = true;
+      firstMouse = true,
+      lightVersion = true,
+      isHoldingMouseButton = false,
+      singleClick = true,
+      canChangeMusic = true,
+      buzzerChangeState = false;
 
 glm::vec3 castedRay = glm::vec3(1);
 ClickPicker picker = ClickPicker();
 Camera camera(glm::vec3(0.75f, 0.5f, 0.0f));
 SceneManager sceneManager;
+
 
 struct PLight {
     //glm::vec3 position = { 0.4f, 0.5f, 0.0f };
@@ -130,6 +132,8 @@ int main(void)
     //Sound init
     SoundDevice* mysounddevice = SoundDevice::get();
 
+    SoundSource speaker;
+
 #pragma endregion
 
     glEnable(GL_DEPTH_TEST);
@@ -166,15 +170,38 @@ int main(void)
     //Sounds
     SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav","test");
     SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "spell");
-    Music sneakyTheme("res/sounds/whoosh.wav");
-    sneakyTheme.EnableLooping();
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "bell");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "bookOpen");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "bookClose");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "plantGrow");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "plantShrink");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "scalesCreak");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "selectItem");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "weightTake");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "typeCode");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "correctCode");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "cutRope");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "breakGlass");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "tuptup");
+    SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "door");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "vaultDoor");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "placePiece");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "tap");
+    SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "wateringPlant");
+    Music lightBuzz("res/sounds/lightBuzz.wav");
+    //Music menuMusic("res/sounds/menu.wav");
+    SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
+    lightBuzz.EnableLooping();
     std::cout << "Volume: " << getGlobalVolume() << std::endl;
-    setGlobalVolume(0.02);
+    setGlobalVolume(1.0);
     std::cout << "Change volume to: " << getGlobalVolume() << std::endl;
 
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
     //-----------------------------------------------------------------------------
+    
+    speaker.Play(SoundBuffer::get()->getSound("menuTheme"));
+
     sceneManager.text = &text;
     sceneManager.textShader = &textShader;
 
@@ -200,8 +227,7 @@ int main(void)
     //Scene1Dark->SetActive(false);
 
 #pragma endregion
-
-    sneakyTheme.Play();
+    lightBuzz.Play();
 
 #pragma region Game Loop
 
@@ -209,7 +235,20 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         //music update
-        sneakyTheme.UpdateBufferStream();
+        lightBuzz.UpdateBufferStream();
+        if(!ApTime::instance().isBuzzzing && !buzzerChangeState)
+        {
+            //std::cout << "State buzzer change!" << std::endl;
+            buzzerChangeState = true;
+            lightBuzz.Stop();
+            //std::cout << "Ambient Stopped!" << std::endl;
+        }
+        else if (buzzerChangeState)
+        {
+            //std::cout << "Ambient Replayed!" << std::endl;
+            lightBuzz.Replay();
+            buzzerChangeState = false;
+        }
 
         time += ApTime::instance().deltaTime;
 
@@ -360,7 +399,7 @@ int main(void)
         
 
         //Processing input here
-        processInput(window, &sneakyTheme);
+        processInput(window, &lightBuzz);
 
 #pragma region Render
 

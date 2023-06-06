@@ -15,6 +15,9 @@ private:
 	glm::vec3 translation;
 	int* puzzleState;
 	GraphNode* flowerReference[5];
+
+	SoundSource speaker;
+
 public:
 	//Constructor, here assign all the fields from the private section
 	GrowPlantScript(GraphNode* nodePointer, int _growthGoal, int* _puzzleState, GraphNode* _flowerReference[]) : RealtimeScript(nodePointer)
@@ -62,6 +65,7 @@ public:
 	{
 		if (ApTime::instance().pickedElementId == "scissoors")
 		{
+			speaker.Play(SoundBuffer::get()->getSound("cutRope"));
 			if (growthGoal == growthState)
 				*puzzleState -= 1;
 			growthState = 0;
@@ -73,6 +77,7 @@ public:
 		else if (ApTime::instance().pickedElementId == "bucket")
 		{
 			growPlant();
+			speaker.Play(SoundBuffer::get()->getSound("wateringPlant"));
 		}
 	}
 

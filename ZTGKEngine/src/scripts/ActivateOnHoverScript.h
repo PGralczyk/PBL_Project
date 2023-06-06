@@ -32,15 +32,19 @@ public:
 class JournalScript;
 
 class DeactivateRMB : public RealtimeScript {
+private:
+	string soundToBePlayed;
+	SoundSource speaker;
 
 public:
 	GraphNode* object;
 	GLFWwindow* window;
 
 	//Constructor, here assign all the fields from the private section
-	DeactivateRMB(GraphNode* nodePointer, GLFWwindow* _window) : RealtimeScript(nodePointer)
+	DeactivateRMB(GraphNode* nodePointer, GLFWwindow* _window, string _soundToBePlayed = "") : RealtimeScript(nodePointer)
 	{
 		window = _window;
+		soundToBePlayed = _soundToBePlayed;
 	}
 
 	~DeactivateRMB() = default;
@@ -49,6 +53,7 @@ public:
 	{
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 		{
+			speaker.Play(SoundBuffer::get()->getSound(soundToBePlayed));
 			node->SetActive(false);
 		}
 	}

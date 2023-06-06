@@ -37,14 +37,14 @@ public:
 
 	void OnMouseClicked()
 	{
-		// for testing sounds ------------------------------
-		speaker.Play(SoundBuffer::get()->getSound("test"));
 		//speaker->Play(SoundBuffer::get()->getSound("test"));
 		//(*speaker).Play(SoundBuffer::get()->getSound("test"));
 		//---------------------------------------------------
 
 		if (ApTime::instance().pickedElementId == "bucketEmpty")
 		{
+			speaker.Play(SoundBuffer::get()->getSound("tap"));
+
 			toBeDisabled->SetActive(false);
 			toBeEnabled->SetActive(true);
 			enabled = false;

@@ -9,6 +9,8 @@ class HintButton;
 //WHAT IS THIS CLASS?
 //A test of implementing realtime script
 class HintButton : public RealtimeScript {
+private:
+	SoundSource speaker;
 
 public:
 	int deactivate = 0;
@@ -23,6 +25,7 @@ public:
 
 	void OnMouseClicked()
 	{
+		speaker.Play(SoundBuffer::get()->getSound("bell"));
 		ApTime::instance().adviseWindow = 3.0f;
 	}
 };

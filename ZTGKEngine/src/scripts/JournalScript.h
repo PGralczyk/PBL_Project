@@ -8,6 +8,8 @@
 
 class JournalScript;
 class JournalScript : public RealtimeScript {
+private:
+	SoundSource speaker;
 
 public:
 	GraphNode* object;
@@ -22,6 +24,7 @@ public:
 
 	void OnMouseClicked()
 	{
+		speaker.Play(SoundBuffer::get()->getSound("bookOpen"));
 		object->SetActive(true);
 	}
 };

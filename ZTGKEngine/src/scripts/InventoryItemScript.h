@@ -17,6 +17,8 @@ private:
 	bool* singleClick;
 	bool shouldMove;
 
+	SoundSource speaker;
+
 public:
 	void Start()
 	{
@@ -58,6 +60,7 @@ public:
 		if (!(ApTime::instance().pickedElementId == this->elementId))
 		{
 			ApTime::instance().pickedElementId = this->elementId;
+			speaker.Play(SoundBuffer::get()->getSound("selectItem"));
 			if(shouldMove)
 				node->Translate(glm::vec3(0.0f, 100.0f, 0.0f));
 		}

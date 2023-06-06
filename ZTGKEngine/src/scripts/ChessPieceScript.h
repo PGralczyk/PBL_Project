@@ -16,6 +16,8 @@ class ChessPieceScript : public RealtimeScript {
 
 private:
 
+	SoundSource speaker;
+
 public:
 	bool isBeingMoved = false;
 	int tileId = 100;

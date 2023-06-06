@@ -27,6 +27,8 @@ private:
 	GLFWwindow* window;
 	float solutionMultiplyer = 1;
 
+	SoundSource speaker;
+
 public:
 
 	//Constructor, here assign all the fields from the private section
@@ -89,6 +91,8 @@ public:
 		{
 			if (piece->isBeingMoved)
 			{
+				speaker.Play(SoundBuffer::get()->getSound("placePiece"));
+
 				piece->isBeingMoved = false;
 				if (tileState[tileID] == 0)
 				{
@@ -177,6 +181,8 @@ public:
 					piece->GetNode()->Translate(glm::vec3(0.0f, -300.0f, 0.0f));
 				}
 			}
+
+			speaker.Play(SoundBuffer::get()->getSound("placePiece"));
 		}
 		if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_RIGHT))
 		{

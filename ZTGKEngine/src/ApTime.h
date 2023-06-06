@@ -43,6 +43,7 @@ public:
 	bool brightWorld = true;
 	bool isChessPosition = false;
 	bool isEasyMode = false;
+	bool isBuzzzing = true;
 
 	//Possible puzzle states:
 	//2 - show chess board,

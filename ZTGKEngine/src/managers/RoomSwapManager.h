@@ -5,8 +5,12 @@
 #include "../scripts/RealtimeScript.h"
 #include "ApTime.h"
 #include "../scripts/OtherTestRealtimeScript.h"
+#include "../SoundBuffer.h"
+#include "../SoundSource.h"
 
 class GraphNode;
+//class SoundBuffer;
+//class SoundSource;
 
 //WHAT IS THIS CLASS?
 //A test of implementing realtime script
@@ -30,6 +34,9 @@ private:
 	bool* singleClick;
 	bool* forceSwap;
 	bool canClick;
+
+	SoundSource speaker;
+	SoundSource doorSpeaker;
 
 public:
 	//Constructor, here assign all the fields from the private section
@@ -87,6 +94,14 @@ public:
 				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
+				if (ApTime::instance().brightWorld) 
+				{
+					speaker.Play(SoundBuffer::get()->getSound("plantGrow"));
+				}
+				else
+				{
+					speaker.Play(SoundBuffer::get()->getSound("plantShrink"));
+				}
 			}
 		}
 		else
@@ -122,10 +137,15 @@ public:
 	{
 		if (canClick)
 		{
+			doorSpeaker.Play(SoundBuffer::get()->getSound("tuptup"));
+
 			if (ApTime::instance().currentPuzzleState == 1 || ApTime::instance().currentPuzzleState == 6)
 			{
 				ApTime::instance().currentPuzzleState++;
 			}
+
+			ApTime::instance().isBuzzzing = !ApTime::instance().isBuzzzing;
+
 			ApTime::instance().brightWorld = true;
 			brightWorld->SetActive(true);
 			darkWorld->SetActive(false);
@@ -134,6 +154,7 @@ public:
 			*lightVersion = true;
 			currentScene->SetActive(false);
 			otherScene->SetActive(true);
+			
 		}
 	}
 

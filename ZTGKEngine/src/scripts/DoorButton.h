@@ -24,6 +24,8 @@ private:
 	bool* isWon;
 	string number;
 
+	SoundSource speaker;
+
 public:
 
 	//Constructor, here assign all the fields from the private section
@@ -40,6 +42,8 @@ public:
 	{
 		if(!*isWon)
 		{
+			speaker.Play(SoundBuffer::get()->getSound("typeCode"));
+
 			if (password->length() >= 8)
 			{
 				*password = "";

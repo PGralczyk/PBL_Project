@@ -14,6 +14,9 @@ private:
 	GraphNode* Shattered;
 	GraphNode* prize;
 
+	SoundSource speaker;
+	SoundSource glassSpeaker;
+
 public:
 	//Constructor, here assign all the fields from the private section
 	ChandelierScript(GraphNode* nodePointer, GraphNode* givenGlass, GraphNode* givenShattered, GraphNode* _prize) : RealtimeScript(nodePointer)
@@ -29,6 +32,9 @@ public:
 	{
 		if (ApTime::instance().pickedElementId == "scissoors")
 		{
+			speaker.Play(SoundBuffer::get()->getSound("cutRope"));
+			glassSpeaker.Play(SoundBuffer::get()->getSound("breakGlass"));
+
 			Glass->SetActive(false);
 			Shattered->SetActive(true);
 			node->SetActive(false);

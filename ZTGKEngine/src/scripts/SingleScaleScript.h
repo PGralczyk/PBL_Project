@@ -15,6 +15,9 @@ private:
 	glm::vec3 startPosition;
 	GraphNode* weightsTab[9];
 	RoomSwapManager* manager;
+	SoundSource speaker;
+	SoundSource weightSpeaker;
+	SoundSource doorSpeaker;
 
 public:
 	//Constructor, here assign all the fields from the private section
@@ -46,6 +49,8 @@ public:
 		}
 		else if (*scalesPuzzleController == 0)
 		{
+			doorSpeaker.Play(SoundBuffer::get()->getSound("door"));
+
 			node->setTranslate(startPosition);
 			manager->MakeClickable();
 			manager->GetNode()->Rotate(-40.0f, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -93,6 +98,8 @@ public:
 					weightsTab[6]->SetActive(false);
 				}
 				ApTime::instance().pickedElementId = "";
+
+				speaker.Play(SoundBuffer::get()->getSound("scalesCreak"));
 			}
 			else if (ApTime::instance().pickedElementId == "weight5")
 			{
@@ -109,6 +116,8 @@ public:
 					weightsTab[7]->SetActive(false);
 				}
 				ApTime::instance().pickedElementId = "";
+
+				speaker.Play(SoundBuffer::get()->getSound("scalesCreak"));
 			}
 			else if (ApTime::instance().pickedElementId == "weight6")
 			{
@@ -125,9 +134,15 @@ public:
 					weightsTab[8]->SetActive(false);
 				}
 				ApTime::instance().pickedElementId = "";
+
+				speaker.Play(SoundBuffer::get()->getSound("scalesCreak"));
 			}
-			else
+			else if(!weightsTab[6]->GetActive() ||
+				!weightsTab[7]->GetActive()||
+				!weightsTab[8]->GetActive())
 			{
+				weightSpeaker.Play(SoundBuffer::get()->getSound("weightTake"));
+
 				for (int i = 0; i < 6; i++)
 				{
 					weightsTab[i]->SetActive(false);

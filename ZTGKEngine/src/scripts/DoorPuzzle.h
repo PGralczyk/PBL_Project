@@ -29,6 +29,9 @@ private:
 	Text* text;
 	Shader* textShader;
 
+	SoundSource speaker;
+	SoundSource doorSpeaker;
+
 public:
 
 	//Constructor, here assign all the fields from the private section
@@ -66,6 +69,9 @@ public:
 		}
 		if (*password == passwordAnswer && !*isWon)
 		{
+			speaker.Play(SoundBuffer::get()->getSound("correctCode"));
+			doorSpeaker.Play(SoundBuffer::get()->getSound("vaultDoor"));
+
 			*isWon = true;
 			puzzle->SetActive(false);
 			node->Rotate(30, glm::vec3(0.0f, 1.0f, 0.0f));
