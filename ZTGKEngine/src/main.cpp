@@ -1,19 +1,25 @@
 #include "./managers/SceneManager.h"
+#include "SoundBuffer.h"
 #include "./UI/Text.h"
 #include "./UI/ApRectangle.h"
 #include <thread>
+#include "SoundDevice.h"
+#include "Music.h"
+//#include "./utils/soundUtils.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
-glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
+void processInput(GLFWwindow* window, Music* sneakyTheme);
+void setGlobalVolume(float v);
+float getGlobalVolume();
 
 int oldMouseButtonState = GLFW_RELEASE,
-    objectID = 1;
+    objectID = 1,
+    volumeMode = 0;
 
-unsigned int SCR_WIDTH = 1900,
-             SCR_HEIGHT = 1000,
+unsigned int SCR_WIDTH = 1920,
+             SCR_HEIGHT = 1009,
              currentlyPicked = 0;
 
 float lastX = SCR_WIDTH / 2.0f,
@@ -21,20 +27,24 @@ float lastX = SCR_WIDTH / 2.0f,
       texOffset = 0;
 
 bool isMouseActive = false,
-     firstMouse = true,
-     lightVersion = true,
-     isHoldingMouseButton = false,
-     singleClick = true;
+      firstMouse = true,
+      lightVersion = true,
+      isHoldingMouseButton = false,
+      singleClick = true,
+      canChangeMusic = true,
+      buzzerChangeState = false;
 
 glm::vec3 castedRay = glm::vec3(1);
 ClickPicker picker = ClickPicker();
 Camera camera(glm::vec3(0.75f, 0.5f, 0.0f));
 SceneManager sceneManager;
 
+
 struct PLight {
-    glm::vec3 position = { 0.4f, 0.5f, 0.0f };
-    float color[3] = { 1.0f, 1.0f, 1.0f };
-    float color2[3] = { 0.7f, 1.0f, 1.0f };
+    //glm::vec3 position = { 0.4f, 0.5f, 0.0f };
+    glm::vec3 position = { 0.5f, 1.4f, 0.0f };
+    float color[3] = { 0.6f, 0.6f, 0.6f };
+    float color2[3] = { 0.2f, 0.9f, 0.9f };
 
     float constant;
     float linear;
@@ -75,8 +85,8 @@ int main(void)
         0, 0, -1.002, -1,
         0, 0, -0.2002, 0);
     chessCameraPosition.view = glm::mat4(
-        0.0157156, -0.890102, 0.45549, 0,
-        0, 0.455546, 0.890212, 0,
+        0.0157156, -0.720102, 0.25549, 0,
+        0, 0.455546, 0.790212, 0,
         -0.999877, -0.0139902, 0.00715917, 0,
         0.0492308, 0.00518422, -0.482313, 1);
 
@@ -85,6 +95,7 @@ int main(void)
 #pragma region Initialization
 
     GLFWwindow* window;
+    
 
     /* Initialize the library */
     if (!glfwInit())
@@ -117,6 +128,11 @@ int main(void)
         return -1;
     }
 
+    //Sound init
+    SoundDevice* mysounddevice = SoundDevice::get();
+
+    SoundSource speaker;
+
 #pragma endregion
 
     glEnable(GL_DEPTH_TEST);
@@ -147,10 +163,46 @@ int main(void)
     Shader blurShader("res/shaders/blur/blur.vert", "res/shaders/blur/blur.frag");
     Shader mixShader("res/shaders/mixer/mixer.vert", "res/shaders/mixer/mixer.frag");
     Shader fadeShader("res/shaders/fade.vert", "res/shaders/fade.frag");
+    Shader brightShader("res/shaders/bright/bright.vert", "res/shaders/bright/bright.frag");
+    Shader bloomMixShader("res/shaders/bloomMixer/bloomMixer.vert", "res/shaders/bloomMixer/bloomMixer.frag");
+
+    //Sounds
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav","test");
+    SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "spell");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "bell");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "bookOpen");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "bookClose");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "plantGrow");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "plantShrink");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "scalesCreak");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "selectItem");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "weightTake");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "typeCode");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "correctCode");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "cutRope");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "breakGlass");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "tuptup");
+    SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "door");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "vaultDoor");
+    SoundBuffer::get()->addSoundEffect("res/sounds/hotelBell.wav", "placePiece");
+    SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav", "tap");
+    SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "wateringPlant");
+    Music lightBuzz("res/sounds/lightBuzz.wav");
+    //Music menuMusic("res/sounds/menu.wav");
+    SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
+    lightBuzz.EnableLooping();
+    std::cout << "Volume: " << getGlobalVolume() << std::endl;
+    setGlobalVolume(1.0);
+    std::cout << "Change volume to: " << getGlobalVolume() << std::endl;
 
     // Better don't touch this !!!! - Why???? No idea (Maybe Mona Lise fond of text)
     text.init("res/fonts/arial/arial.ttf");
     //-----------------------------------------------------------------------------
+    
+    speaker.Play(SoundBuffer::get()->getSound("menuTheme"));
+
+    sceneManager.text = &text;
+    sceneManager.textShader = &textShader;
 
     sceneManager.defaultShader = &defaultShader;
     sceneManager.lightShader = &lightShader;
@@ -159,6 +211,8 @@ int main(void)
     sceneManager.outlineShader = &outlineShader;
     sceneManager.blurShader = &blurShader;
     sceneManager.mixShader = &mixShader;
+    sceneManager.brightShader = &brightShader;
+    sceneManager.bloomMixShader = &bloomMixShader;
     sceneManager.singleClick = &singleClick;
 
     ApTime::instance().isEasyMode = false;
@@ -172,21 +226,39 @@ int main(void)
     //Scene1Dark->SetActive(false);
 
 #pragma endregion
+    lightBuzz.Play();
 
 #pragma region Game Loop
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        //music update
+        lightBuzz.UpdateBufferStream();
+        if(!ApTime::instance().isBuzzzing && !buzzerChangeState)
+        {
+            //std::cout << "State buzzer change!" << std::endl;
+            buzzerChangeState = true;
+            lightBuzz.Stop();
+            //std::cout << "Ambient Stopped!" << std::endl;
+        }
+        else if (buzzerChangeState)
+        {
+            //std::cout << "Ambient Replayed!" << std::endl;
+            lightBuzz.Replay();
+            buzzerChangeState = false;
+        }
+
         time += ApTime::instance().deltaTime;
 
         //Counting new deltaTime
         ApTime::instance().Update();
 
-        glm::mat4 projection, view;
+
 
 #pragma region Camera Setup
 
+        glm::mat4 projection, view;
         if (!ApTime::instance().isChessPosition)
         {
             projection = defaultCameraPosition.projection;
@@ -208,7 +280,7 @@ int main(void)
         //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         //glm::mat4 view = camera.GetViewMatrix();
 
-   /*     std::cout << "Projection:\n";
+        /*std::cout << "Projection:\n";
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -326,7 +398,7 @@ int main(void)
         
 
         //Processing input here
-        processInput(window);
+        processInput(window, &lightBuzz);
 
 #pragma region Render
 
@@ -385,10 +457,64 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, Music* sneakyTheme)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    {
+        if (canChangeMusic)
+        {
+            ALint state = sneakyTheme->GetSourceState();
+            if (state == AL_PLAYING)
+            {
+               
+                switch (volumeMode)
+                {
+                case 0:
+                    setGlobalVolume(1.0);
+                    std::cout << "Volume: 1.0" << std::endl;
+                    volumeMode++;
+                    break;
+                case 1:
+                    setGlobalVolume(0.7);
+                    std::cout << "Volume: 0.7" << std::endl;
+                    volumeMode++;
+                    break;
+                case 2:
+                    setGlobalVolume(0.5);
+                    std::cout << "Volume: 0.5" << std::endl;
+                    volumeMode++;
+                    break;
+                case 3:
+                    setGlobalVolume(0.2);
+                    std::cout << "Volume: 0.2" << std::endl;
+                    volumeMode++;
+                    break;
+                case 4:
+                    setGlobalVolume(0.02);
+                    std::cout << "Volume: 0.02" << std::endl;
+                    volumeMode++;
+                    break;
+                case 5:
+                    setGlobalVolume(0.0);
+                    std::cout << "Volume: Muted" << std::endl;
+                    volumeMode = 0;
+                    break;
+                }
+            
+            }
+            canChangeMusic = false;
+            //std::cout << "Can changed: false" << std::endl;
+        }
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
+    {
+        canChangeMusic = true;
+        //std::cout << "Can changed: true" << std::endl;
+    }
 
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     //    camera.ProcessKeyboard(FORWARD, ApTime::instance().deltaTime);
@@ -419,6 +545,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     SCR_WIDTH = width;
     SCR_HEIGHT = height;
+    std::cout << SCR_WIDTH << " " << SCR_HEIGHT << std::endl;
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
@@ -450,35 +577,4 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     //camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view)
-{
-    //GETTING MOUSE POSITION
-    double mouseXd;
-    double mouseYd;
-    glfwGetCursorPos(window, &mouseXd, &mouseYd);
-    float mouseX = (float)mouseXd;
-    float mouseY = (float)mouseYd;
-
-    //NORMALIZING THEM
-    float normalizedX = (2.0f * mouseX) / SCR_WIDTH - 1.0f;
-    float normalizedY = 1.0f - (2.0f * mouseY) / SCR_HEIGHT;
-    glm::vec2 normalizedCoords = glm::vec2(normalizedX, normalizedY);
-
-    //CONVERTING TO CLIP SPACE(we just add 1 at z, so that our ray faces into the screen)
-    glm::vec4 clipCoords = glm::vec4(normalizedCoords.x, normalizedCoords.y, 1.0f, 1.0f);
-
-    //CONVERTING TO EYE SPACE (by using inverse projection matrix)
-    glm::mat4 invProjection = glm::inverse(projection);
-    glm::vec4 eyeCoords = invProjection * clipCoords;
-
-    //CONVERTING TO WORLD SPACE
-    glm::mat4 invView = glm::inverse(view);
-    glm::vec4 worldCoords = invView * eyeCoords;
-
-    //CONVERTING 4D VECTOR TO 3D(since we no longer need it to be in 4D)
-    glm::vec3 castedRay = glm::vec3(worldCoords.x, worldCoords.y, worldCoords.z);
-    castedRay = glm::normalize(castedRay);
-    return castedRay;
 }

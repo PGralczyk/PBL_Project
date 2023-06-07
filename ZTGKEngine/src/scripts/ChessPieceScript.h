@@ -16,18 +16,21 @@ class ChessPieceScript : public RealtimeScript {
 
 private:
 
+	SoundSource speaker;
+
 public:
 	bool isBeingMoved = false;
 	int tileId = 100;
 	glm::vec3 goalPosition;
 	glm::vec3 brightWorldPosition;
 	GLFWwindow* window;
-	bool brightWorld = true;
+	bool* poof;
 
 	//Constructor, here assign all the fields from the private section
-	ChessPieceScript(GraphNode* nodePointer, GLFWwindow* givenWindow) : RealtimeScript(nodePointer)
+	ChessPieceScript(GraphNode* nodePointer, GLFWwindow* givenWindow, bool* poof = nullptr) : RealtimeScript(nodePointer)
 	{
 		window = givenWindow;
+		this->poof = poof;
 	}
 
 	void Start()
@@ -64,10 +67,10 @@ public:
 
 	void Update()
 	{
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		if (*poof)
 		{
 			isBeingMoved = false;
-			if (ApTime::instance().brightWorld)
+			if (!ApTime::instance().brightWorld)
 			{
 				node->setTranslate(glm::vec3(brightWorldPosition.x,
 					brightWorldPosition.y, brightWorldPosition.z));
@@ -79,7 +82,6 @@ public:
 					goalPosition.y, goalPosition.z));
 				node->isHoverable = false;
 			}
-			brightWorld = !brightWorld;
 		}
 	}
 };

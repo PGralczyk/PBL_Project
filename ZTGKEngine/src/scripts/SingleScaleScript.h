@@ -14,13 +14,18 @@ private:
 	bool isLeft;
 	glm::vec3 startPosition;
 	GraphNode* weightsTab[9];
+	RoomSwapManager* manager;
+	SoundSource speaker;
+	SoundSource weightSpeaker;
+	SoundSource doorSpeaker;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9]) : RealtimeScript(nodePointer)
+	SingleScaleScript(GraphNode* nodePointer, int* _scalesPuzzleController, bool _isLeft, GraphNode* _weightsTab[9],
+		RoomSwapManager* _manager) : RealtimeScript(nodePointer)
 	{
+		manager = _manager;
 		this->scalesPuzzleController = _scalesPuzzleController;
-		//std::cout << *scalesPuzzleController << std::endl;
 		this->isLeft = _isLeft;
 		startPosition = node->getTranslation();
 		for (int i = 0; i < 9; i++)
@@ -31,7 +36,6 @@ public:
 
 	void Update()
 	{
-		//std::cout << *scalesPuzzleController << std::endl;
 		if (*scalesPuzzleController > 0)
 		{
 			if (isLeft)
@@ -45,7 +49,13 @@ public:
 		}
 		else if (*scalesPuzzleController == 0)
 		{
+			doorSpeaker.Play(SoundBuffer::get()->getSound("door"));
+
 			node->setTranslate(startPosition);
+			manager->MakeClickable();
+			manager->GetNode()->Rotate(-40.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			manager->GetNode()->Translate(glm::vec3(-100.0f, 0.0f, -30.0f));
+			ApTime::instance().currentPuzzleState = 1;
 			enabled = false;
 			node->isHoverable = false;
 		}
@@ -60,6 +70,11 @@ public:
 				node->setTranslate(startPosition + glm::vec3(0, 20, 0));
 			}
 		}
+
+		if (ApTime::instance().currentPuzzleState == 0 && ApTime::instance().adviseWindow > 0)
+		{
+			node->forceHover = true;
+		}
 	}
 
 	~SingleScaleScript() = default;
@@ -68,54 +83,66 @@ public:
 	{
 		if (node->isHoverable)
 		{
-			if (ApTime::instance().pickedElementId == "weight3")
+			if (ApTime::instance().pickedElementId == "weight4")
 			{
 				if (isLeft)
 				{
-					*scalesPuzzleController -= 3;
+					*scalesPuzzleController -= 4;
 					weightsTab[0]->SetActive(true);
 					weightsTab[6]->SetActive(false);
 				}
 				else
 				{
-					*scalesPuzzleController += 3;
+					*scalesPuzzleController += 4;
 					weightsTab[3]->SetActive(true);
 					weightsTab[6]->SetActive(false);
 				}
-			}
-			else if (ApTime::instance().pickedElementId == "weight2")
-			{
-				if (isLeft)
-				{
-					*scalesPuzzleController -= 2;
-					weightsTab[1]->SetActive(true);
-					weightsTab[7]->SetActive(false);
-				}
-				else
-				{
-					*scalesPuzzleController += 2;
-					weightsTab[4]->SetActive(true);
-					weightsTab[7]->SetActive(false);
-				}
+				ApTime::instance().pickedElementId = "";
+
+				speaker.Play(SoundBuffer::get()->getSound("scalesCreak"));
 			}
 			else if (ApTime::instance().pickedElementId == "weight5")
 			{
 				if (isLeft)
 				{
 					*scalesPuzzleController -= 5;
+					weightsTab[1]->SetActive(true);
+					weightsTab[7]->SetActive(false);
+				}
+				else
+				{
+					*scalesPuzzleController += 5;
+					weightsTab[4]->SetActive(true);
+					weightsTab[7]->SetActive(false);
+				}
+				ApTime::instance().pickedElementId = "";
+
+				speaker.Play(SoundBuffer::get()->getSound("scalesCreak"));
+			}
+			else if (ApTime::instance().pickedElementId == "weight6")
+			{
+				if (isLeft)
+				{
+					*scalesPuzzleController -= 6;
 					weightsTab[2]->SetActive(true);
 					weightsTab[8]->SetActive(false);
 				}
 				else
 				{
-					*scalesPuzzleController += 5;
+					*scalesPuzzleController += 6;
 					weightsTab[5]->SetActive(true);
 					weightsTab[8]->SetActive(false);
 				}
+				ApTime::instance().pickedElementId = "";
+
+				speaker.Play(SoundBuffer::get()->getSound("scalesCreak"));
 			}
-			
-			if (weightsTab[6]->GetActive() && weightsTab[7]->GetActive() && weightsTab[8]->GetActive())
+			else if(!weightsTab[6]->GetActive() ||
+				!weightsTab[7]->GetActive()||
+				!weightsTab[8]->GetActive())
 			{
+				weightSpeaker.Play(SoundBuffer::get()->getSound("weightTake"));
+
 				for (int i = 0; i < 6; i++)
 				{
 					weightsTab[i]->SetActive(false);
@@ -123,6 +150,7 @@ public:
 				weightsTab[6]->SetActive(true);
 				weightsTab[7]->SetActive(true);
 				weightsTab[8]->SetActive(true);
+				*scalesPuzzleController = 3;
 			}
 		}
 	}

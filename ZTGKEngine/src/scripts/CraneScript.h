@@ -5,6 +5,11 @@
 #include "../ApTime.h"
 #include "RealtimeScript.h""
 
+//for debug ------------------
+#include "../SoundBuffer.h"
+#include "../SoundSource.h"
+//-----------------------------
+
 class GraphNode;
 class OtherTestRealtimeScript;
 class ChessPieceScript;
@@ -16,6 +21,8 @@ class CraneScript : public RealtimeScript {
 private:
 	GraphNode* toBeDisabled;
 	GraphNode* toBeEnabled;
+	//sound testing
+	SoundSource speaker;
 
 public:
 
@@ -30,8 +37,14 @@ public:
 
 	void OnMouseClicked()
 	{
+		//speaker->Play(SoundBuffer::get()->getSound("test"));
+		//(*speaker).Play(SoundBuffer::get()->getSound("test"));
+		//---------------------------------------------------
+
 		if (ApTime::instance().pickedElementId == "bucketEmpty")
 		{
+			speaker.Play(SoundBuffer::get()->getSound("tap"));
+
 			toBeDisabled->SetActive(false);
 			toBeEnabled->SetActive(true);
 			enabled = false;

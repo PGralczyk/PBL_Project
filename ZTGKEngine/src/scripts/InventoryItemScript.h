@@ -15,6 +15,9 @@ private:
 	GLFWwindow* window;	
 	glm::vec3 oryginalPosition;
 	bool* singleClick;
+	bool shouldMove;
+
+	SoundSource speaker;
 
 public:
 	void Start()
@@ -24,11 +27,13 @@ public:
 		oryginalPosition.z = node->getTranslation().z;
 	}
 
-	InventoryItemScript(GraphNode* nodePointer, string elementId_, GLFWwindow* windowNode, bool* _singleClick) : RealtimeScript(nodePointer)
+	InventoryItemScript(GraphNode* nodePointer, string elementId_, GLFWwindow* windowNode, bool* _singleClick,
+		bool _shouldMove = true) : RealtimeScript(nodePointer)
 	{
 		this->elementId = elementId_;
 		this->window = windowNode;
 		singleClick = _singleClick;
+		shouldMove = _shouldMove;
 	}
 
 	void Update()
@@ -55,7 +60,9 @@ public:
 		if (!(ApTime::instance().pickedElementId == this->elementId))
 		{
 			ApTime::instance().pickedElementId = this->elementId;
-			node->Translate(glm::vec3(0.0f, 100.0f, 0.0f));
+			speaker.Play(SoundBuffer::get()->getSound("selectItem"));
+			if(shouldMove)
+				node->Translate(glm::vec3(0.0f, 100.0f, 0.0f));
 		}
 	}
 

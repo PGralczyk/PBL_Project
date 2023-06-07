@@ -27,6 +27,8 @@ private:
 	GLFWwindow* window;
 	float solutionMultiplyer = 1;
 
+	SoundSource speaker;
+
 public:
 
 	//Constructor, here assign all the fields from the private section
@@ -47,10 +49,12 @@ public:
 		window = _window;
 	}
 
-	void SetPrizes(OneTimeActivatorScript* givenPrize1, OneTimeActivatorScript* givenPrize2)
+	void SetPrizes(OneTimeActivatorScript* givenPrize1, OneTimeActivatorScript* givenPrize2, 
+		OneTimeActivatorScript* givenPrize3)
 	{
 		prize1 = givenPrize1;
 		prize2 = givenPrize2;
+		prize3 = givenPrize3;
 	}
 
 	void Start()
@@ -87,6 +91,8 @@ public:
 		{
 			if (piece->isBeingMoved)
 			{
+				speaker.Play(SoundBuffer::get()->getSound("placePiece"));
+
 				piece->isBeingMoved = false;
 				if (tileState[tileID] == 0)
 				{
@@ -126,7 +132,7 @@ public:
 			ApTime::instance().currentPuzzleState = 3;
 			if (prize1 != NULL)
 			{
-				prize1->GetNode()->Translate(glm::vec3(200.0f, 0.0f, 0.0f));
+				prize1->GetNode()->Translate(glm::vec3(400.0f, 0.0f, 0.0f));
 				prize1->GetNode()->isHoverable = true;
 				prize1->enabled = true;
 			}
@@ -137,7 +143,7 @@ public:
 			ApTime::instance().currentPuzzleState = 4;
 			if (prize2 != NULL)
 			{
-				prize2->GetNode()->Translate(glm::vec3(400.0f, 0.0f, 0.0f));
+				prize2->GetNode()->Translate(glm::vec3(300.0f, 0.0f, 0.0f));
 				prize2->GetNode()->isHoverable = true;
 				prize2->enabled = true;
 			}
@@ -175,6 +181,8 @@ public:
 					piece->GetNode()->Translate(glm::vec3(0.0f, -300.0f, 0.0f));
 				}
 			}
+
+			speaker.Play(SoundBuffer::get()->getSound("placePiece"));
 		}
 		if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_RIGHT))
 		{

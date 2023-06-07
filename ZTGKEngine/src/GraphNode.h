@@ -129,7 +129,7 @@ public:
 							script->OnMouseDragged();
 					}
 				}
-				else if(isHoverable)
+				if(isHoverable)
 				{
 					for (RealtimeScript* script : realtimeScripts)
 					{

@@ -20,7 +20,7 @@ public:
 	ScalesBalance(GraphNode* nodePointer, int* _scalesPuzzleController, GraphNode* _prize) : RealtimeScript(nodePointer)
 	{
 		this->scalesPuzzleController = _scalesPuzzleController;
-		this->rotateStatus = -1;
+		this->rotateStatus = 0;
 		this->prize = _prize;
 		node->isHoverable = false;
 	}
@@ -31,11 +31,11 @@ public:
 		{
 			if (rotateStatus == 0)
 			{
-				node->Rotate(-25, glm::vec3(1, 0, 0));
+				node->Rotate(-10, glm::vec3(1, 0, 0));
 			}
 			else if (rotateStatus == -1)
 			{
-				node->Rotate(-50, glm::vec3(1, 0, 0));
+				node->Rotate(-20, glm::vec3(1, 0, 0));
 			}
 			rotateStatus = 1;
 		}
@@ -43,11 +43,11 @@ public:
 		{
 			if (rotateStatus == -1)
 			{
-				node->Rotate(-25, glm::vec3(1, 0, 0));
+				node->Rotate(-10, glm::vec3(1, 0, 0));
 			}
 			else if (rotateStatus == 1)
 			{
-				node->Rotate(25, glm::vec3(1, 0, 0));
+				node->Rotate(10, glm::vec3(1, 0, 0));
 
 			}
 			rotateStatus = 0;
@@ -58,11 +58,11 @@ public:
 		{
 			if (rotateStatus == 0)
 			{
-				node->Rotate(25, glm::vec3(1, 0, 0));
+				node->Rotate(10, glm::vec3(1, 0, 0));
 			}
 			else if (rotateStatus == 1)
 			{
-				node->Rotate(50, glm::vec3(1, 0, 0));
+				node->Rotate(20, glm::vec3(1, 0, 0));
 
 			}
 			rotateStatus = -1;

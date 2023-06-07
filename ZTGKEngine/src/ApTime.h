@@ -43,13 +43,14 @@ public:
 	bool brightWorld = true;
 	bool isChessPosition = false;
 	bool isEasyMode = false;
+	bool isBuzzzing = true;
 
 	//Possible puzzle states:
 	//2 - show chess board,
 	//3 - show chandelier,
 	//4 - show crane,
 	//5 - show plants,
-	int currentPuzzleState = 2;
+	int currentPuzzleState = 0;
 	float adviseWindow = 0;
 
 	//Updates each frame

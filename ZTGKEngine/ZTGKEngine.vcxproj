@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -113,13 +113,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\freetype\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\openal\include;$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\libsndfile\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;freetype.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;$(SolutionDir)libraries\libsndfile\lib;$(SolutionDir)libraries\openal\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;common.lib;ex-common.lib;OpenAL32.lib;sndfile.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,15 +130,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\openal\include;$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\libsndfile\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;$(SolutionDir)libraries\openal\lib;$(SolutionDir)libraries\libsndfile\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;sndfile.lib;common.lib;ex-common.lib;OpenAL32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -147,22 +147,35 @@
     <ClCompile Include="src\utils\clickPickUtils.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\utils\textureUtilscpp.cpp" />
+    <ClCompile Include="src\utils\soundUtils.cpp" />
+    <ClCompile Include="src\utils\textureUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FadeOut.h" />
+    <ClInclude Include="src\Music.h" />
+    <ClInclude Include="src\scripts\ActivateOnHoverScript.h" />
     <ClInclude Include="src\scripts\ChandelierScript.h" />
     <ClInclude Include="src\scripts\ChessBoardPuzzle.h" />
     <ClInclude Include="src\scripts\ChessPieceScript.h" />
     <ClInclude Include="src\scripts\CraneScript.h" />
+    <ClInclude Include="src\scripts\DeactivateOnMouseLeave.h" />
+    <ClInclude Include="src\scripts\DoorButton.h" />
+    <ClInclude Include="src\scripts\DoorPuzzle.h" />
     <ClInclude Include="src\scripts\GrowPlantScript.h" />
+    <ClInclude Include="src\scripts\HintButton.h" />
     <ClInclude Include="src\scripts\InventoryItemScript.h" />
     <ClInclude Include="src\scripts\MenuScript.h" />
+    <ClInclude Include="src\scripts\JournalScript.h" />
     <ClInclude Include="src\scripts\OneTimeActivatorScript.h" />
     <ClInclude Include="src\managers\SceneManager.h" />
+    <ClInclude Include="src\scripts\Papers.h" />
     <ClInclude Include="src\scripts\PlantPuzzleController.h" />
     <ClInclude Include="src\scripts\ScalesBalance.h" />
     <ClInclude Include="src\scripts\SingleScaleScript.h" />
+    <ClInclude Include="src\scripts\SwapButton.h" />
+    <ClInclude Include="src\SoundBuffer.h" />
+    <ClInclude Include="src\SoundDevice.h" />
+    <ClInclude Include="src\SoundSource.h" />
     <ClInclude Include="src\UI\ApRectangle.h" />
     <ClInclude Include="src\UI\Primitive.h" />
     <ClInclude Include="src\Camera.h" />
