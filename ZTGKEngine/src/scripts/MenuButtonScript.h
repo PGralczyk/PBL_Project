@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <glm/glm.hpp>
 #include "RealtimeScript.h"
 #include "../GraphNode.h"
@@ -8,7 +9,7 @@
 class GraphNode;
 //WHAT IS THIS CLASS?
 //A test of implementing realtime script
-class MenuScript : public RealtimeScript {
+class MenuButtonScript : public RealtimeScript {
 
 private:
 	GLFWwindow* window;
@@ -19,7 +20,7 @@ private:
 
 public:
 	//Constructor, here assign all the fields from the private section
-	MenuScript(GraphNode* nodePointer, GLFWwindow* _window, string _gameModeId, bool* _gameMode, bool* _choosen) : RealtimeScript(nodePointer)
+	MenuButtonScript(GraphNode* nodePointer, GLFWwindow* _window, string _gameModeId, bool* _gameMode, bool* _choosen) : RealtimeScript(nodePointer)
 	{
 		this->window = _window;
 		this->gameMode = _gameMode;
@@ -70,5 +71,5 @@ public:
 		}
 	}
 
-	~MenuScript() = default;
+	~MenuButtonScript() = default;
 };

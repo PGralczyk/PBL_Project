@@ -77,31 +77,25 @@ public:
 		delete(UI);
 	}
 
-	void MenuSetup(GLFWwindow* givenWindow, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT)
+	void MenuSetup()
 	{
-		window = givenWindow;
-		engageSwap = false;
-		this->SCR_HEIGHT = SCR_HEIGHT;
-		this->SCR_WIDTH = SCR_WIDTH;
-		world = new GraphNode();
-		UI = new GraphNode();
-		timeCounter = 0.0f;
-		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
-		Loading("res/models/everest.jpg");
-
 		*choosenGameMode = false;
 
-		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hopa_u_dzoszuly/swiecznik.png", textureShader);
+		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
+		backg->AddScript(new MenuScript(backg, window, "back", gameMode, choosenGameMode));
+		UI->AddChild(backg);
+
+		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
 		easy->Scale(0.5);
-		easy->Translate(glm::vec3(450, -200, 0));
-		easy->AddScript(new MenuScript(easy, "easy", gameMode, choosenGameMode));
+		easy->Translate(glm::vec3(350, -200, 0));
+		easy->AddScript(new MenuScript(easy, window, "easy", gameMode, choosenGameMode));
+		UI->AddChild(easy);
 
-		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hopa_u_dzoszuly/solniczka.png", textureShader);
+		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
 		medium->Scale(0.5);
-		medium->Translate(glm::vec3(250, -200, 0));
-		medium->AddScript(new MenuScript(medium, "medium", gameMode, choosenGameMode));
-
-		ExecuteStartScripts();
+		medium->Translate(glm::vec3(950, -200, 0));
+		medium->AddScript(new MenuScript(medium, window, "medium", gameMode, choosenGameMode));
+		UI->AddChild(medium);
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
@@ -632,6 +626,8 @@ public:
 		weight3->Translate(glm::vec3(750, -200, 0));
 		UI->AddChild(weight3);
 		weight3->AddScript(new InventoryItemScript(weight3, "weight5", window, singleClick));
+
+		this->MenuSetup();
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
