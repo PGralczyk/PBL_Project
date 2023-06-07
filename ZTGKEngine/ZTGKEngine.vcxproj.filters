@@ -119,6 +119,9 @@
     <ClInclude Include="src\FadeOut.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\scripts\MenuScript.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
     <ClInclude Include="src\scripts\ActivateOnHoverScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>

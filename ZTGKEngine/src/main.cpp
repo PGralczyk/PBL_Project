@@ -11,7 +11,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, Music* sneakyTheme);
-glm::vec3 rayCast(GLFWwindow* window, glm::mat4 projection, glm::mat4 view);
 void setGlobalVolume(float v);
 float getGlobalVolume();
 
@@ -216,7 +215,7 @@ int main(void)
     sceneManager.bloomMixShader = &bloomMixShader;
     sceneManager.singleClick = &singleClick;
 
-    ApTime::instance().isEasyMode = true;
+    ApTime::instance().isEasyMode = false;
 
     sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 

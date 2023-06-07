@@ -32,6 +32,7 @@
 #include "../scripts/PlantPuzzleController.h";
 #include "../scripts/GrowPlantScript.h";
 #include "../scripts/CraneScript.h";
+#include "../scripts/MenuScript.h";
 #include "../scripts/ActivateOnHoverScript.h";
 #include "../scripts/DeactivateOnMouseLeave.h";
 #include "../scripts/HintButton.h";
@@ -88,12 +89,35 @@ public:
 	unsigned int intermediateTBuffer;
 	unsigned int rbo;
 	bool* singleClick;
+	bool* gameMode = new bool;
+	bool* choosenGameMode = new bool;
 
 	SceneManager() {};
 	~SceneManager()
 	{
 		delete(world);
 		delete(UI);
+	}
+
+	void MenuSetup()
+	{
+		*choosenGameMode = false;
+
+		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
+		backg->AddScript(new MenuScript(backg, window, "back", gameMode, choosenGameMode));
+		UI->AddChild(backg);
+
+		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
+		easy->Scale(0.5);
+		easy->Translate(glm::vec3(350, -200, 0));
+		easy->AddScript(new MenuScript(easy, window, "easy", gameMode, choosenGameMode));
+		UI->AddChild(easy);
+
+		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
+		medium->Scale(0.5);
+		medium->Translate(glm::vec3(950, -200, 0));
+		medium->AddScript(new MenuScript(medium, window, "medium", gameMode, choosenGameMode));
+		UI->AddChild(medium);
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
@@ -987,6 +1011,8 @@ public:
 		UI->AddChild(weight3);
 		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
 		weight3->SetActive(false);
+
+		this->MenuSetup();
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
