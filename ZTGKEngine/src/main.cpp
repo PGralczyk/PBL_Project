@@ -57,7 +57,7 @@ struct CameraPosition {
     glm::mat4 projection;
     glm::mat4 view;
 
-} defaultCameraPosition, chessCameraPosition;
+} defaultCameraPosition, chessCameraPosition, deskCameraPosition;
 
 Text text;
 
@@ -89,6 +89,18 @@ int main(void)
         0, 0.455546, 0.790212, 0,
         -0.999877, -0.0139902, 0.00715917, 0,
         0.0492308, 0.00518422, -0.482313, 1);
+
+    deskCameraPosition.position = { -0.205362, 0.372362, 0.308516 };
+    deskCameraPosition.projection = glm::mat4(
+        1.26872, 0, 0, 0,
+        0, 2.41421, 0, 0,
+        0, 0, -1.002, -1,
+        0, 0, -0.2002, 0);
+    deskCameraPosition.view = glm::mat4(
+        0.00523436, -0.531391, 0.84711, 0,
+        -5.3551e-09, 0.847122, 0.531399, 0,
+        -0.999986, -0.00278154, 0.00443414, 0,
+        0.309587, -0.423705, -0.0252765, 1);
 
 #pragma endregion
 
@@ -259,18 +271,24 @@ int main(void)
 #pragma region Camera Setup
 
         glm::mat4 projection, view;
-        if (!ApTime::instance().isChessPosition)
-        {
-            projection = defaultCameraPosition.projection;
-            view = defaultCameraPosition.view;
-            camera.Position = defaultCameraPosition.position;
-
-        }
-        else
+        if (ApTime::instance().isChessPosition)
         {
             projection = chessCameraPosition.projection;
             view = chessCameraPosition.view;
             camera.Position = chessCameraPosition.position;
+
+        }
+        else if (ApTime::instance().isDeskPosition)
+        {
+            projection = deskCameraPosition.projection;
+            view = deskCameraPosition.view;
+            camera.Position = deskCameraPosition.position;
+        }
+        else
+        {
+            projection = defaultCameraPosition.projection;
+            view = defaultCameraPosition.view;
+            camera.Position = defaultCameraPosition.position;
         }
 
 #pragma endregion

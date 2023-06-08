@@ -41,6 +41,7 @@
 #include "../scripts/DoorPuzzle.h";
 #include "../scripts/DoorButton.h";
 #include "../scripts/JournalScript.h";
+#include "../scripts/StartingDesk.h";
 
 class SceneManager
 {
@@ -715,6 +716,8 @@ public:
 		GraphNode* brightPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightPlant);
+		brightPlant->SetActive(false);
+		UI->AddScript(new ActivateOnBool(UI, brightPlant));
 
 		GraphNode* brightPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant__hover_s1.png", textureShader);
@@ -821,14 +824,14 @@ public:
 			"res/models/nozyce.png", textureShader);
 		UI->AddChild(scissors);
 		scissors->Scale(0.75);
-		scissors->Translate(glm::vec3(-50, -250, 0));
+		scissors->Translate(glm::vec3(-50, -280, 0));
 		scissors->AddScript(new InventoryItemScript(scissors, "scissoors", window, singleClick));
 		scissors->SetActive(false);
 
 		GraphNode* bucket = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/bucket_water.png", textureShader);
 		bucket->Scale(0.75);
-		bucket->Translate(glm::vec3(70, 40, 0));
+		bucket->Translate(glm::vec3(70, 10, 0));
 		UI->AddChild(bucket);
 		bucket->AddScript(new InventoryItemScript(bucket, "bucket", window, singleClick));
 		bucket->SetActive(false);
@@ -836,7 +839,7 @@ public:
 		GraphNode* bucketEmpty = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/bucket_empty.png", textureShader);
 		bucketEmpty->Scale(0.75);
-		bucketEmpty->Translate(glm::vec3(70, 40, 0));
+		bucketEmpty->Translate(glm::vec3(70, 10, 0));
 		UI->AddChild(bucketEmpty);
 		bucketEmpty->AddScript(new InventoryItemScript(bucketEmpty, "bucketEmpty", window, singleClick));
 		bucketEmpty->SetActive(false);
@@ -844,7 +847,7 @@ public:
 		GraphNode* pieceOfPaper = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/kartka_inventory.png", textureShader);
 		pieceOfPaper->Scale(0.75);
-		pieceOfPaper->Translate(glm::vec3(400, 40, 0));
+		pieceOfPaper->Translate(glm::vec3(400, 10, 0));
 		UI->AddChild(pieceOfPaper);
 		pieceOfPaper->AddScript(new InventoryItemScript(pieceOfPaper, "paper", window, singleClick, false));
 		pieceOfPaper->SetActive(false);
@@ -908,7 +911,7 @@ public:
 
 		GraphNode* door2 = CreateNode("res/models/drzwi.fbx", defaultShader);
 		door2->Scale(0.2f);
-		door2->Translate(glm::vec3(0.0f, 0.0f, 1.0f));
+		door2->Translate(glm::vec3(5.0f, 0.0f, 1.0f));
 		Scene2->AddChild(door2);
 
 		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
@@ -920,24 +923,47 @@ public:
 		vains->Scale(0.2);
 #pragma endregion
 
+#pragma region plant and desk
+		GraphNode* labDesk = CreateNode("res/models/stol_lab.fbx", defaultShader);
+		labDesk->Scale(0.2f);
+		Scene2->AddChild(labDesk);
+		labDesk->AddScript(new StartingDesk(labDesk, window));
+
+		GraphNode* labDeskPlant = CreateNode("res/models/sadzonka_lab.fbx", defaultShader);
+		labDeskPlant->Scale(0.2f);
+		Scene2->AddChild(labDeskPlant);
+		labDeskPlant->AddScript(new MagicalPlant(labDeskPlant));
+#pragma endregion
+
 #pragma region Scales Puzzle
+		GraphNode* deskUnderTheWall = CreateNode("res/models/stol_po_prawej.fbx", defaultShader);
+		deskUnderTheWall->Scale(0.2f);
+		Scene2Bright->AddChild(deskUnderTheWall);
+
 		//SCALES PUZZLE
+		GraphNode* scalesPlants = new GraphNode();
+		Scene2Dark->AddChild(scalesPlants);
+		scalesPlants->Rotate(-40, glm::vec3(0.0f, 1.0f, 0.0f));
+		scalesPlants->Translate(glm::vec3(0.0f, 0.0f, -180.0f));
+
 		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
 		scalesPlantLeft->Scale(0.15f);
-		Scene2Dark->AddChild(scalesPlantLeft);
+		scalesPlants->AddChild(scalesPlantLeft);
 		scalesPlantLeft->Translate(glm::vec3(100.0f, 0.0f, 0.0f));
 		scalesPlantLeft->Rotate(-20.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
 		scalesPlantRight->Scale(0.15f);
-		Scene2Dark->AddChild(scalesPlantRight);
+		scalesPlants->AddChild(scalesPlantRight);
 		scalesPlantRight->Translate(glm::vec3(100.0f, 0.0f, -40.0f));
 		scalesPlantRight->Rotate(140.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
+
 		GraphNode* ScalesPuzzle = new GraphNode();
 		ScalesPuzzle->Scale(0.1);
-		ScalesPuzzle->Translate(glm::vec3(100.0f, 6.0f, -20.0f));
+		ScalesPuzzle->Translate(glm::vec3(130.0f, 50.0f, -120.0f));
 		Scene2Bright->AddChild(ScalesPuzzle);
+		ScalesPuzzle->Rotate(-40, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		GraphNode* staticScales = CreateNode("res/models/stojak.fbx", defaultShader);
 		ScalesPuzzle->AddChild(staticScales);
@@ -1038,7 +1064,7 @@ public:
 #pragma region Door Puzzle
 		GraphNode* GiantDoor = CreateNode("res/models/drzwi_sejf.fbx", defaultShader);
 		Scene2->AddChild(GiantDoor);
-		GiantDoor->Translate(glm::vec3(0.0f, 0.0f, -2.0f));
+		GiantDoor->Translate(glm::vec3(5.0f, 0.0f, -2.0f));
 		GiantDoor->Scale(0.2f);
 
 		GraphNode* finalScreen = new GraphNode();

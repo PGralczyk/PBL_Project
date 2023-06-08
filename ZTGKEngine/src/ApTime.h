@@ -42,8 +42,10 @@ public:
 	string pickedElementId = "";
 	bool brightWorld = true;
 	bool isChessPosition = false;
+	bool isDeskPosition = true;
 	bool isEasyMode = false;
 	bool isBuzzzing = true;
+	bool canSwap = false;
 
 	//Possible puzzle states:
 	//2 - show chess board,
