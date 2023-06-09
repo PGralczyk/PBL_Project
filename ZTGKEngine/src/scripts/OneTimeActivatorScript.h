@@ -13,13 +13,17 @@ private:
 	GraphNode* other;
 	GraphNode* otherOther;
 	bool shouldDisappear, shouldDeactivate;
+	string soundToBePlayed;
+
+	SoundSource speaker;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	OneTimeActivatorScript(GraphNode* nodePointer, GraphNode* givenOther, bool shouldDisappear = true, bool shouldDeactivate = true, GraphNode* otherGivenOther = NULL) : RealtimeScript(nodePointer)
+	OneTimeActivatorScript(GraphNode* nodePointer, GraphNode* givenOther, string givenSoundToBePlayed = "", bool shouldDisappear = true, bool shouldDeactivate = true, GraphNode* otherGivenOther = NULL) : RealtimeScript(nodePointer)
 	{
 		other = givenOther;
 		otherOther = otherGivenOther;
+		soundToBePlayed = givenSoundToBePlayed;
 		this->shouldDeactivate = shouldDeactivate;
 		this->shouldDisappear = shouldDisappear;
 	}
@@ -28,6 +32,8 @@ public:
 
 	void OnMouseClicked()
 	{
+		speaker.Play(SoundBuffer::get()->getSound(soundToBePlayed));
+
 		other->SetActive(true);
 		if (otherOther != NULL)
 		{

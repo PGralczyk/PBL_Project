@@ -53,6 +53,7 @@ public:
 	{
 		if (*isWon)
 		{
+			doorSpeaker.Play(SoundBuffer::get()->getSound("tuptup"));
 			finalScreen->SetActive(true);
 		}
 		else
@@ -70,6 +71,11 @@ public:
 		if (*password == passwordAnswer && !*isWon)
 		{
 			speaker.Play(SoundBuffer::get()->getSound("correctCode"));
+			ALint state = AL_PLAYING;
+			while (state == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
+			{
+				speaker.GetState(&state);
+			}
 			doorSpeaker.Play(SoundBuffer::get()->getSound("vaultDoor"));
 
 			*isWon = true;

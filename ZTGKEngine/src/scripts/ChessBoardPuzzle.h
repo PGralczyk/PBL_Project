@@ -28,6 +28,7 @@ private:
 	float solutionMultiplyer = 1;
 
 	SoundSource speaker;
+	SoundSource drawerSpeaker;
 
 public:
 
@@ -128,6 +129,7 @@ public:
 		}
 		if (correctPieces == 6 * solutionMultiplyer && phase < 1)
 		{
+			drawerSpeaker.Play(SoundBuffer::get()->getSound("drawerOpen"));
 			phase++;
 			ApTime::instance().currentPuzzleState = 3;
 			if (prize1 != NULL)
@@ -139,6 +141,7 @@ public:
 		}
 		else if (correctPieces == 8 * solutionMultiplyer && phase < 2)
 		{
+			drawerSpeaker.Play(SoundBuffer::get()->getSound("drawerOpen"));
 			phase++;
 			ApTime::instance().currentPuzzleState = 4;
 			if (prize2 != NULL)
@@ -150,6 +153,7 @@ public:
 		}
 		else if (correctPieces == 10 * solutionMultiplyer && phase < 3)
 		{
+			drawerSpeaker.Play(SoundBuffer::get()->getSound("drawerOpen"));
 			phase++;
 			ApTime::instance().currentPuzzleState = 6;
 			if (prize3 != NULL)

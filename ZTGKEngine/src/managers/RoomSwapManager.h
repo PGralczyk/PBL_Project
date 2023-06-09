@@ -156,6 +156,10 @@ public:
 			otherScene->SetActive(true);
 			
 		}
+		else
+		{
+			doorSpeaker.Play(SoundBuffer::get()->getSound("doorClosed"));
+		}
 	}
 
 	void SetForceSwap()

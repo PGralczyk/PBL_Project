@@ -74,4 +74,9 @@ public:
 		SetVolume(0.0);
 	}
 
+	void GetState(ALint* state)
+	{
+		alGetSourcei(p_Source, AL_SOURCE_STATE, state);
+	}
+
 };

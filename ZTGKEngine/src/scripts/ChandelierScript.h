@@ -33,6 +33,11 @@ public:
 		if (ApTime::instance().pickedElementId == "scissoors")
 		{
 			speaker.Play(SoundBuffer::get()->getSound("cutRope"));
+			ALint state = AL_PLAYING;
+			while (state == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
+			{
+				speaker.GetState(&state);
+			}
 			glassSpeaker.Play(SoundBuffer::get()->getSound("breakGlass"));
 
 			Glass->SetActive(false);

@@ -869,17 +869,17 @@ public:
 		Tap->AddScript(new CraneScript(Tap, bucketEmpty, bucket));
 
 		//Scripting for obtaining objects to inventory
-		OneTimeActivatorScript* drawer3Script = new OneTimeActivatorScript(drawer3MovableSegment, scissors, false, true);
+		OneTimeActivatorScript* drawer3Script = new OneTimeActivatorScript(drawer3MovableSegment, scissors, "", false, true);
 		drawer3Script->enabled = false;
 		drawer3MovableSegment->AddScript(drawer3Script);
 		drawer3MovableSegment->isHoverable = false;
 
-		OneTimeActivatorScript* drawer2Script = new OneTimeActivatorScript(drawer2MovableSegment, bucketEmpty, false, true);
+		OneTimeActivatorScript* drawer2Script = new OneTimeActivatorScript(drawer2MovableSegment, bucketEmpty, "", false, true);
 		drawer2Script->enabled = false;
 		drawer2MovableSegment->AddScript(drawer2Script);
 		drawer2MovableSegment->isHoverable = false;
 
-		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, false, true);
+		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, "",  false, true);
 		drawer1Script->enabled = false;
 		drawer1MovableSegment->AddScript(drawer1Script);
 		drawer1MovableSegment->isHoverable = false;
@@ -1083,7 +1083,7 @@ public:
 		UI->AddChild(journal2);
 		journal2->SetActive(false);
 
-		paperSanctum->AddScript(new OneTimeActivatorScript(paperSanctum, journal2, false));
+		paperSanctum->AddScript(new OneTimeActivatorScript(paperSanctum, journal2, "bookOpen", false));
 
 		*password = "";
 		bool* isWon = new bool;

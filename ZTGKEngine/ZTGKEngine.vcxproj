@@ -164,6 +164,7 @@
     <ClInclude Include="src\scripts\GrowPlantScript.h" />
     <ClInclude Include="src\scripts\HintButton.h" />
     <ClInclude Include="src\scripts\InventoryItemScript.h" />
+    <ClInclude Include="src\scripts\MenuButtonScript.h" />
     <ClInclude Include="src\scripts\MenuScript.h" />
     <ClInclude Include="src\scripts\JournalScript.h" />
     <ClInclude Include="src\scripts\OneTimeActivatorScript.h" />
