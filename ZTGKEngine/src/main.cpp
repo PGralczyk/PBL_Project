@@ -108,8 +108,6 @@ int main(void)
 
     GLFWwindow* window;
     
-    FreeConsole();
-    ShowWindow(GetConsoleWindow(), 0);
     /* Initialize the library */
     if (!glfwInit())
         return -1;
