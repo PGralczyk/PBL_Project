@@ -210,7 +210,7 @@ public:
 		//For door puzzle(Don't mind it)
 		if (DoorPuzzleObject->GetActive())
 		{
-			text->RenderText(*textShader, *password, 620, 730, 2, glm::vec3(1.0f, 0.0f, 0.0f));
+			text->RenderText(*textShader, *password, 968, 770, 2, glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 	}
 
@@ -907,7 +907,11 @@ public:
 
 		GraphNode* Scene2MainObject = CreateNode("res/models/lab.fbx", defaultShader);
 		Scene2MainObject->Scale(0.2f);
-		Scene2->AddChild(Scene2MainObject);
+		Scene2Bright->AddChild(Scene2MainObject);
+
+		GraphNode* Scene2MainObjectDark = CreateNode("res/models/lab_another_dimension.fbx", defaultShader);
+		Scene2MainObjectDark->Scale(0.2f);
+		Scene2Dark->AddChild(Scene2MainObjectDark);
 
 		GraphNode* door2 = CreateNode("res/models/drzwi.fbx", defaultShader);
 		door2->Scale(0.2f);
@@ -917,17 +921,18 @@ public:
 		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
 			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, false);
 		door2->AddScript(manager2);
-
-		GraphNode* vains = CreateNode("res/models/pnacza_lab.fbx", defaultShader);
-		Scene2Dark->AddChild(vains);
-		vains->Scale(0.2);
 #pragma endregion
 
 #pragma region plant and desk
 		GraphNode* labDesk = CreateNode("res/models/stol_lab.fbx", defaultShader);
 		labDesk->Scale(0.2f);
-		Scene2->AddChild(labDesk);
+		Scene2Bright->AddChild(labDesk);
 		labDesk->AddScript(new StartingDesk(labDesk, window));
+
+		GraphNode* labDeskDark = CreateNode("res/models/stol_lab_another_dimension.fbx", defaultShader);
+		labDeskDark->Scale(0.2f);
+		Scene2Dark->AddChild(labDeskDark);
+		labDeskDark->AddScript(new StartingDesk(labDeskDark, window, false));
 
 		GraphNode* labDeskPlant = CreateNode("res/models/sadzonka_lab.fbx", defaultShader);
 		labDeskPlant->Scale(0.2f);
@@ -1142,6 +1147,16 @@ public:
 			"res/models/drzwi_kodowe/9.png", textureShader);
 		DoorPuzzleObject->AddChild(Number9);
 		Number9->AddScript(new DoorButton(Number1, password, isWon, "9"));
+
+		Number1->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number2->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number3->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number4->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number5->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number6->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number7->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number8->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number9->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
 
 #pragma endregion
 	}
