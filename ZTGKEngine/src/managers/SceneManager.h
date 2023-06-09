@@ -33,6 +33,7 @@
 #include "../scripts/GrowPlantScript.h";
 #include "../scripts/CraneScript.h";
 #include "../scripts/MenuScript.h";
+#include "../scripts/MenuButtonScript.h";
 #include "../scripts/ActivateOnHoverScript.h";
 #include "../scripts/DeactivateOnMouseLeave.h";
 #include "../scripts/HintButton.h";
@@ -70,6 +71,7 @@ public:
 	GraphNode* world;
 	GraphNode* Scene1 = new GraphNode();
 	GraphNode* Scene2 = new GraphNode();
+	GraphNode* menu = new GraphNode();
 	Shader *lightShader;
 	Shader *defaultShader;
 	Shader* textureShader;
@@ -102,23 +104,23 @@ public:
 
 	void MenuSetup()
 	{
+		menu->SetActive(false);
 		*choosenGameMode = false;
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
-		backg->AddScript(new MenuScript(backg, window, "back", gameMode, choosenGameMode));
-		UI->AddChild(backg);
+		menu->AddChild(backg);
 
 		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
-		easy->Scale(0.5);
-		easy->Translate(glm::vec3(350, -200, 0));
-		easy->AddScript(new MenuScript(easy, window, "easy", gameMode, choosenGameMode));
-		UI->AddChild(easy);
+		easy->AddScript(new MenuScript(easy, menu, window, "easy", gameMode, choosenGameMode));
+		menu->AddChild(easy);
 
-		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
-		medium->Scale(0.5);
-		medium->Translate(glm::vec3(950, -200, 0));
-		medium->AddScript(new MenuScript(medium, window, "medium", gameMode, choosenGameMode));
-		UI->AddChild(medium);
+		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
+		medium->AddScript(new MenuScript(medium, menu, window, "medium", gameMode, choosenGameMode));
+		menu->AddChild(medium);
+
+		GraphNode* exitBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		exitBtn->AddScript(new MenuScript(exitBtn, menu, window, "exit", gameMode, choosenGameMode));
+		menu->AddChild(exitBtn);
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
@@ -132,6 +134,7 @@ public:
 		UI = new GraphNode();
 		UI->AddChild(UIBright);
 		UI->AddChild(UIDark);
+		UI->AddChild(menu);
 		UIDark->SetActive(false);
 		timeCounter = 0.0f;
 		phase = true;
@@ -749,6 +752,7 @@ public:
 		brightMenuHover->SetActive(false);
 		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
+		brightMenuHover->AddScript(new MenuButtonScript(brightMenuHover, menu, window));
 
 		GraphNode* brightLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_leaves2_s1.png", textureShader);
@@ -813,6 +817,7 @@ public:
 		darkMenuHover->SetActive(false);
 		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover));
 		darkMenuHover->AddScript(new DeactivateOnMouseLeave(darkMenuHover));
+		darkMenuHover->AddScript(new MenuButtonScript(darkMenuHover, menu, window));
 
 		GraphNode* darkLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_leaves2_s2.png", textureShader);
