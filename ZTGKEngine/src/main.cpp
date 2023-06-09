@@ -108,7 +108,8 @@ int main(void)
 
     GLFWwindow* window;
     
-
+    FreeConsole();
+    ShowWindow(GetConsoleWindow(), 0);
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -569,6 +570,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+    sceneManager.PostProcessSetup();
 }
 
 // glfw: whenever the mouse moves, this callback is called

@@ -133,12 +133,13 @@
       <AdditionalIncludeDirectories>$(SolutionDir)libraries\openal\include;$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\libsndfile\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLFW\lib-vc2022;$(SolutionDir)libraries\assimp\lib;$(SolutionDir)libraries\freetype\release static\vs2015-2022\win64;$(SolutionDir)libraries\openal\lib;$(SolutionDir)libraries\libsndfile\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc143-mtd.lib;freetype.lib;sndfile.lib;common.lib;ex-common.lib;OpenAL32.lib</AdditionalDependencies>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
