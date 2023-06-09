@@ -54,7 +54,7 @@ public:
 
 	void Update()
 	{
-		if (!toBeActivated->GetActive())
+		if (toBeActivated->GetActive() && ApTime::instance().canSwap)
 		{
 			enabled = false;
 		}
