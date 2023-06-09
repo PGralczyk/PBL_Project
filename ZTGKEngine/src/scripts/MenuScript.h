@@ -13,38 +13,38 @@ class MenuScript : public RealtimeScript {
 private:
 	GLFWwindow* window;
 	bool* gameMode;
-	string gameModeId;
+	string buttonId;
 	bool* choosen;
 	bool keyPressed = false;
+	GraphNode* other;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	MenuScript(GraphNode* nodePointer, GLFWwindow* _window, string _gameModeId, bool* _gameMode, bool* _choosen) : RealtimeScript(nodePointer)
+	MenuScript(GraphNode* nodePointer, GraphNode* _other, GLFWwindow* _window, string _buttonId, bool* _gameMode, bool* _choosen) : RealtimeScript(nodePointer)
 	{
 		this->window = _window;
 		this->gameMode = _gameMode;
-		this->gameModeId = _gameModeId;
+		this->buttonId = _buttonId;
 		this->choosen = _choosen;
+		this->other = _other;
 	}
 
 	void Start()
 	{
-		//node->SetActive(false);
+		std::cout << "DZIALAM MenuScript\n";
 	}
 
 	void Update()
 	{
-		std::cout << node->GetActive() << std::endl;
-		if (choosen)
-		{
-			//node->SetActive(false);
-		}
-
 		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 		{
+			std::cout << "PRESSED\n";
+
 			if (!keyPressed)
 			{
-				node->SetActive(!node->GetActive());
+				std::cout << "CHANGE TO: " << other->GetActive() << std::endl;
+
+				other->SetActive(!other->GetActive());
 				keyPressed = true;
 			}
 		}
@@ -56,17 +56,23 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (gameModeId == "easy")
+		if (buttonId == "easy")
 		{
 			*choosen = true;
 			*gameMode = true;
 			node->SetActive(false);
 		}
-		else if (gameModeId == "medium")
+		else if (buttonId == "medium")
 		{
 			*choosen = true;
 			*gameMode = false;
 			node->SetActive(false);
+		}
+		else if (buttonId == "exit")
+		{
+			std::cout << "PRESSED\n";
+
+			other->SetActive(false);
 		}
 	}
 
