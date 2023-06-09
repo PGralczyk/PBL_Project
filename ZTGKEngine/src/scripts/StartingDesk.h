@@ -14,10 +14,11 @@ public:
 	GLFWwindow* window;
 
 	//Constructor, here assign all the fields from the private section
-	StartingDesk(GraphNode* nodePointer, GLFWwindow* _window) : RealtimeScript(nodePointer)
+	StartingDesk(GraphNode* nodePointer, GLFWwindow* _window, bool shouldBeNotHoverable = true) : RealtimeScript(nodePointer)
 	{
 		window = _window;
-		node->isHoverable = false;
+		if(shouldBeNotHoverable)
+			node->isHoverable = false;
 	}
 
 	~StartingDesk() = default;
@@ -53,10 +54,13 @@ public:
 
 	void Update()
 	{
-		if (ApTime::instance().canSwap)
+		if (toBeActivated->GetActive() && ApTime::instance().canSwap)
+		{
+			enabled = false;
+		}
+		else if (ApTime::instance().canSwap)
 		{
 			toBeActivated->SetActive(true);
-			enabled = false;
 		}
 	}
 };

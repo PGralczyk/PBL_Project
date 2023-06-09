@@ -33,6 +33,7 @@
 #include "../scripts/GrowPlantScript.h";
 #include "../scripts/CraneScript.h";
 #include "../scripts/MenuScript.h";
+#include "../scripts/MenuButtonScript.h";
 #include "../scripts/ActivateOnHoverScript.h";
 #include "../scripts/DeactivateOnMouseLeave.h";
 #include "../scripts/HintButton.h";
@@ -70,6 +71,7 @@ public:
 	GraphNode* world;
 	GraphNode* Scene1 = new GraphNode();
 	GraphNode* Scene2 = new GraphNode();
+	GraphNode* menu = new GraphNode();
 	Shader *lightShader;
 	Shader *defaultShader;
 	Shader* textureShader;
@@ -102,23 +104,23 @@ public:
 
 	void MenuSetup()
 	{
+		menu->SetActive(false);
 		*choosenGameMode = false;
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
-		backg->AddScript(new MenuScript(backg, window, "back", gameMode, choosenGameMode));
-		UI->AddChild(backg);
+		menu->AddChild(backg);
 
 		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
-		easy->Scale(0.5);
-		easy->Translate(glm::vec3(350, -200, 0));
-		easy->AddScript(new MenuScript(easy, window, "easy", gameMode, choosenGameMode));
-		UI->AddChild(easy);
+		easy->AddScript(new MenuScript(easy, menu, window, "easy", gameMode, choosenGameMode));
+		menu->AddChild(easy);
 
-		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
-		medium->Scale(0.5);
-		medium->Translate(glm::vec3(950, -200, 0));
-		medium->AddScript(new MenuScript(medium, window, "medium", gameMode, choosenGameMode));
-		UI->AddChild(medium);
+		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
+		medium->AddScript(new MenuScript(medium, menu, window, "medium", gameMode, choosenGameMode));
+		menu->AddChild(medium);
+
+		GraphNode* exitBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		exitBtn->AddScript(new MenuScript(exitBtn, menu, window, "exit", gameMode, choosenGameMode));
+		menu->AddChild(exitBtn);
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
@@ -132,6 +134,7 @@ public:
 		UI = new GraphNode();
 		UI->AddChild(UIBright);
 		UI->AddChild(UIDark);
+		UI->AddChild(menu);
 		UIDark->SetActive(false);
 		timeCounter = 0.0f;
 		phase = true;
@@ -210,7 +213,7 @@ public:
 		//For door puzzle(Don't mind it)
 		if (DoorPuzzleObject->GetActive())
 		{
-			text->RenderText(*textShader, *password, 620, 730, 2, glm::vec3(1.0f, 0.0f, 0.0f));
+			text->RenderText(*textShader, *password, 968, 770, 2, glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 	}
 
@@ -749,6 +752,7 @@ public:
 		brightMenuHover->SetActive(false);
 		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
+		brightMenuHover->AddScript(new MenuButtonScript(brightMenuHover, menu, window));
 
 		GraphNode* brightLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_leaves2_s1.png", textureShader);
@@ -813,6 +817,7 @@ public:
 		darkMenuHover->SetActive(false);
 		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover));
 		darkMenuHover->AddScript(new DeactivateOnMouseLeave(darkMenuHover));
+		darkMenuHover->AddScript(new MenuButtonScript(darkMenuHover, menu, window));
 
 		GraphNode* darkLeaves2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_leaves2_s2.png", textureShader);
@@ -907,7 +912,11 @@ public:
 
 		GraphNode* Scene2MainObject = CreateNode("res/models/lab.fbx", defaultShader);
 		Scene2MainObject->Scale(0.2f);
-		Scene2->AddChild(Scene2MainObject);
+		Scene2Bright->AddChild(Scene2MainObject);
+
+		GraphNode* Scene2MainObjectDark = CreateNode("res/models/lab_another_dimension.fbx", defaultShader);
+		Scene2MainObjectDark->Scale(0.2f);
+		Scene2Dark->AddChild(Scene2MainObjectDark);
 
 		GraphNode* door2 = CreateNode("res/models/drzwi.fbx", defaultShader);
 		door2->Scale(0.2f);
@@ -917,17 +926,18 @@ public:
 		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
 			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, false);
 		door2->AddScript(manager2);
-
-		GraphNode* vains = CreateNode("res/models/pnacza_lab.fbx", defaultShader);
-		Scene2Dark->AddChild(vains);
-		vains->Scale(0.2);
 #pragma endregion
 
 #pragma region plant and desk
 		GraphNode* labDesk = CreateNode("res/models/stol_lab.fbx", defaultShader);
 		labDesk->Scale(0.2f);
-		Scene2->AddChild(labDesk);
+		Scene2Bright->AddChild(labDesk);
 		labDesk->AddScript(new StartingDesk(labDesk, window));
+
+		GraphNode* labDeskDark = CreateNode("res/models/stol_lab_another_dimension.fbx", defaultShader);
+		labDeskDark->Scale(0.2f);
+		Scene2Dark->AddChild(labDeskDark);
+		labDeskDark->AddScript(new StartingDesk(labDeskDark, window, false));
 
 		GraphNode* labDeskPlant = CreateNode("res/models/sadzonka_lab.fbx", defaultShader);
 		labDeskPlant->Scale(0.2f);
@@ -1142,6 +1152,16 @@ public:
 			"res/models/drzwi_kodowe/9.png", textureShader);
 		DoorPuzzleObject->AddChild(Number9);
 		Number9->AddScript(new DoorButton(Number1, password, isWon, "9"));
+
+		Number1->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number2->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number3->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number4->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number5->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number6->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number7->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number8->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
+		Number9->Translate(glm::vec3(320.0f, 0.0f, 0.0f));
 
 #pragma endregion
 	}
