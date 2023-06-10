@@ -251,6 +251,7 @@ public:
 		GraphNode* volume6 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_6_off.jpg", textureShader);
 		options->AddChild(volume6);
 
+		optionsBG->isHoverable = false;
 		optionsBG->AddScript(new ShowMusicVolume(optionsBG,
 			volume1,
 			volume2,
@@ -275,7 +276,6 @@ public:
 		UI = new GraphNode();
 		UI->AddChild(UIBright);
 		UI->AddChild(UIDark);
-		UI->AddChild(menu);
 		UIDark->SetActive(false);
 		timeCounter = 0.0f;
 		phase = true;
@@ -285,6 +285,7 @@ public:
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		Scene2Setup(&otherShaders);
+		UI->AddChild(menu);
 		this->MenuSetup();
 		ExecuteStartScripts();
 	}
