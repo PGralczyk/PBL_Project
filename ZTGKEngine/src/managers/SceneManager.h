@@ -105,23 +105,47 @@ public:
 
 	void MenuSetup()
 	{
-		menu->SetActive(false);
+		//menu->SetActive(false);
 		*choosenGameMode = false;
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
 		menu->AddChild(backg);
 
-		GraphNode* easy = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
-		easy->AddScript(new MenuScript(easy, menu, window, "easy", gameMode, choosenGameMode));
-		menu->AddChild(easy);
+		GraphNode* playBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_play_button.png", textureShader);
+		GraphNode* playHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_play_button_hover.png", textureShader);
+		menu->AddChild(playBtn);
+		menu->AddChild(playHover);
+		playHover->SetActive(false);
+		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover));
+		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
+		playHover->AddScript(new MenuScript(playHover, menu, window, "play", gameMode, choosenGameMode));
 
-		GraphNode* medium = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
-		medium->AddScript(new MenuScript(medium, menu, window, "medium", gameMode, choosenGameMode));
-		menu->AddChild(medium);
+		GraphNode* creditsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
+		GraphNode* creditsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button_hover.png", textureShader);
+		menu->AddChild(creditsBtn);
+		menu->AddChild(creditsHover);
+		creditsHover->SetActive(false);
+		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover));
+		creditsHover->AddScript(new DeactivateOnMouseLeave(creditsHover));
+		creditsHover->AddScript(new MenuScript(creditsHover, menu, window, "credits", gameMode, choosenGameMode));
+
+		GraphNode* optionsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
+		GraphNode* optionsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
+		menu->AddChild(optionsBtn);
+		menu->AddChild(optionsHover);
+		optionsHover->SetActive(false);
+		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover));
+		optionsHover->AddScript(new DeactivateOnMouseLeave(optionsHover));
+		optionsHover->AddScript(new MenuScript(optionsHover, menu, window, "options", gameMode, choosenGameMode));
 
 		GraphNode* exitBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
-		exitBtn->AddScript(new MenuScript(exitBtn, menu, window, "exit", gameMode, choosenGameMode));
+		GraphNode* exitHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
 		menu->AddChild(exitBtn);
+		menu->AddChild(exitHover);
+		exitHover->SetActive(false);
+		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover));
+		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
+		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit", gameMode, choosenGameMode));
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
@@ -752,6 +776,7 @@ public:
 		bottomPanelBright->AddChild(brightMenuHover);
 		brightMenuHover->SetActive(false);
 		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
+		brightMenu->AddScript(new MenuButtonScript(brightMenu, menu, window));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
 		brightMenuHover->AddScript(new MenuButtonScript(brightMenuHover, menu, window));
 
@@ -817,6 +842,7 @@ public:
 		bottomPanelDark->AddChild(darkMenuHover);
 		darkMenuHover->SetActive(false);
 		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover));
+		darkMenu->AddScript(new MenuButtonScript(darkMenu, menu, window));
 		darkMenuHover->AddScript(new DeactivateOnMouseLeave(darkMenuHover));
 		darkMenuHover->AddScript(new MenuButtonScript(darkMenuHover, menu, window));
 

@@ -29,20 +29,12 @@ public:
 		this->other = _other;
 	}
 
-	void Start()
-	{
-		std::cout << "DZIALAM MenuScript\n";
-	}
-
 	void Update()
 	{
 		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 		{
-			std::cout << "PRESSED\n";
-
 			if (!keyPressed)
 			{
-				std::cout << "CHANGE TO: " << other->GetActive() << std::endl;
 
 				other->SetActive(!other->GetActive());
 				keyPressed = true;
@@ -56,11 +48,9 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (buttonId == "easy")
+		if (buttonId == "play")
 		{
-			*choosen = true;
-			*gameMode = true;
-			node->SetActive(false);
+			other->SetActive(false);
 		}
 		else if (buttonId == "medium")
 		{
@@ -70,9 +60,7 @@ public:
 		}
 		else if (buttonId == "exit")
 		{
-			std::cout << "PRESSED\n";
-
-			other->SetActive(false);
+			glfwSetWindowShouldClose(window, true);
 		}
 	}
 
