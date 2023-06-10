@@ -86,7 +86,7 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || *forceSwap))
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap || *forceSwap))
 		{
 			if (!keyPressed)
 			{

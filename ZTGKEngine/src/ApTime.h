@@ -43,6 +43,7 @@ public:
 	bool brightWorld = true;
 	bool isChessPosition = false;
 	bool isDeskPosition = true;
+	bool isBookPosition = false;
 	bool isEasyMode = false;
 	bool isBuzzzing = true;
 	bool canSwap = false;
