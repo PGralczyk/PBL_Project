@@ -202,6 +202,8 @@
     <None Include="res\shaders\fade.vert" />
     <None Include="res\shaders\mixer.frag" />
     <None Include="res\shaders\mixer.vert" />
+    <None Include="src\scripts\OptionsScript.h" />
+    <None Include="src\scripts\ShowMusicVolume.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -43,6 +43,8 @@
 #include "../scripts/DoorButton.h";
 #include "../scripts/JournalScript.h";
 #include "../scripts/StartingDesk.h";
+#include "../scripts/OptionsScript.h";
+#include "../scripts/ShowMusicVolume.h";
 
 class SceneManager
 {
@@ -73,8 +75,8 @@ public:
 	GraphNode* Scene1 = new GraphNode();
 	GraphNode* Scene2 = new GraphNode();
 	GraphNode* menu = new GraphNode();
-	Shader *lightShader;
-	Shader *defaultShader;
+	Shader* lightShader;
+	Shader* defaultShader;
 	Shader* textureShader;
 	Shader* outlineShader;
 	Shader* blurShader;
@@ -146,7 +148,7 @@ public:
 		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
 		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit"));
 
-		//CREDITS
+#pragma region Credits
 		menu->AddChild(credits);
 		credits->SetActive(false);
 
@@ -155,8 +157,8 @@ public:
 
 		GraphNode* backCredBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* backCredHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		backCredBtn->Translate(glm::vec3(1000, 0, 0));
-		backCredHover->Translate(glm::vec3(1000, 0, 0));
+		backCredBtn->Translate(glm::vec3(1200, 0, 0));
+		backCredHover->Translate(glm::vec3(1200, 0, 0));
 		credits->AddChild(backCredBtn);
 		credits->AddChild(backCredHover);
 		backCredHover->SetActive(false);
@@ -164,9 +166,11 @@ public:
 		backCredHover->AddScript(new DeactivateOnMouseLeave(backCredHover));
 		backCredHover->AddScript(new MenuScript(backCredHover, credits, window, "goBack"));
 
-		//OPTIONS
+#pragma endregion 
+
+#pragma region Options
 		menu->AddChild(options);
-		options->SetActive(false);
+		//options->SetActive(false);
 
 		GraphNode* optionsBG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/options_sounds.png", textureShader);
 		options->AddChild(optionsBG);
@@ -180,9 +184,86 @@ public:
 		backOptHover->AddScript(new DeactivateOnMouseLeave(backOptHover));
 		backOptHover->AddScript(new MenuScript(backOptHover, options, window, "goBack"));
 
+		GraphNode* leftArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left.jpg", textureShader);
+		GraphNode* leftArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left_hover.jpg", textureShader);
+		options->AddChild(leftArrBtn);
+		options->AddChild(leftArrHover);
+		leftArrHover->SetActive(false);
+		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover));
+		leftArrHover->AddScript(new DeactivateOnMouseLeave(leftArrHover));
+		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, leftArrBtn, "leftArr", true));
+		leftArrHover->AddScript(new OptionsScript(leftArrHover, leftArrBtn, "leftArr"));
+
+		GraphNode* rightArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right.jpg", textureShader);
+		GraphNode* rightArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right_hover.jpg", textureShader);
+		options->AddChild(rightArrBtn);
+		options->AddChild(rightArrHover);
+		rightArrHover->SetActive(false);
+		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover));
+		rightArrHover->AddScript(new DeactivateOnMouseLeave(rightArrHover));
+		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, rightArrBtn, "rightArr", true));
+		rightArrHover->AddScript(new OptionsScript(rightArrHover, rightArrBtn, "rightArr"));
+
+		GraphNode* easyModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* easyModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		easyModeBtn->Translate(glm::vec3(0, 400, 0));
+		easyModeHover->Translate(glm::vec3(0, 400, 0));
+		options->AddChild(easyModeBtn);
+		options->AddChild(easyModeHover);
+		easyModeHover->SetActive(false);
+		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover));
+		easyModeHover->AddScript(new DeactivateOnMouseLeave(easyModeHover));
+		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, easyModeBtn, "easy", true));
+		easyModeHover->AddScript(new OptionsScript(easyModeHover, easyModeBtn, "easy"));
+
+		GraphNode* mediumModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* mediumModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		mediumModeBtn->Translate(glm::vec3(400, 400, 0));
+		mediumModeHover->Translate(glm::vec3(400, 400, 0));
+		options->AddChild(mediumModeBtn);
+		options->AddChild(mediumModeHover);
+		mediumModeHover->SetActive(false);
+		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover));
+		mediumModeHover->AddScript(new DeactivateOnMouseLeave(mediumModeHover));
+		mediumModeBtn->AddScript(new OptionsScript(mediumModeBtn, mediumModeBtn, "medium", true));
+		mediumModeHover->AddScript(new OptionsScript(mediumModeHover, mediumModeBtn, "medium"));
+
+#pragma endregion 		
+
+#pragma region Music_Bars
+
+		GraphNode* volume1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_1_off.jpg", textureShader);
+		options->AddChild(volume1);
+
+		GraphNode* volume2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_2_off.jpg", textureShader);
+		options->AddChild(volume2);
+
+		GraphNode* volume3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_3_off.jpg", textureShader);
+		options->AddChild(volume3);
+
+		GraphNode* volume4 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_4_off.jpg", textureShader);
+		options->AddChild(volume4);
+
+		GraphNode* volume5 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_5_off.jpg", textureShader);
+		options->AddChild(volume5);
+
+		GraphNode* volume6 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_6_off.jpg", textureShader);
+		options->AddChild(volume6);
+
+		optionsBG->AddScript(new ShowMusicVolume(optionsBG,
+			volume1,
+			volume2,
+			volume3,
+			volume4,
+			volume5,
+			volume6
+		));
+
+#pragma endregion 
+
 	}
 
-	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
+	void Setup(GLFWwindow* givenWindow, bool* brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader* otherShaders ...)
 	{
 		window = givenWindow;
 		engageSwap = false;
@@ -203,6 +284,7 @@ public:
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		Scene2Setup(&otherShaders);
+		this->MenuSetup();
 		ExecuteStartScripts();
 	}
 
@@ -210,7 +292,7 @@ public:
 	{
 		world->Update(currentlyPicked, singleMouse, window);
 		UI->Update(currentlyPicked, singleMouse, window);
-				if (poof)
+		if (poof)
 			poof = false;
 	}
 
@@ -240,7 +322,7 @@ public:
 	void Render(unsigned int currentlyPicked)
 	{
 		//world->Draw(currentlyPicked);
-		
+
 
 		if (engageSwap) {
 			BlurRender(currentlyPicked, timeCounter);
@@ -251,7 +333,7 @@ public:
 				timeCounter = 0.5f;
 				poof = true;
 			}
-			if(phase)
+			if (phase)
 				timeCounter += ApTime::instance().deltaTime;
 			else
 				timeCounter -= ApTime::instance().deltaTime;
@@ -340,7 +422,7 @@ public:
 					chessTiles[i * 8 + 2 * j] = new GraphNode(model_black, objectId++);
 				ChessTiles->AddChild(chessTiles[i * 8 + 2 * j]);
 				chessTiles[i * 8 + 2 * j]->Translate(glm::vec3(distance * 2 * j, 0, distance * i));
-				
+
 				if (i % 2 == 0)
 					chessTiles[i * 8 + 2 * j + 1] = new GraphNode(model_black, objectId++);
 				else
@@ -355,136 +437,136 @@ public:
 		//--------------------------Setting-chess-pieces--------------------------
 		ChessPieceScript* pieces[10];
 
-			//------------------------------------------------------------------------
-			Model* _whitePawn = new Model("res/models/pionek_bialy.fbx");
-			_whitePawn->SetShader(defaultShader);
-			GraphNode* whitePawn = new GraphNode(_whitePawn, objectId++);
-			pieces[0] = new ChessPieceScript(whitePawn, window, &poof);
-			whitePawn->AddScript(pieces[0]);
-			whitePawn->Translate(glm::vec3(100.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(whitePawn);
+		//------------------------------------------------------------------------
+		Model* _whitePawn = new Model("res/models/pionek_bialy.fbx");
+		_whitePawn->SetShader(defaultShader);
+		GraphNode* whitePawn = new GraphNode(_whitePawn, objectId++);
+		pieces[0] = new ChessPieceScript(whitePawn, window, &poof);
+		whitePawn->AddScript(pieces[0]);
+		whitePawn->Translate(glm::vec3(100.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(whitePawn);
 
-			//****************
-			GraphNode* whitePawnActivator = new GraphNode(_whitePawn, objectId++);
-			whitePawnActivator->AddScript(new OneTimeActivatorScript(whitePawnActivator, whitePawn));
-			whitePawn->SetActive(false);
-			whitePawnActivator->Translate(glm::vec3(20.0f, 4.0f, -70.0f));
-			whitePawnActivator->Rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			whitePawnActivator->Scale(0.015f);
+		//****************
+		GraphNode* whitePawnActivator = new GraphNode(_whitePawn, objectId++);
+		whitePawnActivator->AddScript(new OneTimeActivatorScript(whitePawnActivator, whitePawn));
+		whitePawn->SetActive(false);
+		whitePawnActivator->Translate(glm::vec3(20.0f, 4.0f, -70.0f));
+		whitePawnActivator->Rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		whitePawnActivator->Scale(0.015f);
 
-			//------------------------------------------------------------------------
-			Model* _blackPawn = new Model("res/models/pionek_czarny.fbx");
-			_blackPawn->SetShader(defaultShader);
-			GraphNode* blackPawn = new GraphNode(_blackPawn, objectId++);
-			pieces[1] = new ChessPieceScript(blackPawn, window, &poof);
-			blackPawn->AddScript(pieces[1]);
-			blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackPawn);
+		//------------------------------------------------------------------------
+		Model* _blackPawn = new Model("res/models/pionek_czarny.fbx");
+		_blackPawn->SetShader(defaultShader);
+		GraphNode* blackPawn = new GraphNode(_blackPawn, objectId++);
+		pieces[1] = new ChessPieceScript(blackPawn, window, &poof);
+		blackPawn->AddScript(pieces[1]);
+		blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(blackPawn);
 
-			//****************
-			GraphNode* blackPawnActivator = new GraphNode(_blackPawn, objectId++);
-			blackPawnActivator->AddScript(new OneTimeActivatorScript(blackPawnActivator, blackPawn));
-			blackPawn->SetActive(false);
-			blackPawnActivator->Translate(glm::vec3(14.0f, 4.0f, -64.0f));
-			blackPawnActivator->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			blackPawnActivator->Scale(0.015f);
-			//Below is a parent for two pawn activators, so that they can be activated together
-			GraphNode* chandelierPrizes = new GraphNode();
-			Scene1Bright->AddChild(chandelierPrizes);
-			if(ApTime::instance().isEasyMode == false)
-				chandelierPrizes->AddChild(blackPawnActivator);
-			chandelierPrizes->AddChild(whitePawnActivator);
-			chandelierPrizes->SetActive(false);
-			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 0.0f));
-			whitePawnActivator->Scale(0.02f);
-			blackPawnActivator->Scale(0.02f);
+		//****************
+		GraphNode* blackPawnActivator = new GraphNode(_blackPawn, objectId++);
+		blackPawnActivator->AddScript(new OneTimeActivatorScript(blackPawnActivator, blackPawn));
+		blackPawn->SetActive(false);
+		blackPawnActivator->Translate(glm::vec3(14.0f, 4.0f, -64.0f));
+		blackPawnActivator->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		blackPawnActivator->Scale(0.015f);
+		//Below is a parent for two pawn activators, so that they can be activated together
+		GraphNode* chandelierPrizes = new GraphNode();
+		Scene1Bright->AddChild(chandelierPrizes);
+		if (ApTime::instance().isEasyMode == false)
+			chandelierPrizes->AddChild(blackPawnActivator);
+		chandelierPrizes->AddChild(whitePawnActivator);
+		chandelierPrizes->SetActive(false);
+		chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 0.0f));
+		whitePawnActivator->Scale(0.02f);
+		blackPawnActivator->Scale(0.02f);
 
-			//------------------------------------------------------------------------
-			Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
-			_whiteKing->SetShader(defaultShader);
-			GraphNode* whiteKing = new GraphNode(_whiteKing, objectId++);
-			pieces[2] = new ChessPieceScript(whiteKing, window, &poof);
-			whiteKing->AddScript(pieces[2]);
-			whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(whiteKing);
+		//------------------------------------------------------------------------
+		Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
+		_whiteKing->SetShader(defaultShader);
+		GraphNode* whiteKing = new GraphNode(_whiteKing, objectId++);
+		pieces[2] = new ChessPieceScript(whiteKing, window, &poof);
+		whiteKing->AddScript(pieces[2]);
+		whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(whiteKing);
 
-			//****************
-			GraphNode* whiteKingActivator = new GraphNode(_whiteKing, objectId++);
-			whiteKingActivator->AddScript(new OneTimeActivatorScript(whiteKingActivator, whiteKing));
-			whiteKing->SetActive(false);
-			whiteKingActivator->Scale(0.015f);
-			whiteKingActivator->Translate(glm::vec3(20.0f, 73.0f, -123.0f));
+		//****************
+		GraphNode* whiteKingActivator = new GraphNode(_whiteKing, objectId++);
+		whiteKingActivator->AddScript(new OneTimeActivatorScript(whiteKingActivator, whiteKing));
+		whiteKing->SetActive(false);
+		whiteKingActivator->Scale(0.015f);
+		whiteKingActivator->Translate(glm::vec3(20.0f, 73.0f, -123.0f));
 
-			//------------------------------------------------------------------------
-			Model* _blackKing = new Model("res/models/krol_czarny.fbx");
-			_blackKing->SetShader(defaultShader);
-			GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
-			pieces[3] = new ChessPieceScript(blackKing, window, &poof);
-			blackKing->AddScript(pieces[3]);
-			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackKing);
+		//------------------------------------------------------------------------
+		Model* _blackKing = new Model("res/models/krol_czarny.fbx");
+		_blackKing->SetShader(defaultShader);
+		GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
+		pieces[3] = new ChessPieceScript(blackKing, window, &poof);
+		blackKing->AddScript(pieces[3]);
+		blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(blackKing);
 
-			//****************
-			GraphNode* blackKingActivator = new GraphNode(_blackKing, objectId++);
-			blackKingActivator->AddScript(new OneTimeActivatorScript(blackKingActivator, blackKing));
-			blackKing->SetActive(false);
-			blackKingActivator->Scale(0.015f);
-			blackKingActivator->Translate(glm::vec3(20.0f, 73.0f, -126.0f));
-			//Parent for both king activators so that they can be activated at the same time
-			GraphNode* plantPuzzlePrizes = new GraphNode();
-			plantPuzzlePrizes->AddChild(whiteKingActivator);
-			if (ApTime::instance().isEasyMode == false)
-				plantPuzzlePrizes->AddChild(blackKingActivator);
-			plantPuzzlePrizes->SetActive(false);
+		//****************
+		GraphNode* blackKingActivator = new GraphNode(_blackKing, objectId++);
+		blackKingActivator->AddScript(new OneTimeActivatorScript(blackKingActivator, blackKing));
+		blackKing->SetActive(false);
+		blackKingActivator->Scale(0.015f);
+		blackKingActivator->Translate(glm::vec3(20.0f, 73.0f, -126.0f));
+		//Parent for both king activators so that they can be activated at the same time
+		GraphNode* plantPuzzlePrizes = new GraphNode();
+		plantPuzzlePrizes->AddChild(whiteKingActivator);
+		if (ApTime::instance().isEasyMode == false)
+			plantPuzzlePrizes->AddChild(blackKingActivator);
+		plantPuzzlePrizes->SetActive(false);
 
-			//------------------------------------------------------------------------
-			Model* _whiteQueen = new Model("res/models/krolowa_biala.fbx");
-			_whiteQueen->SetShader(defaultShader);
-			GraphNode* whiteQueen = new GraphNode(_whiteQueen, objectId++);
-			pieces[4] = new ChessPieceScript(whiteQueen, window, &poof);
-			whiteQueen->AddScript(pieces[4]);
-			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(whiteQueen);
+		//------------------------------------------------------------------------
+		Model* _whiteQueen = new Model("res/models/krolowa_biala.fbx");
+		_whiteQueen->SetShader(defaultShader);
+		GraphNode* whiteQueen = new GraphNode(_whiteQueen, objectId++);
+		pieces[4] = new ChessPieceScript(whiteQueen, window, &poof);
+		whiteQueen->AddScript(pieces[4]);
+		whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(whiteQueen);
 
-			//------------------------------------------------------------------------
-			Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
-			_blackQueen->SetShader(defaultShader);
-			GraphNode* blackQueen = new GraphNode(_blackQueen, objectId++);
-			pieces[5] = new ChessPieceScript(blackQueen, window, &poof);
-			blackQueen->AddScript(pieces[5]);
-			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
-			if (ApTime::instance().isEasyMode == false)
-				ChessMainObject->AddChild(blackQueen);
+		//------------------------------------------------------------------------
+		Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
+		_blackQueen->SetShader(defaultShader);
+		GraphNode* blackQueen = new GraphNode(_blackQueen, objectId++);
+		pieces[5] = new ChessPieceScript(blackQueen, window, &poof);
+		blackQueen->AddScript(pieces[5]);
+		blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
+		if (ApTime::instance().isEasyMode == false)
+			ChessMainObject->AddChild(blackQueen);
 
-			//------------------------------------------------------------------------
-			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
-			pieces[6] = new ChessPieceScript(whiteKnight, window, &poof);
-			whiteKnight->AddScript(pieces[6]);
-			whiteKnight->Translate(glm::vec3(1300.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(whiteKnight);
+		//------------------------------------------------------------------------
+		GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
+		pieces[6] = new ChessPieceScript(whiteKnight, window, &poof);
+		whiteKnight->AddScript(pieces[6]);
+		whiteKnight->Translate(glm::vec3(1300.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(whiteKnight);
 
-			//------------------------------------------------------------------------
-			GraphNode* blackKnight = CreateNode("res/models/konik_czarny.fbx", defaultShader);
-			pieces[7] = new ChessPieceScript(blackKnight, window, &poof);
-			blackKnight->AddScript(pieces[7]);
-			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
-			if (ApTime::instance().isEasyMode == false)
-				ChessMainObject->AddChild(blackKnight);
+		//------------------------------------------------------------------------
+		GraphNode* blackKnight = CreateNode("res/models/konik_czarny.fbx", defaultShader);
+		pieces[7] = new ChessPieceScript(blackKnight, window, &poof);
+		blackKnight->AddScript(pieces[7]);
+		blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
+		if (ApTime::instance().isEasyMode == false)
+			ChessMainObject->AddChild(blackKnight);
 
-			//------------------------------------------------------------------------
-			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
-			pieces[8] = new ChessPieceScript(whiteRook, window, &poof);
-			whiteRook->AddScript(pieces[8]);
-			whiteRook->Translate(glm::vec3(1700.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(whiteRook);
+		//------------------------------------------------------------------------
+		GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
+		pieces[8] = new ChessPieceScript(whiteRook, window, &poof);
+		whiteRook->AddScript(pieces[8]);
+		whiteRook->Translate(glm::vec3(1700.0f, 100.0f, -230.0f));
+		ChessMainObject->AddChild(whiteRook);
 
-			//------------------------------------------------------------------------
-			GraphNode* blackRook = CreateNode("res/models/wieza_czarna.fbx", defaultShader);
-			pieces[9] = new ChessPieceScript(blackRook, window, &poof);
-			blackRook->AddScript(pieces[9]);
-			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
-			if (ApTime::instance().isEasyMode == false)
-				ChessMainObject->AddChild(blackRook);
+		//------------------------------------------------------------------------
+		GraphNode* blackRook = CreateNode("res/models/wieza_czarna.fbx", defaultShader);
+		pieces[9] = new ChessPieceScript(blackRook, window, &poof);
+		blackRook->AddScript(pieces[9]);
+		blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
+		if (ApTime::instance().isEasyMode == false)
+			ChessMainObject->AddChild(blackRook);
 #pragma endregion
 
 #pragma region Chess Puzzle Scripting
@@ -503,7 +585,7 @@ public:
 
 #pragma region World Configuration
 		GraphNode* Scene1MainObject = CreateNode("res/models/pokoj_export.fbx", defaultShader);
-		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0]);
+		GraphNode* SceneOutsideBright = CreateUiElement(0, 0, 200, 150, "res/models/bright_forest.png", additionalShaders[0]);
 		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0]);
 
 		//SETTING_INHERITANCE
@@ -739,9 +821,9 @@ public:
 		//door->Rotate(-150, glm::vec3(0.0, 1.0, 0.0));
 		door->Translate(glm::vec3(55.0, 0.0, 250.0));
 		Scene1->AddChild(door);
-		
 
-		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark, 
+
+		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark,
 			window, Scene1, Scene2, isBright, singleClick, &forceSwap, &engageSwap, &poof);
 		door->AddScript(manager1);
 
@@ -797,7 +879,7 @@ public:
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHintHover);
 		brightHintHover->SetActive(false);
-		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, ApTime::instance().isEasyMode));
+		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, &ApTime::instance().isEasyMode));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
 		brightHintHover->AddScript(new HintButton(brightHintHover));
 
@@ -863,7 +945,7 @@ public:
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHintHover);
 		darkHintHover->SetActive(false);
-		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, ApTime::instance().isEasyMode));
+		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, &ApTime::instance().isEasyMode));
 		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
 		darkHintHover->AddScript(new HintButton(darkHintHover));
 
@@ -945,7 +1027,7 @@ public:
 		drawer2MovableSegment->AddScript(drawer2Script);
 		drawer2MovableSegment->isHoverable = false;
 
-		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, "",  false, true);
+		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, "", false, true);
 		drawer1Script->enabled = false;
 		drawer1MovableSegment->AddScript(drawer1Script);
 		drawer1MovableSegment->isHoverable = false;
@@ -1108,8 +1190,6 @@ public:
 		UI->AddChild(weight3);
 		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
 		weight3->SetActive(false);
-
-		this->MenuSetup();
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
@@ -1322,7 +1402,7 @@ public:
 				std::cout << "Framebuffer not complete!" << std::endl;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-		
+
 	}
 
 	void renderQuad()
@@ -1382,7 +1462,7 @@ public:
 			horizontal = !horizontal;
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
-		
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		mixShader->use();
 		mixShader->setInt("scene", 0);
@@ -1455,7 +1535,7 @@ public:
 private:
 	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
 	{
-		Model *model = new Model(pathToModel);
+		Model* model = new Model(pathToModel);
 		model->SetShader(shader);
 		return new GraphNode(model, objectId++);
 	}
@@ -1463,7 +1543,7 @@ private:
 	GraphNode* CreateUiElement(int xPos, int yPos, int width, int height, string path, Shader* shader)
 	{
 		//glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, yPos, 0));
-		glm::mat4 *Transform = new glm::mat4(1.0);
+		glm::mat4* Transform = new glm::mat4(1.0);
 		glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		/*vector<Vertex> vertices =
@@ -1519,6 +1599,3 @@ private:
 		//std::cout << "Showing scene...\n";
 	}
 };
-
-
-
