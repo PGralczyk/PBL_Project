@@ -26,20 +26,12 @@ public:
 		shouldWork = _shouldWork;
 	}
 
-	void Start()
-	{
-		std::cout << "DZIALAM MenuButtonScript\n";
-	}
-
 	void Update()
 	{
 		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 		{
-			std::cout << "PRESSED\n";
-
 			if (!keyPressed)
 			{
-				std::cout << "CHANGE TO: " << other->GetActive() << std::endl;
 
 				other->SetActive(!other->GetActive());
 				keyPressed = true;
@@ -53,8 +45,6 @@ public:
 
 	void OnMouseClicked()
 	{
-		std::cout << "PRESSED\n";
-
 		if (shouldWork)
 			other->SetActive(true);
 	}
