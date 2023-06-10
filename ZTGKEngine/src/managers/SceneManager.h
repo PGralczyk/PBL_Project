@@ -43,6 +43,7 @@
 #include "../scripts/DoorButton.h";
 #include "../scripts/JournalScript.h";
 #include "../scripts/StartingDesk.h";
+#include "../scripts/CameraChange.h";
 
 class SceneManager
 {
@@ -395,7 +396,7 @@ public:
 				chandelierPrizes->AddChild(blackPawnActivator);
 			chandelierPrizes->AddChild(whitePawnActivator);
 			chandelierPrizes->SetActive(false);
-			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 0.0f));
+			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 40.0f));
 			whitePawnActivator->Scale(0.02f);
 			blackPawnActivator->Scale(0.02f);
 
@@ -497,12 +498,13 @@ public:
 			chessTiles[i]->AddScript(new TileScript(chessTiles[i], puzzle, i));
 		}
 		ChessMainObject->Scale(0.015);
-		ChessMainObject->Translate(glm::vec3(0.0f, 20.0f, 0.0f));
+		ChessMainObject->Translate(glm::vec3(-100.0f, 20.0f, 0.0f));
 #pragma endregion
 #pragma endregion
 
 #pragma region World Configuration
 		GraphNode* Scene1MainObject = CreateNode("res/models/pokoj_export.fbx", defaultShader);
+		GraphNode* Scene1MainObjectDark = CreateNode("res/models/pokoj_export_dark.fbx", defaultShader);
 		GraphNode* SceneOutsideBright = CreateUiElement(0,0,200,150, "res/models/bright_forest.png", additionalShaders[0]);
 		GraphNode* SceneOutsideDark = CreateUiElement(0, 0, 200, 150, "res/models/dark_forest.png", additionalShaders[0]);
 
@@ -513,14 +515,21 @@ public:
 		Scene1Bright->AddChild(SceneOutsideBright);
 		Scene1Dark->AddChild(SceneOutsideDark);
 		world->AddChild(bulb);
-		Scene1->AddChild(Scene1MainObject);
+		Scene1Bright->AddChild(Scene1MainObject);
+		Scene1Dark->AddChild(Scene1MainObjectDark);
 		Scene1MainObject->Scale(0.1f);
+		Scene1MainObjectDark->Scale(0.1f);
+
+		GraphNode* bookShelfBright = CreateNode("res/models/pokoj_ksiazki.fbx", defaultShader);
+		GraphNode* bookShelfDark = CreateNode("res/models/pokoj_ksiazki_dark.fbx", defaultShader);
+		bookShelfBright->AddScript(new CameraChange(bookShelfBright, window, &ApTime::instance().isBookPosition));
+		bookShelfDark->AddScript(new CameraChange(bookShelfDark, window, &ApTime::instance().isBookPosition));
+		bookShelfBright->Scale(0.1f);
+		bookShelfDark->Scale(0.1f);
+		Scene1Bright->AddChild(bookShelfBright);
+		Scene1Dark->AddChild(bookShelfDark);
 
 		Scene1->AddChild(ChessMainObject);
-
-		GraphNode* veins = CreateNode("res/models/pnacza_pokoj1.fbx", defaultShader);
-		Scene1Dark->AddChild(veins);
-		veins->Scale(0.1f);
 
 		Scene1->Scale(0.005f);
 		bulb->Scale(0.01f);
@@ -538,7 +547,7 @@ public:
 		//--------------------------Chandelier-Puzzle--------------------------
 		GraphNode* ChandelierBright = new GraphNode();
 		Scene1Bright->AddChild(ChandelierBright);
-		ChandelierBright->Translate(glm::vec3(20.0f, -10.0f, -10.0f));
+		ChandelierBright->Translate(glm::vec3(20.0f, -10.0f, 30.0f));
 
 		GraphNode* Chain = CreateNode("res/models/zyrandol_lancuch.fbx", defaultShader);
 		Chain->Scale(0.1f);
@@ -550,20 +559,20 @@ public:
 
 		GraphNode* ChandelierShattered = CreateNode("res/models/zyrandol_stluczony.fbx", defaultShader);
 		ChandelierShattered->Scale(0.1f);
-		ChandelierShattered->Translate(glm::vec3(20.0f, 0.0f, -10.0f));
+		ChandelierShattered->Translate(glm::vec3(20.0f, 0.0f, 30.0f));
 		Scene1->AddChild(ChandelierShattered);
 		ChandelierShattered->SetActive(false);
 
 		GraphNode* ChandelierNoGlass = CreateNode("res/models/zyrandol_szklany.fbx", defaultShader);
 		ChandelierNoGlass->Scale(0.1f);
-		ChandelierNoGlass->Translate(glm::vec3(20.0f, -10.0f, -10.0f));
+		ChandelierNoGlass->Translate(glm::vec3(20.0f, -10.0f, 30.0f));
 		Scene1Dark->AddChild(ChandelierNoGlass);
 		ChandelierNoGlass->AddScript(new ChandelierScript(ChandelierNoGlass, ChandelierGlass, ChandelierShattered, chandelierPrizes));
 		objectId--;
 
 		GraphNode* Line = CreateNode("res/models/zyrandol_lina.fbx", defaultShader);
 		Line->Scale(0.1f);
-		Line->Translate(glm::vec3(20.0f, -10.0f, -10.0f));
+		Line->Translate(glm::vec3(20.0f, -10.0f, 30.0f));
 		Scene1Dark->AddChild(Line);
 #pragma endregion
 
@@ -583,44 +592,44 @@ public:
 
 		GraphNode* RedFlower1 = new GraphNode(redFlower, objectId);
 		RedFlower1->Scale(0.1f);
-		RedFlower1->Translate(glm::vec3(-10.0f, -5.0f, -5.0f));
+		RedFlower1->Translate(glm::vec3(0.0f, -5.0f, -20.0f));
 		Scene1Dark->AddChild(RedFlower1);
 		RedFlowers[0] = RedFlower1;
 
 		GraphNode* RedFlower2 = new GraphNode(redFlower, objectId);
 		RedFlower2->Scale(0.1f);
-		RedFlower2->Translate(glm::vec3(-10.0f, 5.0f, -5.0f));
+		RedFlower2->Translate(glm::vec3(0.0f, 5.0f, -20.0f));
 		Scene1Dark->AddChild(RedFlower2);
 		RedFlowers[1] = RedFlower2;
 
 		GraphNode* RedFlower3 = new GraphNode(redFlower, objectId);
 		RedFlower3->Scale(0.1f);
-		RedFlower3->Translate(glm::vec3(-10.0f, 15.0f, -5.0f));
+		RedFlower3->Translate(glm::vec3(0.0f, 15.0f, -20.0f));
 		Scene1Dark->AddChild(RedFlower3);
 		RedFlowers[2] = RedFlower3;
 
 		GraphNode* RedFlower4 = new GraphNode(redFlower, objectId);
 		RedFlower4->Scale(0.1f);
-		RedFlower4->Translate(glm::vec3(-10.0f, 25.0f, -5.0f));
+		RedFlower4->Translate(glm::vec3(0.0f, 25.0f, -20.0f));
 		Scene1Dark->AddChild(RedFlower4);
 		RedFlowers[3] = RedFlower4;
 
 		GraphNode* RedFlower5 = new GraphNode(redFlower, objectId);
 		RedFlower5->Scale(0.1f);
-		RedFlower5->Translate(glm::vec3(-10.0f, 35.0f, -5.0f));
+		RedFlower5->Translate(glm::vec3(0.0f, 35.0f, -20.0f));
 		Scene1Dark->AddChild(RedFlower5);
 		RedFlowers[4] = RedFlower5;
 #pragma endregion
 
 		GraphNode* RedPot = CreateNode("res/models/zagadka_kwiaty/donica_czerwona.fbx", defaultShader);
 		RedPot->Scale(0.1f);
-		RedPot->Translate(glm::vec3(-10.0f, 0.0f, -5.0f));
+		RedPot->Translate(glm::vec3(0.0f, 0.0f, -20.0f));
 		Scene1Bright->AddChild(RedPot);
 		RedPot->AddScript(new GrowPlantScript(RedPot, 3, puzzleState, RedFlowers));
 
 		GraphNode* RedStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_czerwona.fbx", defaultShader);
 		RedStripes->Scale(0.1f);
-		RedStripes->Translate(glm::vec3(-10.0f, 0.0f, -5.0f));
+		RedStripes->Translate(glm::vec3(0.0f, 0.0f, -20.0f));
 		Scene1Dark->AddChild(RedStripes);
 
 #pragma region Blue Flowers
@@ -628,44 +637,44 @@ public:
 
 		GraphNode* BlueFlower1 = new GraphNode(blueFlower, objectId);
 		BlueFlower1->Scale(0.1f);
-		BlueFlower1->Translate(glm::vec3(45.0f, -5.0f, -80.0f));
+		BlueFlower1->Translate(glm::vec3(0.0f, -5.0f, 0.0f));
 		Scene1Dark->AddChild(BlueFlower1);
 		BlueFlowers[0] = BlueFlower1;
 
 		GraphNode* BlueFlower2 = new GraphNode(blueFlower, objectId);
 		BlueFlower2->Scale(0.1f);
-		BlueFlower2->Translate(glm::vec3(45.0f, 5.0f, -80.0f));
+		BlueFlower2->Translate(glm::vec3(0.0f, 5.0f, 0.0f));
 		Scene1Dark->AddChild(BlueFlower2);
 		BlueFlowers[1] = BlueFlower2;
 
 		GraphNode* BlueFlower3 = new GraphNode(blueFlower, objectId);
 		BlueFlower3->Scale(0.1f);
-		BlueFlower3->Translate(glm::vec3(45.0f, 15.0f, -80.0f));
+		BlueFlower3->Translate(glm::vec3(0.0f, 15.0f, 0.0f));
 		Scene1Dark->AddChild(BlueFlower3);
 		BlueFlowers[2] = BlueFlower3;
 
 		GraphNode* BlueFlower4 = new GraphNode(blueFlower, objectId);
 		BlueFlower4->Scale(0.1f);
-		BlueFlower4->Translate(glm::vec3(45.0f, 25.0f, -80.0f));
+		BlueFlower4->Translate(glm::vec3(0.0f, 25.0f, 0.0f));
 		Scene1Dark->AddChild(BlueFlower4);
 		BlueFlowers[3] = BlueFlower4;
 
 		GraphNode* BlueFlower5 = new GraphNode(blueFlower, objectId);
 		BlueFlower5->Scale(0.1f);
-		BlueFlower5->Translate(glm::vec3(45.0f, 35.0f, -80.0f));
+		BlueFlower5->Translate(glm::vec3(0.0f, 35.0f, 0.0f));
 		Scene1Dark->AddChild(BlueFlower5);
 		BlueFlowers[4] = BlueFlower5;
 #pragma endregion
 
 		GraphNode* BluePot = CreateNode("res/models/zagadka_kwiaty/donica_niebieska.fbx", defaultShader);
 		BluePot->Scale(0.1f);
-		BluePot->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
+		//BluePot->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
 		Scene1Bright->AddChild(BluePot);
-		BluePot->AddScript(new GrowPlantScript(BluePot, 4, puzzleState, BlueFlowers));
+		BluePot->AddScript(new GrowPlantScript(BluePot, 2, puzzleState, BlueFlowers));
 
 		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
 		BlueStripes->Scale(0.1f);
-		BlueStripes->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
+		//BlueStripes->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
 		Scene1Dark->AddChild(BlueStripes);
 
 #pragma region Green Flowers
@@ -673,44 +682,44 @@ public:
 
 		GraphNode* GreenFlower1 = new GraphNode(greenFlower, objectId);
 		GreenFlower1->Scale(0.1f);
-		GreenFlower1->Translate(glm::vec3(10.0f, -5.0f, -5.0f));
+		GreenFlower1->Translate(glm::vec3(0.0f, -5.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower1);
 		GreenFlowers[0] = GreenFlower1;
 
 		GraphNode* GreenFlower2 = new GraphNode(greenFlower, objectId);
 		GreenFlower2->Scale(0.1f);
-		GreenFlower2->Translate(glm::vec3(10.0f, 5.0f, -5.0f));
+		GreenFlower2->Translate(glm::vec3(0.0f, 5.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower2);
 		GreenFlowers[1] = GreenFlower2;
 
 		GraphNode* GreenFlower3 = new GraphNode(greenFlower, objectId);
 		GreenFlower3->Scale(0.1f);
-		GreenFlower3->Translate(glm::vec3(10.0f, 15.0f, -5.0f));
+		GreenFlower3->Translate(glm::vec3(0.0f, 15.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower3);
 		GreenFlowers[2] = GreenFlower3;
 
 		GraphNode* GreenFlower4 = new GraphNode(greenFlower, objectId);
 		GreenFlower4->Scale(0.1f);
-		GreenFlower4->Translate(glm::vec3(10.0f, 25.0f, -5.0f));
+		GreenFlower4->Translate(glm::vec3(0.0f, 25.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower4);
 		GreenFlowers[3] = GreenFlower4;
 
 		GraphNode* GreenFlower5 = new GraphNode(greenFlower, objectId);
 		GreenFlower5->Scale(0.1f);
-		GreenFlower5->Translate(glm::vec3(10.0f, 35.0f, -5.0f));
+		GreenFlower5->Translate(glm::vec3(0.0f, 35.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower5);
 		GreenFlowers[4] = GreenFlower5;
 #pragma endregion
 
 		GraphNode* GreenPot = CreateNode("res/models/zagadka_kwiaty/donica_zielona.fbx", defaultShader);
 		GreenPot->Scale(0.1f);
-		GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		//GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(GreenPot);
-		GreenPot->AddScript(new GrowPlantScript(GreenPot, 2, puzzleState, GreenFlowers));
+		GreenPot->AddScript(new GrowPlantScript(GreenPot, 4, puzzleState, GreenFlowers));
 
 		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
 		GreenStripes->Scale(0.1f);
-		GreenStripes->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		//GreenStripes->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Dark->AddChild(GreenStripes);
 
 
@@ -728,7 +737,8 @@ public:
 
 		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
 		Tap->Scale(0.1f);
-		Tap->Translate(glm::vec3(20.0f, 0.0f, -30.0f));
+		Tap->Translate(glm::vec3(90.0f, 0.0f, 10.0f));
+		Tap->Rotate(180 ,glm::vec3(0.0f, 1.0f, 0.0f));
 		Scene1Dark->AddChild(Tap);
 #pragma endregion
 
@@ -1012,22 +1022,11 @@ public:
 		Scene2Bright->AddChild(deskUnderTheWall);
 
 		//SCALES PUZZLE
-		GraphNode* scalesPlants = new GraphNode();
-		Scene2Dark->AddChild(scalesPlants);
-		scalesPlants->Rotate(-40, glm::vec3(0.0f, 1.0f, 0.0f));
-		scalesPlants->Translate(glm::vec3(0.0f, 0.0f, -180.0f));
-
-		GraphNode* scalesPlantLeft = CreateNode("res/models/pomidory4.fbx", defaultShader);
-		scalesPlantLeft->Scale(0.15f);
-		scalesPlants->AddChild(scalesPlantLeft);
-		scalesPlantLeft->Translate(glm::vec3(100.0f, 0.0f, 0.0f));
-		scalesPlantLeft->Rotate(-20.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		GraphNode* scalesPlantRight = CreateNode("res/models/pomidory7.fbx", defaultShader);
-		scalesPlantRight->Scale(0.15f);
-		scalesPlants->AddChild(scalesPlantRight);
-		scalesPlantRight->Translate(glm::vec3(100.0f, 0.0f, -40.0f));
-		scalesPlantRight->Rotate(140.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		GraphNode* scalesPlant = CreateNode("res/models/pomidory.fbx", defaultShader);
+		scalesPlant->Scale(0.2f);
+		Scene2Dark->AddChild(scalesPlant);
+		//scalesPlantLeft->Translate(glm::vec3(100.0f, 0.0f, 0.0f));
+		//scalesPlantLeft->Rotate(-20.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 		GraphNode* ScalesPuzzle = new GraphNode();

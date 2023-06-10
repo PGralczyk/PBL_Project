@@ -30,11 +30,19 @@ public:
 			ApTime::instance().isDeskPosition = false;
 			node->isHoverable = true;
 		}
+
+		if (ApTime::instance().isDeskPosition)
+		{
+			node->isHoverable = false;
+		}
+		else
+		{
+			node->isHoverable = true;
+		}
 	}
 
 	void OnMouseClicked()
 	{
-		node->isHoverable = false;
 		ApTime::instance().isDeskPosition = true;
 	}
 };

@@ -164,6 +164,9 @@
     <ClInclude Include="src\scripts\MenuButtonScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\scripts\CameraChange.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blur.frag" />

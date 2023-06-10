@@ -155,6 +155,7 @@
     <ClInclude Include="src\FadeOut.h" />
     <ClInclude Include="src\Music.h" />
     <ClInclude Include="src\scripts\ActivateOnHoverScript.h" />
+    <ClInclude Include="src\scripts\CameraChange.h" />
     <ClInclude Include="src\scripts\ChandelierScript.h" />
     <ClInclude Include="src\scripts\ChessBoardPuzzle.h" />
     <ClInclude Include="src\scripts\ChessPieceScript.h" />

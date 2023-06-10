@@ -57,7 +57,7 @@ struct CameraPosition {
     glm::mat4 projection;
     glm::mat4 view;
 
-} defaultCameraPosition, chessCameraPosition, deskCameraPosition;
+} defaultCameraPosition, chessCameraPosition, deskCameraPosition, bookCameraPosition;
 
 Text text;
 
@@ -78,17 +78,18 @@ int main(void)
         -0.999999, 0.000509512, -0.00166654, 0,
         -0.0471941, -0.12073, -1.0546, 1);
 
-    chessCameraPosition.position = { 0.223529, 0.426999, 0.0527502 };
+    chessCameraPosition.position = { -0.441167, 0.377139, -0.25761 };
     chessCameraPosition.projection = glm::mat4(
-        1.27064, 0, 0, 0,
+        1.26872, 0, 0, 0,
         0, 2.41421, 0, 0,
         0, 0, -1.002, -1,
         0, 0, -0.2002, 0);
     chessCameraPosition.view = glm::mat4(
-        0.0157156, -0.720102, 0.25549, 0,
-        0, 0.455546, 0.790212, 0,
-        -0.999877, -0.0139902, 0.00715917, 0,
-        0.0492308, 0.00518422, -0.482313, 1);
+        -0.999962, 0.00552233, -0.00677106, 0,
+        -2.79397e-09, 0.774945, 0.632029, 0,
+        0.00873747, 0.632005, -0.774915, 0,
+        -0.438899, -0.127015, -0.440976, 1
+    );
 
     deskCameraPosition.position = { -0.205362, 0.372362, 0.308516 };
     deskCameraPosition.projection = glm::mat4(
@@ -101,6 +102,18 @@ int main(void)
         -5.3551e-09, 0.847122, 0.531399, 0,
         -0.999986, -0.00278154, 0.00443414, 0,
         0.309587, -0.423705, -0.0252765, 1);
+
+    bookCameraPosition.position = { -0.179639, 0.336001, -0.553304 };
+    bookCameraPosition.projection = glm::mat4(
+        1.26872, 0, 0, 0,
+        0, 2.41421, 0, 0,
+        0, 0, -1.002, -1,
+        0, 0, -0.2002, 0);
+    bookCameraPosition.view = glm::mat4(
+        0.0836735, -0.358733, 0.929682, 0,
+        3.72529e-09, 0.932954, 0.359995, 0,
+        -0.996493, -0.0301221, 0.0780635, 0,
+        -0.536333, -0.394583, 0.0892416, 1);
 
 #pragma endregion
 
@@ -285,6 +298,12 @@ int main(void)
             view = deskCameraPosition.view;
             camera.Position = deskCameraPosition.position;
         }
+        else if (ApTime::instance().isBookPosition)
+        {
+            projection = bookCameraPosition.projection;
+            view = bookCameraPosition.view;
+            camera.Position = bookCameraPosition.position;
+        }
         else
         {
             projection = defaultCameraPosition.projection;
@@ -296,10 +315,10 @@ int main(void)
 
 #pragma region Camera Setup Debug
 
-        //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        //glm::mat4 view = camera.GetViewMatrix();
+       /* glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
 
-        /*std::cout << "Projection:\n";
+        std::cout << "Projection:\n";
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -596,5 +615,5 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    //camera.ProcessMouseScroll(static_cast<float>(yoffset));
+   //camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
