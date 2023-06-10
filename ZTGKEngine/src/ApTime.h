@@ -29,8 +29,8 @@ private:
 		}
 	}
 
-	ApTime(){}
-	ApTime(const ApTime&){}
+	ApTime() {}
+	ApTime(const ApTime&) {}
 	~ApTime() = default;
 
 public:
@@ -47,6 +47,7 @@ public:
 	bool isEasyMode = false;
 	bool isBuzzzing = true;
 	bool canSwap = false;
+	bool shouldBtnWork = true;
 
 	//Possible puzzle states:
 	//2 - show chess board,

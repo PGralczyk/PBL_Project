@@ -43,6 +43,8 @@
 #include "../scripts/DoorButton.h";
 #include "../scripts/JournalScript.h";
 #include "../scripts/StartingDesk.h";
+#include "../scripts/OptionsScript.h";
+#include "../scripts/ShowMusicVolume.h";
 #include "../scripts/CameraChange.h";
 
 class SceneManager
@@ -74,8 +76,8 @@ public:
 	GraphNode* Scene1 = new GraphNode();
 	GraphNode* Scene2 = new GraphNode();
 	GraphNode* menu = new GraphNode();
-	Shader *lightShader;
-	Shader *defaultShader;
+	Shader* lightShader;
+	Shader* defaultShader;
 	Shader* textureShader;
 	Shader* outlineShader;
 	Shader* blurShader;
@@ -147,7 +149,7 @@ public:
 		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
 		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit"));
 
-		//CREDITS
+#pragma region Credits
 		menu->AddChild(credits);
 		credits->SetActive(false);
 
@@ -156,8 +158,8 @@ public:
 
 		GraphNode* backCredBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* backCredHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		backCredBtn->Translate(glm::vec3(1000, 0, 0));
-		backCredHover->Translate(glm::vec3(1000, 0, 0));
+		backCredBtn->Translate(glm::vec3(1200, 0, 0));
+		backCredHover->Translate(glm::vec3(1200, 0, 0));
 		credits->AddChild(backCredBtn);
 		credits->AddChild(backCredHover);
 		backCredHover->SetActive(false);
@@ -165,9 +167,11 @@ public:
 		backCredHover->AddScript(new DeactivateOnMouseLeave(backCredHover));
 		backCredHover->AddScript(new MenuScript(backCredHover, credits, window, "goBack"));
 
-		//OPTIONS
+#pragma endregion 
+
+#pragma region Options
 		menu->AddChild(options);
-		options->SetActive(false);
+		//options->SetActive(false);
 
 		GraphNode* optionsBG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/options_sounds.png", textureShader);
 		options->AddChild(optionsBG);
@@ -181,9 +185,86 @@ public:
 		backOptHover->AddScript(new DeactivateOnMouseLeave(backOptHover));
 		backOptHover->AddScript(new MenuScript(backOptHover, options, window, "goBack"));
 
+		GraphNode* leftArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left.jpg", textureShader);
+		GraphNode* leftArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left_hover.jpg", textureShader);
+		options->AddChild(leftArrBtn);
+		options->AddChild(leftArrHover);
+		leftArrHover->SetActive(false);
+		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover));
+		leftArrHover->AddScript(new DeactivateOnMouseLeave(leftArrHover));
+		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, leftArrBtn, "leftArr", true));
+		leftArrHover->AddScript(new OptionsScript(leftArrHover, leftArrBtn, "leftArr"));
+
+		GraphNode* rightArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right.jpg", textureShader);
+		GraphNode* rightArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right_hover.jpg", textureShader);
+		options->AddChild(rightArrBtn);
+		options->AddChild(rightArrHover);
+		rightArrHover->SetActive(false);
+		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover));
+		rightArrHover->AddScript(new DeactivateOnMouseLeave(rightArrHover));
+		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, rightArrBtn, "rightArr", true));
+		rightArrHover->AddScript(new OptionsScript(rightArrHover, rightArrBtn, "rightArr"));
+
+		GraphNode* easyModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* easyModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		easyModeBtn->Translate(glm::vec3(0, 400, 0));
+		easyModeHover->Translate(glm::vec3(0, 400, 0));
+		options->AddChild(easyModeBtn);
+		options->AddChild(easyModeHover);
+		easyModeHover->SetActive(false);
+		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover));
+		easyModeHover->AddScript(new DeactivateOnMouseLeave(easyModeHover));
+		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, easyModeBtn, "easy", true));
+		easyModeHover->AddScript(new OptionsScript(easyModeHover, easyModeBtn, "easy"));
+
+		GraphNode* mediumModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* mediumModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		mediumModeBtn->Translate(glm::vec3(400, 400, 0));
+		mediumModeHover->Translate(glm::vec3(400, 400, 0));
+		options->AddChild(mediumModeBtn);
+		options->AddChild(mediumModeHover);
+		mediumModeHover->SetActive(false);
+		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover));
+		mediumModeHover->AddScript(new DeactivateOnMouseLeave(mediumModeHover));
+		mediumModeBtn->AddScript(new OptionsScript(mediumModeBtn, mediumModeBtn, "medium", true));
+		mediumModeHover->AddScript(new OptionsScript(mediumModeHover, mediumModeBtn, "medium"));
+
+#pragma endregion 		
+
+#pragma region Music_Bars
+
+		GraphNode* volume1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_1_off.jpg", textureShader);
+		options->AddChild(volume1);
+
+		GraphNode* volume2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_2_off.jpg", textureShader);
+		options->AddChild(volume2);
+
+		GraphNode* volume3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_3_off.jpg", textureShader);
+		options->AddChild(volume3);
+
+		GraphNode* volume4 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_4_off.jpg", textureShader);
+		options->AddChild(volume4);
+
+		GraphNode* volume5 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_5_off.jpg", textureShader);
+		options->AddChild(volume5);
+
+		GraphNode* volume6 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_6_off.jpg", textureShader);
+		options->AddChild(volume6);
+
+		optionsBG->AddScript(new ShowMusicVolume(optionsBG,
+			volume1,
+			volume2,
+			volume3,
+			volume4,
+			volume5,
+			volume6
+		));
+
+#pragma endregion 
+
 	}
 
-	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
+	void Setup(GLFWwindow* givenWindow, bool* brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader* otherShaders ...)
 	{
 		window = givenWindow;
 		engageSwap = false;
@@ -204,6 +285,7 @@ public:
 		PostProcessSetup();
 		Scene1Setup(&otherShaders);
 		Scene2Setup(&otherShaders);
+		this->MenuSetup();
 		ExecuteStartScripts();
 	}
 
@@ -211,7 +293,7 @@ public:
 	{
 		world->Update(currentlyPicked, singleMouse, window);
 		UI->Update(currentlyPicked, singleMouse, window);
-				if (poof)
+		if (poof)
 			poof = false;
 	}
 
@@ -241,7 +323,7 @@ public:
 	void Render(unsigned int currentlyPicked)
 	{
 		//world->Draw(currentlyPicked);
-		
+
 
 		if (engageSwap) {
 			BlurRender(currentlyPicked, timeCounter);
@@ -252,7 +334,7 @@ public:
 				timeCounter = 0.5f;
 				poof = true;
 			}
-			if(phase)
+			if (phase)
 				timeCounter += ApTime::instance().deltaTime;
 			else
 				timeCounter -= ApTime::instance().deltaTime;
@@ -341,7 +423,7 @@ public:
 					chessTiles[i * 8 + 2 * j] = new GraphNode(model_black, objectId++);
 				ChessTiles->AddChild(chessTiles[i * 8 + 2 * j]);
 				chessTiles[i * 8 + 2 * j]->Translate(glm::vec3(distance * 2 * j, 0, distance * i));
-				
+
 				if (i % 2 == 0)
 					chessTiles[i * 8 + 2 * j + 1] = new GraphNode(model_black, objectId++);
 				else
@@ -749,9 +831,9 @@ public:
 		//door->Rotate(-150, glm::vec3(0.0, 1.0, 0.0));
 		door->Translate(glm::vec3(55.0, 0.0, 250.0));
 		Scene1->AddChild(door);
-		
 
-		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark, 
+
+		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark,
 			window, Scene1, Scene2, isBright, singleClick, &forceSwap, &engageSwap, &poof);
 		door->AddScript(manager1);
 
@@ -807,7 +889,7 @@ public:
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHintHover);
 		brightHintHover->SetActive(false);
-		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, ApTime::instance().isEasyMode));
+		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, &ApTime::instance().isEasyMode));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
 		brightHintHover->AddScript(new HintButton(brightHintHover));
 
@@ -873,7 +955,7 @@ public:
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHintHover);
 		darkHintHover->SetActive(false);
-		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, ApTime::instance().isEasyMode));
+		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, &ApTime::instance().isEasyMode));
 		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
 		darkHintHover->AddScript(new HintButton(darkHintHover));
 
@@ -955,7 +1037,7 @@ public:
 		drawer2MovableSegment->AddScript(drawer2Script);
 		drawer2MovableSegment->isHoverable = false;
 
-		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, "",  false, true);
+		OneTimeActivatorScript* drawer1Script = new OneTimeActivatorScript(drawer1MovableSegment, pieceOfPaper, "", false, true);
 		drawer1Script->enabled = false;
 		drawer1MovableSegment->AddScript(drawer1Script);
 		drawer1MovableSegment->isHoverable = false;
@@ -1107,8 +1189,6 @@ public:
 		UI->AddChild(weight3);
 		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
 		weight3->SetActive(false);
-
-		this->MenuSetup();
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
@@ -1321,7 +1401,7 @@ public:
 				std::cout << "Framebuffer not complete!" << std::endl;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-		
+
 	}
 
 	void renderQuad()
@@ -1381,7 +1461,7 @@ public:
 			horizontal = !horizontal;
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
-		
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		mixShader->use();
 		mixShader->setInt("scene", 0);
@@ -1454,7 +1534,7 @@ public:
 private:
 	GraphNode* CreateNode(string const& pathToModel, Shader* shader)
 	{
-		Model *model = new Model(pathToModel);
+		Model* model = new Model(pathToModel);
 		model->SetShader(shader);
 		return new GraphNode(model, objectId++);
 	}
@@ -1462,7 +1542,7 @@ private:
 	GraphNode* CreateUiElement(int xPos, int yPos, int width, int height, string path, Shader* shader)
 	{
 		//glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, yPos, 0));
-		glm::mat4 *Transform = new glm::mat4(1.0);
+		glm::mat4* Transform = new glm::mat4(1.0);
 		glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		/*vector<Vertex> vertices =
@@ -1518,6 +1598,3 @@ private:
 		//std::cout << "Showing scene...\n";
 	}
 };
-
-
-

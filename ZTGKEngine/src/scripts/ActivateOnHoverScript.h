@@ -10,11 +10,11 @@ class ActivateOnHoverScript;
 class ActivateOnHoverScript : public RealtimeScript {
 private:
 	GraphNode* other;
-	bool shouldWork;
+	bool* shouldWork;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	ActivateOnHoverScript(GraphNode* nodePointer, GraphNode* _other, bool _shouldWork = true) : RealtimeScript(nodePointer)
+	ActivateOnHoverScript(GraphNode* nodePointer, GraphNode* _other, bool* _shouldWork = &ApTime::instance().shouldBtnWork) : RealtimeScript(nodePointer)
 	{
 		other = _other;
 		shouldWork = _shouldWork;
@@ -24,7 +24,7 @@ public:
 
 	void OnMouseHover()
 	{
-		if(shouldWork)
+		if (*shouldWork)
 			other->SetActive(true);
 	}
 };
