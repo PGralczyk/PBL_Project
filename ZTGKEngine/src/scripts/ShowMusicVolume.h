@@ -39,6 +39,11 @@ public:
 		this->volume6 = _volume6;
 	}
 
+	void Start()
+	{
+		node->isHoverable = false;
+	}
+
 	void Update()
 	{
 		volume1->SetActive(false);
