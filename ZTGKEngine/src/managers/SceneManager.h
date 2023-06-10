@@ -93,8 +93,6 @@ public:
 	unsigned int intermediateTBuffer;
 	unsigned int rbo;
 	bool* singleClick;
-	bool* gameMode = new bool;
-	bool* choosenGameMode = new bool;
 
 	SceneManager() {};
 	~SceneManager()
@@ -106,7 +104,8 @@ public:
 	void MenuSetup()
 	{
 		//menu->SetActive(false);
-		*choosenGameMode = false;
+		GraphNode* credits = new GraphNode();
+		GraphNode* options = new GraphNode();
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
 		menu->AddChild(backg);
@@ -118,7 +117,7 @@ public:
 		playHover->SetActive(false);
 		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
-		playHover->AddScript(new MenuScript(playHover, menu, window, "play", gameMode, choosenGameMode));
+		playHover->AddScript(new MenuScript(playHover, menu, window, "goBack"));
 
 		GraphNode* creditsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
 		GraphNode* creditsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button_hover.png", textureShader);
@@ -127,7 +126,7 @@ public:
 		creditsHover->SetActive(false);
 		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover));
 		creditsHover->AddScript(new DeactivateOnMouseLeave(creditsHover));
-		creditsHover->AddScript(new MenuScript(creditsHover, menu, window, "credits", gameMode, choosenGameMode));
+		creditsHover->AddScript(new MenuScript(creditsHover, credits, window, "goNext"));
 
 		GraphNode* optionsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
 		GraphNode* optionsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
@@ -136,7 +135,7 @@ public:
 		optionsHover->SetActive(false);
 		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover));
 		optionsHover->AddScript(new DeactivateOnMouseLeave(optionsHover));
-		optionsHover->AddScript(new MenuScript(optionsHover, menu, window, "options", gameMode, choosenGameMode));
+		optionsHover->AddScript(new MenuScript(optionsHover, options, window, "goNext"));
 
 		GraphNode* exitBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* exitHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
@@ -145,7 +144,42 @@ public:
 		exitHover->SetActive(false);
 		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover));
 		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
-		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit", gameMode, choosenGameMode));
+		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit"));
+
+		//CREDITS
+		menu->AddChild(credits);
+		credits->SetActive(false);
+
+		GraphNode* creditsPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/awesome.jpg", textureShader);
+		credits->AddChild(creditsPNG);
+
+		GraphNode* backCredBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* backCredHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		backCredBtn->Translate(glm::vec3(1000, 0, 0));
+		backCredHover->Translate(glm::vec3(1000, 0, 0));
+		credits->AddChild(backCredBtn);
+		credits->AddChild(backCredHover);
+		backCredHover->SetActive(false);
+		backCredBtn->AddScript(new ActivateOnHoverScript(backCredBtn, backCredHover));
+		backCredHover->AddScript(new DeactivateOnMouseLeave(backCredHover));
+		backCredHover->AddScript(new MenuScript(backCredHover, credits, window, "goBack"));
+
+		//OPTIONS
+		menu->AddChild(options);
+		options->SetActive(false);
+
+		GraphNode* optionsBG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/options_sounds.png", textureShader);
+		options->AddChild(optionsBG);
+
+		GraphNode* backOptBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* backOptHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		options->AddChild(backOptBtn);
+		options->AddChild(backOptHover);
+		backOptHover->SetActive(false);
+		backOptBtn->AddScript(new ActivateOnHoverScript(backOptBtn, backOptHover));
+		backOptHover->AddScript(new DeactivateOnMouseLeave(backOptHover));
+		backOptHover->AddScript(new MenuScript(backOptHover, options, window, "goBack"));
+
 	}
 
 	void Setup(GLFWwindow* givenWindow, bool *brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader * otherShaders ...)
@@ -776,7 +810,7 @@ public:
 		bottomPanelBright->AddChild(brightMenuHover);
 		brightMenuHover->SetActive(false);
 		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
-		brightMenu->AddScript(new MenuButtonScript(brightMenu, menu, window));
+		brightMenu->AddScript(new MenuButtonScript(brightMenu, menu, window, true));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
 		brightMenuHover->AddScript(new MenuButtonScript(brightMenuHover, menu, window));
 
@@ -842,7 +876,7 @@ public:
 		bottomPanelDark->AddChild(darkMenuHover);
 		darkMenuHover->SetActive(false);
 		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover));
-		darkMenu->AddScript(new MenuButtonScript(darkMenu, menu, window));
+		darkMenu->AddScript(new MenuButtonScript(darkMenu, menu, window, true));
 		darkMenuHover->AddScript(new DeactivateOnMouseLeave(darkMenuHover));
 		darkMenuHover->AddScript(new MenuButtonScript(darkMenuHover, menu, window));
 

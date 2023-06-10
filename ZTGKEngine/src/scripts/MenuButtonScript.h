@@ -13,40 +13,43 @@ class MenuButtonScript : public RealtimeScript {
 
 private:
 	GraphNode* other;
-	bool shouldWork;
+	bool isNotHover;
 	bool keyPressed = false;
 	GLFWwindow* window;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	MenuButtonScript(GraphNode* nodePointer, GraphNode* _other, GLFWwindow* _window, bool _shouldWork = true) : RealtimeScript(nodePointer)
+	MenuButtonScript(GraphNode* nodePointer, GraphNode* _other, GLFWwindow* _window, bool _isNotHover = false) : RealtimeScript(nodePointer)
 	{
 		other = _other;
 		window = _window;
-		shouldWork = _shouldWork;
+		isNotHover = _isNotHover;
 	}
 
 	void Update()
 	{
-		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+		if (isNotHover)
 		{
-			if (!keyPressed)
-			{
 
-				other->SetActive(!other->GetActive());
-				keyPressed = true;
+			if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+			{
+				if (!keyPressed)
+				{
+
+					other->SetActive(!other->GetActive());
+					keyPressed = true;
+				}
 			}
-		}
-		else
-		{
-			keyPressed = false;
+			else
+			{
+				keyPressed = false;
+			}
 		}
 	}
 
 	void OnMouseClicked()
 	{
-		if (shouldWork)
-			other->SetActive(true);
+		other->SetActive(true);
 	}
 
 	~MenuButtonScript() = default;
