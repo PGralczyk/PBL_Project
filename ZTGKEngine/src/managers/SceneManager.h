@@ -275,7 +275,6 @@ public:
 		UI = new GraphNode();
 		UI->AddChild(UIBright);
 		UI->AddChild(UIDark);
-		UI->AddChild(menu);
 		UIDark->SetActive(false);
 		timeCounter = 0.0f;
 		phase = true;
@@ -286,6 +285,7 @@ public:
 		Scene1Setup(&otherShaders);
 		Scene2Setup(&otherShaders);
 		this->MenuSetup();
+		UI->AddChild(menu);
 		ExecuteStartScripts();
 	}
 
