@@ -15,15 +15,13 @@ class OptionsScript : public RealtimeScript {
 
 private:
 	string buttonId;
-	GraphNode* other;
 	bool isNotHover;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	OptionsScript(GraphNode* nodePointer, GraphNode* _other, string _buttonId, bool _isNotHover = false) : RealtimeScript(nodePointer)
+	OptionsScript(GraphNode* nodePointer, string _buttonId, bool _isNotHover = false) : RealtimeScript(nodePointer)
 	{
 		this->buttonId = _buttonId;
-		this->other = _other;
 		this->isNotHover = _isNotHover;
 	}
 

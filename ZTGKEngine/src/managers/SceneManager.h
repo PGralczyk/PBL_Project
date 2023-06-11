@@ -109,6 +109,7 @@ public:
 		//menu->SetActive(false);
 		GraphNode* credits = new GraphNode();
 		GraphNode* options = new GraphNode();
+		GraphNode* firstTimeGameMode = new GraphNode();
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
 		menu->AddChild(backg);
@@ -120,7 +121,7 @@ public:
 		playHover->SetActive(false);
 		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
-		playHover->AddScript(new MenuScript(playHover, menu, window, "goBack"));
+		playHover->AddScript(new MenuScript(playHover, menu, window, "goBack", firstTimeGameMode));
 
 		GraphNode* creditsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
 		GraphNode* creditsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button_hover.png", textureShader);
@@ -171,7 +172,7 @@ public:
 
 #pragma region Options
 		menu->AddChild(options);
-		//options->SetActive(false);
+		options->SetActive(false);
 
 		GraphNode* optionsBG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/options_sounds.png", textureShader);
 		options->AddChild(optionsBG);
@@ -192,8 +193,8 @@ public:
 		leftArrHover->SetActive(false);
 		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover));
 		leftArrHover->AddScript(new DeactivateOnMouseLeave(leftArrHover));
-		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, leftArrBtn, "leftArr", true));
-		leftArrHover->AddScript(new OptionsScript(leftArrHover, leftArrBtn, "leftArr"));
+		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, "leftArr", true));
+		leftArrHover->AddScript(new OptionsScript(leftArrHover, "leftArr"));
 
 		GraphNode* rightArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right.jpg", textureShader);
 		GraphNode* rightArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right_hover.jpg", textureShader);
@@ -202,8 +203,8 @@ public:
 		rightArrHover->SetActive(false);
 		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover));
 		rightArrHover->AddScript(new DeactivateOnMouseLeave(rightArrHover));
-		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, rightArrBtn, "rightArr", true));
-		rightArrHover->AddScript(new OptionsScript(rightArrHover, rightArrBtn, "rightArr"));
+		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, "rightArr", true));
+		rightArrHover->AddScript(new OptionsScript(rightArrHover, "rightArr"));
 
 		GraphNode* easyModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* easyModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
@@ -214,8 +215,8 @@ public:
 		easyModeHover->SetActive(false);
 		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover));
 		easyModeHover->AddScript(new DeactivateOnMouseLeave(easyModeHover));
-		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, easyModeBtn, "easy", true));
-		easyModeHover->AddScript(new OptionsScript(easyModeHover, easyModeBtn, "easy"));
+		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, "easy", true));
+		easyModeHover->AddScript(new OptionsScript(easyModeHover, "easy"));
 
 		GraphNode* mediumModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* mediumModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
@@ -226,8 +227,8 @@ public:
 		mediumModeHover->SetActive(false);
 		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover));
 		mediumModeHover->AddScript(new DeactivateOnMouseLeave(mediumModeHover));
-		mediumModeBtn->AddScript(new OptionsScript(mediumModeBtn, mediumModeBtn, "medium", true));
-		mediumModeHover->AddScript(new OptionsScript(mediumModeHover, mediumModeBtn, "medium"));
+		mediumModeBtn->AddScript(new OptionsScript(mediumModeBtn, "medium", true));
+		mediumModeHover->AddScript(new OptionsScript(mediumModeHover, "medium"));
 
 #pragma endregion 		
 
@@ -251,6 +252,7 @@ public:
 		GraphNode* volume6 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_bar_6_off.jpg", textureShader);
 		options->AddChild(volume6);
 
+		optionsBG->isHoverable = false;
 		optionsBG->AddScript(new ShowMusicVolume(optionsBG,
 			volume1,
 			volume2,
@@ -259,6 +261,50 @@ public:
 			volume5,
 			volume6
 		));
+
+#pragma endregion 
+
+#pragma region First Time Choose Game Mode
+		menu->AddChild(firstTimeGameMode);
+		firstTimeGameMode->SetActive(false);
+
+		GraphNode* windowPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/awesome.jpg", textureShader);
+		firstTimeGameMode->AddChild(windowPNG);
+
+		GraphNode* backGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* backGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		backGmBtn->Translate(glm::vec3(1200, 0, 0));
+		backGmHover->Translate(glm::vec3(1200, 0, 0));
+		firstTimeGameMode->AddChild(backGmBtn);
+		firstTimeGameMode->AddChild(backGmHover);
+		backGmHover->SetActive(false);
+		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover));
+		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
+		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame", firstTimeGameMode));
+
+		GraphNode* easyGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* easyGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		easyGmBtn->Translate(glm::vec3(400, 400, 0));
+		easyGmHover->Translate(glm::vec3(400, 400, 0));
+		firstTimeGameMode->AddChild(easyGmBtn);
+		firstTimeGameMode->AddChild(easyGmHover);
+		easyGmHover->SetActive(false);
+		easyGmBtn->AddScript(new ActivateOnHoverScript(easyGmBtn, easyGmHover));
+		easyGmHover->AddScript(new DeactivateOnMouseLeave(easyGmHover));
+		easyGmBtn->AddScript(new OptionsScript(easyGmBtn, "easy", true));
+		easyGmHover->AddScript(new OptionsScript(easyGmHover, "easy"));
+
+		GraphNode* mediumGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
+		GraphNode* mediumGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
+		mediumGmBtn->Translate(glm::vec3(900, 400, 0));
+		mediumGmHover->Translate(glm::vec3(900, 400, 0));
+		firstTimeGameMode->AddChild(mediumGmBtn);
+		firstTimeGameMode->AddChild(mediumGmHover);
+		mediumGmHover->SetActive(false);
+		mediumGmBtn->AddScript(new ActivateOnHoverScript(mediumGmBtn, mediumGmHover));
+		mediumGmHover->AddScript(new DeactivateOnMouseLeave(mediumGmHover));
+		mediumGmBtn->AddScript(new OptionsScript(mediumGmBtn, "medium", true));
+		mediumGmHover->AddScript(new OptionsScript(mediumGmHover, "medium"));
 
 #pragma endregion 
 

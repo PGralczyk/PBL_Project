@@ -39,21 +39,16 @@ public:
 		this->volume6 = _volume6;
 	}
 
-	void Start()
-	{
-		node->isHoverable = false;
-	}
-
 	void Update()
 	{
-		volume1->SetActive(false);
+		//volume1->SetActive(false);
 		volume2->SetActive(false);
 		volume3->SetActive(false);
 		volume4->SetActive(false);
 		volume5->SetActive(false);
 		volume6->SetActive(false);
 
-		if (getGlobalVolume() < 0.1f)
+		/*if (getGlobalVolume() < 0.1f)
 			volume1->SetActive(true);
 		else if (getGlobalVolume() < 0.3f)
 			volume2->SetActive(true);
@@ -64,6 +59,17 @@ public:
 		else if (getGlobalVolume() < 0.9f)
 			volume5->SetActive(true);
 		else if (getGlobalVolume() == 1)
+			volume6->SetActive(true);*/
+
+		if (getGlobalVolume() > 0.1f)
+			volume2->SetActive(true);
+		if (getGlobalVolume() > 0.3f)
+			volume3->SetActive(true);
+		if (getGlobalVolume() > 0.5f)
+			volume4->SetActive(true);
+		if (getGlobalVolume() > 0.7f)
+			volume5->SetActive(true);
+		if (getGlobalVolume() > 0.9f)
 			volume6->SetActive(true);
 	}
 
