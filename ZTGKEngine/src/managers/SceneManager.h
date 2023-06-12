@@ -186,8 +186,8 @@ public:
 		backOptHover->AddScript(new DeactivateOnMouseLeave(backOptHover));
 		backOptHover->AddScript(new MenuScript(backOptHover, options, window, "goBack"));
 
-		GraphNode* leftArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left.jpg", textureShader);
-		GraphNode* leftArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left_hover.jpg", textureShader);
+		GraphNode* leftArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_leftV2.png", textureShader);
+		GraphNode* leftArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_left_hoverV2.png", textureShader);
 		options->AddChild(leftArrBtn);
 		options->AddChild(leftArrHover);
 		leftArrHover->SetActive(false);
@@ -196,8 +196,8 @@ public:
 		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, "leftArr", true));
 		leftArrHover->AddScript(new OptionsScript(leftArrHover, "leftArr"));
 
-		GraphNode* rightArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right.jpg", textureShader);
-		GraphNode* rightArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right_hover.jpg", textureShader);
+		GraphNode* rightArrBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_rightV2.png", textureShader);
+		GraphNode* rightArrHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/sound_arrow_right_hoverV2.png", textureShader);
 		options->AddChild(rightArrBtn);
 		options->AddChild(rightArrHover);
 		rightArrHover->SetActive(false);
@@ -206,10 +206,13 @@ public:
 		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, "rightArr", true));
 		rightArrHover->AddScript(new OptionsScript(rightArrHover, "rightArr"));
 
-		GraphNode* easyModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
-		GraphNode* easyModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		easyModeBtn->Translate(glm::vec3(0, 400, 0));
-		easyModeHover->Translate(glm::vec3(0, 400, 0));
+		GraphNode* dificultyLabel = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/difficulty.png", textureShader);
+		options->AddChild(dificultyLabel);
+
+		GraphNode* easyModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/easyBtn.png", textureShader);
+		GraphNode* easyModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/easyHover.png", textureShader);
+		//easyModeBtn->Translate(glm::vec3(0, 400, 0));
+		//easyModeHover->Translate(glm::vec3(0, 400, 0));
 		options->AddChild(easyModeBtn);
 		options->AddChild(easyModeHover);
 		easyModeHover->SetActive(false);
@@ -218,10 +221,10 @@ public:
 		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, "easy", true));
 		easyModeHover->AddScript(new OptionsScript(easyModeHover, "easy"));
 
-		GraphNode* mediumModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
-		GraphNode* mediumModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		mediumModeBtn->Translate(glm::vec3(400, 400, 0));
-		mediumModeHover->Translate(glm::vec3(400, 400, 0));
+		GraphNode* mediumModeBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/mediumBtn.png", textureShader);
+		GraphNode* mediumModeHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/mediumHover.png", textureShader);
+		//mediumModeBtn->Translate(glm::vec3(400, 400, 0));
+		//mediumModeHover->Translate(glm::vec3(400, 400, 0));
 		options->AddChild(mediumModeBtn);
 		options->AddChild(mediumModeHover);
 		mediumModeHover->SetActive(false);
@@ -268,13 +271,17 @@ public:
 		menu->AddChild(firstTimeGameMode);
 		firstTimeGameMode->SetActive(false);
 
-		GraphNode* windowPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/awesome.jpg", textureShader);
+		GraphNode* windowPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/everest.png", textureShader);
 		firstTimeGameMode->AddChild(windowPNG);
+
+		GraphNode* infoPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/difficulty.png", textureShader);
+		firstTimeGameMode->AddChild(infoPNG);
+		infoPNG->Translate(glm::vec3(1000, 200, 0));
 
 		GraphNode* backGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* backGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		backGmBtn->Translate(glm::vec3(1200, 0, 0));
-		backGmHover->Translate(glm::vec3(1200, 0, 0));
+		backGmBtn->Translate(glm::vec3(1000, 0, 0));
+		backGmHover->Translate(glm::vec3(1000, 0, 0));
 		firstTimeGameMode->AddChild(backGmBtn);
 		firstTimeGameMode->AddChild(backGmHover);
 		backGmHover->SetActive(false);
@@ -282,10 +289,10 @@ public:
 		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
 		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame", firstTimeGameMode));
 
-		GraphNode* easyGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
-		GraphNode* easyGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		easyGmBtn->Translate(glm::vec3(400, 400, 0));
-		easyGmHover->Translate(glm::vec3(400, 400, 0));
+		GraphNode* easyGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/easyBtn.png", textureShader);
+		GraphNode* easyGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/easyHover.png", textureShader);
+		easyGmBtn->Translate(glm::vec3(1000, 200, 0));
+		easyGmHover->Translate(glm::vec3(1000, 200, 0));
 		firstTimeGameMode->AddChild(easyGmBtn);
 		firstTimeGameMode->AddChild(easyGmHover);
 		easyGmHover->SetActive(false);
@@ -294,10 +301,10 @@ public:
 		easyGmBtn->AddScript(new OptionsScript(easyGmBtn, "easy", true));
 		easyGmHover->AddScript(new OptionsScript(easyGmHover, "easy"));
 
-		GraphNode* mediumGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
-		GraphNode* mediumGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		mediumGmBtn->Translate(glm::vec3(900, 400, 0));
-		mediumGmHover->Translate(glm::vec3(900, 400, 0));
+		GraphNode* mediumGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/mediumBtn.png", textureShader);
+		GraphNode* mediumGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/mediumHover.png", textureShader);
+		mediumGmBtn->Translate(glm::vec3(1000, 200, 0));
+		mediumGmHover->Translate(glm::vec3(1000, 200, 0));
 		firstTimeGameMode->AddChild(mediumGmBtn);
 		firstTimeGameMode->AddChild(mediumGmHover);
 		mediumGmHover->SetActive(false);
