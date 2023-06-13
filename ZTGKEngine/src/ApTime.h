@@ -48,6 +48,7 @@ public:
 	bool isBuzzzing = true;
 	bool canSwap = false;
 	bool shouldBtnWork = true;
+	bool isFirstTime = true;
 
 	//Possible puzzle states:
 	//2 - show chess board,

@@ -97,6 +97,8 @@ public:
 	unsigned int rbo;
 	bool* singleClick;
 
+	GraphNode* gameModePieces[5];
+
 	SceneManager() {};
 	~SceneManager()
 	{
@@ -121,7 +123,14 @@ public:
 		playHover->SetActive(false);
 		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
-		playHover->AddScript(new MenuScript(playHover, menu, window, "goBack", firstTimeGameMode));
+		playHover->AddScript(new MenuScript(playHover, menu, window, "play", 
+			firstTimeGameMode,
+			gameModePieces[0],
+			gameModePieces[1],
+			gameModePieces[2],
+			gameModePieces[3],
+			gameModePieces[4]
+		));
 
 		GraphNode* creditsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
 		GraphNode* creditsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button_hover.png", textureShader);
@@ -287,7 +296,14 @@ public:
 		backGmHover->SetActive(false);
 		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover));
 		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
-		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame", firstTimeGameMode));
+		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame",
+			firstTimeGameMode,
+			gameModePieces[0],
+			gameModePieces[1],
+			gameModePieces[2],
+			gameModePieces[3],
+			gameModePieces[4]
+		));
 
 		GraphNode* easyGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/easyBtn.png", textureShader);
 		GraphNode* easyGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/easyHover.png", textureShader);
@@ -527,8 +543,8 @@ public:
 			//Below is a parent for two pawn activators, so that they can be activated together
 			GraphNode* chandelierPrizes = new GraphNode();
 			Scene1Bright->AddChild(chandelierPrizes);
-			if(ApTime::instance().isEasyMode == false)
-				chandelierPrizes->AddChild(blackPawnActivator);
+			gameModePieces[0] = blackPawnActivator;
+			chandelierPrizes->AddChild(blackPawnActivator);
 			chandelierPrizes->AddChild(whitePawnActivator);
 			chandelierPrizes->SetActive(false);
 			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 40.0f));
@@ -569,8 +585,8 @@ public:
 			//Parent for both king activators so that they can be activated at the same time
 			GraphNode* plantPuzzlePrizes = new GraphNode();
 			plantPuzzlePrizes->AddChild(whiteKingActivator);
-			if (ApTime::instance().isEasyMode == false)
-				plantPuzzlePrizes->AddChild(blackKingActivator);
+			gameModePieces[1] = blackKingActivator;
+			plantPuzzlePrizes->AddChild(blackKingActivator);
 			plantPuzzlePrizes->SetActive(false);
 
 			//------------------------------------------------------------------------
@@ -589,8 +605,8 @@ public:
 			pieces[5] = new ChessPieceScript(blackQueen, window, &poof);
 			blackQueen->AddScript(pieces[5]);
 			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
-			if (ApTime::instance().isEasyMode == false)
-				ChessMainObject->AddChild(blackQueen);
+			gameModePieces[2] = blackQueen;
+			ChessMainObject->AddChild(blackQueen);
 
 			//------------------------------------------------------------------------
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
@@ -604,8 +620,8 @@ public:
 			pieces[7] = new ChessPieceScript(blackKnight, window, &poof);
 			blackKnight->AddScript(pieces[7]);
 			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
-			if (ApTime::instance().isEasyMode == false)
-				ChessMainObject->AddChild(blackKnight);
+			gameModePieces[3] = blackKnight;
+			ChessMainObject->AddChild(blackKnight);
 
 			//------------------------------------------------------------------------
 			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
@@ -619,8 +635,8 @@ public:
 			pieces[9] = new ChessPieceScript(blackRook, window, &poof);
 			blackRook->AddScript(pieces[9]);
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
-			if (ApTime::instance().isEasyMode == false)
-				ChessMainObject->AddChild(blackRook);
+			gameModePieces[4] = blackRook;
+			ChessMainObject->AddChild(blackRook);
 #pragma endregion
 
 #pragma region Chess Puzzle Scripting
