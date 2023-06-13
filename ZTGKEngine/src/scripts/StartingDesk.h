@@ -74,19 +74,21 @@ public:
 };
 
 class MagicalPlant : public RealtimeScript {
-
+private:
+	GraphNode* tutorial;
 public:
 
 	//Constructor, here assign all the fields from the private section
-	MagicalPlant(GraphNode* nodePointer) : RealtimeScript(nodePointer)
+	MagicalPlant(GraphNode* nodePointer, GraphNode* _tutorial) : RealtimeScript(nodePointer)
 	{
+		tutorial = _tutorial;
 	}
 
 	~MagicalPlant() = default;
-
 	void OnMouseClicked()
 	{
 		ApTime::instance().canSwap = true;
+		tutorial->SetActive(true);
 		node->SetActive(false);
 	}
 };

@@ -58,3 +58,30 @@ public:
 		}
 	}
 };
+
+
+class DeactivateAfterTime : public RealtimeScript {
+private:
+
+	float timer = 0;
+	float goalTime;
+
+public:
+
+	//Constructor, here assign all the fields from the private section
+	DeactivateAfterTime(GraphNode* nodePointer, float _goalTimer) : RealtimeScript(nodePointer)
+	{
+		goalTime = _goalTimer;
+		node->isHoverable = false;
+	}
+
+	void Update()
+	{
+		if (timer >= goalTime)
+		{
+			timer = 0;
+			node->SetActive(false);
+		}
+		timer += ApTime::instance().deltaTime;
+	}
+};
