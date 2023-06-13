@@ -77,11 +77,6 @@ public:
 		{
 			tileState[i] = 0;
 		}
-
-		if (ApTime::instance().isEasyMode)
-		{
-			solutionMultiplyer /= 2;
-		}
 	}
 
 	~ChessBoardPuzzle() = default;
@@ -119,6 +114,10 @@ public:
 
 	void CheckSolution()
 	{
+		if (ApTime::instance().isEasyMode)
+		{
+			solutionMultiplyer = 0.5f;
+		}
 		unsigned int correctPieces = 0;
 		for (ChessPieceScript* piece : pieces)
 		{

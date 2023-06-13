@@ -1201,8 +1201,8 @@ public:
 		GraphNode* scalesPlant = CreateNode("res/models/pomidory.fbx", defaultShader);
 		scalesPlant->Scale(0.2f);
 		Scene2Dark->AddChild(scalesPlant);
-		//scalesPlantLeft->Translate(glm::vec3(100.0f, 0.0f, 0.0f));
-		//scalesPlantLeft->Rotate(-20.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		//scalesPlant->Translate(glm::vec3(0.0f, 0.0f, -200.0f));
+		//scalesPlant->Rotate(-120.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 		GraphNode* ScalesPuzzle = new GraphNode();
