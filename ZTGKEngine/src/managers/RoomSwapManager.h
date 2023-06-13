@@ -38,12 +38,15 @@ private:
 	SoundSource speaker;
 	SoundSource doorSpeaker;
 
+	GraphNode* tutorial;
+	GraphNode* otherTutorial;
+
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
 		GraphNode* brightUInode, GraphNode* darkUInode,GLFWwindow* givenWindow, GraphNode* _currentScene,
-		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* _forceSwap,
-		bool* swapPostman = nullptr, bool* poof = nullptr, bool _canClick = true): RealtimeScript(nodePointer)
+		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* _forceSwap, bool* swapPostman = nullptr,
+		bool* poof = nullptr, GraphNode* _tutorial = nullptr, GraphNode* _otherTutorial = nullptr, bool _canClick = true): RealtimeScript(nodePointer)
 	{
 		brightWorld = brightNode;
 		darkWorld = darkNode;
@@ -58,6 +61,8 @@ public:
 		darkUI = darkUInode;
 		forceSwap = _forceSwap;
 		canClick = _canClick;
+		tutorial = _tutorial;
+		otherTutorial = _otherTutorial;
 	}
 
 	~RoomSwapManager() = default;
@@ -70,6 +75,11 @@ public:
 	void Update()
 	{
 		if (*poof) {
+			if (otherTutorial != nullptr)
+			{
+				otherTutorial->SetActive(true);
+				otherTutorial = nullptr;
+			}
 			darkWorld->SetActive(!darkWorld->GetActive());
 			brightWorld->SetActive(!brightWorld->GetActive());
 			brightUI->SetActive(!brightUI->GetActive());
@@ -90,6 +100,12 @@ public:
 		{
 			if (!keyPressed)
 			{
+				if (tutorial != nullptr)
+				{
+					tutorial->SetActive(false);
+					tutorial = nullptr;
+				}
+
 				*forceSwap = false;
 				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;

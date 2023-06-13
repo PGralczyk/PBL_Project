@@ -18,10 +18,14 @@ private:
 
 	SoundSource speaker;
 
+	GraphNode* tutorial;
+
 public:
 	//Constructor, here assign all the fields from the private section
-	GrowPlantScript(GraphNode* nodePointer, int _growthGoal, int* _puzzleState, GraphNode* _flowerReference[]) : RealtimeScript(nodePointer)
+	GrowPlantScript(GraphNode* nodePointer, int _growthGoal, int* _puzzleState, GraphNode* _flowerReference[],
+		GraphNode* _tutorial) : RealtimeScript(nodePointer)
 	{
+		tutorial = _tutorial;
 		growthGoal = _growthGoal;
 		for (int i = 0; i < 5; i++)
 		{
@@ -78,6 +82,10 @@ public:
 		{
 			growPlant();
 			speaker.Play(SoundBuffer::get()->getSound("wateringPlant"));
+		}
+		else if (ApTime::instance().pickedElementId == "bucketEmpty")
+		{
+			tutorial->SetActive(true);
 		}
 	}
 

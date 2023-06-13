@@ -46,6 +46,7 @@
 #include "../scripts/OptionsScript.h";
 #include "../scripts/ShowMusicVolume.h";
 #include "../scripts/CameraChange.h";
+#include "../scripts/ReturnInfo.h";
 
 class SceneManager
 {
@@ -637,6 +638,7 @@ public:
 			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
 			gameModePieces[4] = blackRook;
 			ChessMainObject->AddChild(blackRook);
+			
 #pragma endregion
 
 #pragma region Chess Puzzle Scripting
@@ -738,6 +740,12 @@ public:
 		Model* greenFlower = new Model("res/models/zagadka_kwiaty/kwiatek_zielony.fbx");
 		greenFlower->SetShader(defaultShader);
 
+		GraphNode* emptyCan = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/can_empty.png", textureShader);
+		emptyCan->SetActive(false);
+		emptyCan->AddScript(new DeactivateAfterTime(emptyCan, 5.0f));
+		UI->AddChild(emptyCan);
+
 #pragma region Red Flowers
 		GraphNode* RedFlowers[5];
 
@@ -776,7 +784,7 @@ public:
 		RedPot->Scale(0.1f);
 		RedPot->Translate(glm::vec3(0.0f, 0.0f, -20.0f));
 		Scene1Bright->AddChild(RedPot);
-		RedPot->AddScript(new GrowPlantScript(RedPot, 3, puzzleState, RedFlowers));
+		RedPot->AddScript(new GrowPlantScript(RedPot, 3, puzzleState, RedFlowers, emptyCan));
 
 		GraphNode* RedStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_czerwona.fbx", defaultShader);
 		RedStripes->Scale(0.1f);
@@ -821,7 +829,7 @@ public:
 		BluePot->Scale(0.1f);
 		//BluePot->Translate(glm::vec3(45.0f, 0.0f, -80.0f));
 		Scene1Bright->AddChild(BluePot);
-		BluePot->AddScript(new GrowPlantScript(BluePot, 2, puzzleState, BlueFlowers));
+		BluePot->AddScript(new GrowPlantScript(BluePot, 2, puzzleState, BlueFlowers, emptyCan));
 
 		GraphNode* BlueStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_niebieska.fbx", defaultShader);
 		BlueStripes->Scale(0.1f);
@@ -866,7 +874,7 @@ public:
 		GreenPot->Scale(0.1f);
 		//GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
 		Scene1Bright->AddChild(GreenPot);
-		GreenPot->AddScript(new GrowPlantScript(GreenPot, 4, puzzleState, GreenFlowers));
+		GreenPot->AddScript(new GrowPlantScript(GreenPot, 4, puzzleState, GreenFlowers, emptyCan));
 
 		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
 		GreenStripes->Scale(0.1f);
@@ -901,6 +909,11 @@ public:
 		door->Translate(glm::vec3(55.0, 0.0, 250.0));
 		Scene1->AddChild(door);
 
+		GraphNode* returnTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/return_info.png", textureShader);
+		returnTutorial->SetActive(false);
+		UI->AddChild(returnTutorial);
+		UI->AddScript(new ReturnInfo(UI, returnTutorial));
 
 		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark,
 			window, Scene1, Scene2, isBright, singleClick, &forceSwap, &engageSwap, &poof);
@@ -1145,9 +1158,6 @@ public:
 		door2->Translate(glm::vec3(5.0f, 0.0f, 1.0f));
 		Scene2->AddChild(door2);
 
-		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
-			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, false);
-		door2->AddScript(manager2);
 #pragma endregion
 
 #pragma region plant and desk
@@ -1161,10 +1171,25 @@ public:
 		Scene2Dark->AddChild(labDeskDark);
 		labDeskDark->AddScript(new StartingDesk(labDeskDark, window, false));
 
+		GraphNode* SwapTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/swap_tutorial.png", textureShader);
+		SwapTutorial->SetActive(false);
+		UI->AddChild(SwapTutorial);
+
 		GraphNode* labDeskPlant = CreateNode("res/models/sadzonka_lab.fbx", defaultShader);
 		labDeskPlant->Scale(0.2f);
 		Scene2->AddChild(labDeskPlant);
-		labDeskPlant->AddScript(new MagicalPlant(labDeskPlant));
+		labDeskPlant->AddScript(new MagicalPlant(labDeskPlant, SwapTutorial));
+
+		GraphNode* HintTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hint_tutorial.png", textureShader);
+		UI->AddChild(HintTutorial);
+		HintTutorial->SetActive(false);
+		HintTutorial->AddScript(new DeactivateAfterTime(HintTutorial, 8.0f));
+
+		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
+			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, SwapTutorial, HintTutorial, false);
+		door2->AddScript(manager2);
 #pragma endregion
 
 #pragma region Scales Puzzle
@@ -1278,6 +1303,7 @@ public:
 		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
 		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab, manager2));
 		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab, manager2));
+
 #pragma endregion
 
 #pragma region Door Puzzle
