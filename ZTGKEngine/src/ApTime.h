@@ -1,7 +1,11 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include "Windows.h"
+#include <map>
 
+
+class SoundSource;
+class Music;
 
 //WHAT IS THIS CLASS?
 //It's a utility class meant for stuff like counting deltaTime and so on.
@@ -49,6 +53,8 @@ public:
 	bool canSwap = false;
 	bool shouldBtnWork = true;
 	bool isFirstTime = true;
+	SoundSource* mainSpeaker;
+	std::map<string, Music*> gameMusic;
 
 	//Possible puzzle states:
 	//2 - show chess board,

@@ -164,6 +164,8 @@ int main(void)
     SoundSource speaker;
     SoundSource speaker2;
 
+    ApTime::instance().mainSpeaker = &speaker;
+
 #pragma endregion
 
     glEnable(GL_DEPTH_TEST);
@@ -228,7 +230,8 @@ int main(void)
     gameMusic.insert({ "lightBuzz",  &lightBuzz});
     gameMusic.insert({ "pianoEmotional", &pianoEmotional });
     
-   
+    ApTime::instance().gameMusic = gameMusic;
+
     //SoundBuffer::get()->addSoundEffect("res/sounds/lightBuzz.wav", "lightBuzz");
     //SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
 
@@ -262,7 +265,8 @@ int main(void)
     ApTime::instance().isEasyMode = false;
 
     //gameMusic["menuTheme"]->Play();
-
+    speaker.EnableLooping();
+    speaker.Play(SoundBuffer::get()->getSound("menuTheme"));
     sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
@@ -272,8 +276,8 @@ int main(void)
     //Scene1Dark->SetActive(false);
 
 #pragma endregion
-    gameMusic["lightBuzz"]->Play();
-    gameMusic["pianoEmotional"]->Play();
+    //gameMusic["lightBuzz"]->Play();
+    //gameMusic["pianoEmotional"]->Play();
     //speaker2.Play(SoundBuffer::get()->getSound("lightBuzz"));
 #pragma region Game Loop
 

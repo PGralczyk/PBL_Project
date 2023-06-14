@@ -70,6 +70,8 @@ public:
 		}
 		if (*password == passwordAnswer && !*isWon)
 		{
+			ApTime::instance().gameMusic["pianoEmotional"]->Stop();
+
 			speaker.Play(SoundBuffer::get()->getSound("correctCode"));
 			ALint state = AL_PLAYING;
 			while (state == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
@@ -82,6 +84,14 @@ public:
 			puzzle->SetActive(false);
 			node->Rotate(30, glm::vec3(0.0f, 1.0f, 0.0f));
 			node->Translate(glm::vec3(-74.0f, 0.0f, 30.0f));
+
+			//ApTime::instance().mainSpeaker->Stop();
+			
+			while (state == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
+			{
+				state = doorSpeaker.GetState();
+			}
+			ApTime::instance().gameMusic["pianoEmotional"]->Replay();
 		}
 		if (ApTime::instance().currentPuzzleState == 7 && ApTime::instance().adviseWindow > 0)
 		{

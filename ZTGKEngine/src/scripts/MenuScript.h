@@ -4,6 +4,7 @@
 #include "RealtimeScript.h"
 #include "../GraphNode.h"
 #include "../ApTime.h"
+#include "../Music.h"
 
 class GraphNode;
 //WHAT IS THIS CLASS?
@@ -89,6 +90,8 @@ public:
 			firstTime->SetActive(false);
 			other->SetActive(false);
 			ApTime::instance().isFirstTime = false;
+			ApTime::instance().mainSpeaker->Stop();
+			ApTime::instance().gameMusic["pianoEmotional"]->Play();
 		}
 	}
 
