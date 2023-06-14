@@ -52,6 +52,42 @@ public:
 		}
 		std::cout << "done playing sound\n";*/
 	}
+
+	void EnableLooping()
+	{
+		alSourcei(p_Source, AL_LOOPING, 1);
+	}
+
+	void DisableLooping()
+	{
+		alSourcei(p_Source, AL_LOOPING, 0);
+	}
+
+	void Pause()
+	{
+		if (GetState() == AL_PLAYING)
+		{
+			alSourcePause(p_Source);
+		}
+	}
+
+	void Resume()
+	{
+		if (GetState() == AL_PAUSED)
+		{
+			alSourcePlay(p_Source);
+		}
+	}
+
+	void Stop()
+	{
+		if (GetState() == AL_PLAYING)
+		{
+			alSourceStop(p_Source);
+		}
+	}
+
+
 	void SetVolume(float newVolume)
 	{
 		if (0 <= newVolume && newVolume <= 1)
@@ -74,9 +110,11 @@ public:
 		SetVolume(0.0);
 	}
 
-	void GetState(ALint* state)
+	ALint GetState()
 	{
-		alGetSourcei(p_Source, AL_SOURCE_STATE, state);
+		ALint state;
+		alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
+		return state;
 	}
 
 };

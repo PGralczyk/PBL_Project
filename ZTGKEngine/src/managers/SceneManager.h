@@ -72,6 +72,8 @@ private:
 	string* password = new string;
 	bool isFirstBuffer = true;
 
+	SoundSource mainSpeaker;
+
 public:
 	GraphNode* world;
 	GraphNode* Scene1 = new GraphNode();
@@ -336,6 +338,8 @@ public:
 
 	void Setup(GLFWwindow* givenWindow, bool* brightReference, unsigned int* SCR_WIDTH, unsigned int* SCR_HEIGHT, Shader* otherShaders ...)
 	{
+		mainSpeaker.EnableLooping();
+		mainSpeaker.Play(SoundBuffer::get()->getSound("menuTheme"));
 		window = givenWindow;
 		engageSwap = false;
 		this->SCR_HEIGHT = SCR_HEIGHT;

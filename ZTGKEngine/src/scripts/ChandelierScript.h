@@ -36,7 +36,7 @@ public:
 			ALint state = AL_PLAYING;
 			while (state == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
 			{
-				speaker.GetState(&state);
+				state = speaker.GetState();
 			}
 			glassSpeaker.Play(SoundBuffer::get()->getSound("breakGlass"));
 

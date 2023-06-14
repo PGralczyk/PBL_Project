@@ -10,7 +10,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window, Music* sneakyTheme);
+void processInput(GLFWwindow* window);
 void setGlobalVolume(float v);
 float getGlobalVolume();
 
@@ -33,6 +33,7 @@ bool isMouseActive = false,
       singleClick = true,
       canChangeMusic = true,
       buzzerChangeState = false;
+
 
 glm::vec3 castedRay = glm::vec3(1);
 ClickPicker picker = ClickPicker();
@@ -130,7 +131,12 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+    //const GLFWvidmode* videoStruct = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    //SCR_WIDTH = videoStruct->width;
+    //SCR_HEIGHT = videoStruct->height;
+
     /* Create a windowed mode window and its OpenGL context */
+    //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
     if (!window)
     {
@@ -156,6 +162,7 @@ int main(void)
     SoundDevice* mysounddevice = SoundDevice::get();
 
     SoundSource speaker;
+    SoundSource speaker2;
 
 #pragma endregion
 
@@ -213,10 +220,21 @@ int main(void)
     SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "drawerOpen");
     SoundBuffer::get()->addSoundEffect("res/sounds/pourWater.wav", "tap");
     SoundBuffer::get()->addSoundEffect("res/sounds/wateringPlant.wav", "wateringPlant");
-    Music lightBuzz("res/sounds/lightBuzz.wav");
-    //Music menuMusic("res/sounds/menu.wav");
     SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
-    lightBuzz.EnableLooping();
+
+    Music lightBuzz("res/sounds/lightBuzz.wav");
+    Music pianoEmotional("res/sounds/piano_emotional.wav");
+    std::map<string, Music*> gameMusic;
+    gameMusic.insert({ "lightBuzz",  &lightBuzz});
+    gameMusic.insert({ "pianoEmotional", &pianoEmotional });
+    
+   
+    //SoundBuffer::get()->addSoundEffect("res/sounds/lightBuzz.wav", "lightBuzz");
+    //SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
+
+    gameMusic["lightBuzz"]->EnableLooping();
+    gameMusic["pianoEmotional"]->EnableLooping();
+
     std::cout << "Volume: " << getGlobalVolume() << std::endl;
     setGlobalVolume(1.0);
     std::cout << "Change volume to: " << getGlobalVolume() << std::endl;
@@ -225,7 +243,7 @@ int main(void)
     text.init("res/fonts/arial/arial.ttf");
     //-----------------------------------------------------------------------------
     
-    speaker.Play(SoundBuffer::get()->getSound("menuTheme"));
+    //speaker.Play(SoundBuffer::get()->getSound("menuTheme"));
 
     sceneManager.text = &text;
     sceneManager.textShader = &textShader;
@@ -243,6 +261,8 @@ int main(void)
 
     ApTime::instance().isEasyMode = false;
 
+    //gameMusic["menuTheme"]->Play();
+
     sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
@@ -252,15 +272,19 @@ int main(void)
     //Scene1Dark->SetActive(false);
 
 #pragma endregion
-    lightBuzz.Play();
-
+    gameMusic["lightBuzz"]->Play();
+    gameMusic["pianoEmotional"]->Play();
+    //speaker2.Play(SoundBuffer::get()->getSound("lightBuzz"));
 #pragma region Game Loop
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         //music update
-        lightBuzz.UpdateBufferStream();
+        gameMusic["lightBuzz"]->UpdateBufferStream();
+        gameMusic["pianoEmotional"]->UpdateBufferStream();
+
+
         if(!ApTime::instance().isBuzzzing && !buzzerChangeState)
         {
             //std::cout << "State buzzer change!" << std::endl;
@@ -436,7 +460,7 @@ int main(void)
         
 
         //Processing input here
-        processInput(window, &lightBuzz);
+        processInput(window);
 
 #pragma region Render
 
@@ -495,58 +519,13 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Music* sneakyTheme)
+void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-    {
-        if (canChangeMusic)
-        {
-            ALint state = sneakyTheme->GetSourceState();
-            if (state == AL_PLAYING)
-            {
-               
-                switch (volumeMode)
-                {
-                case 0:
-                    setGlobalVolume(1.0);
-                    std::cout << "Volume: 1.0" << std::endl;
-                    volumeMode++;
-                    break;
-                case 1:
-                    setGlobalVolume(0.7);
-                    std::cout << "Volume: 0.7" << std::endl;
-                    volumeMode++;
-                    break;
-                case 2:
-                    setGlobalVolume(0.5);
-                    std::cout << "Volume: 0.5" << std::endl;
-                    volumeMode++;
-                    break;
-                case 3:
-                    setGlobalVolume(0.2);
-                    std::cout << "Volume: 0.2" << std::endl;
-                    volumeMode++;
-                    break;
-                case 4:
-                    setGlobalVolume(0.02);
-                    std::cout << "Volume: 0.02" << std::endl;
-                    volumeMode++;
-                    break;
-                case 5:
-                    setGlobalVolume(0.0);
-                    std::cout << "Volume: Muted" << std::endl;
-                    volumeMode = 0;
-                    break;
-                }
-            
-            }
-            canChangeMusic = false;
-            //std::cout << "Can changed: false" << std::endl;
-        }
-    }
+    
+     
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
     {

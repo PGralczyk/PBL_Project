@@ -24,6 +24,62 @@ private:
 
 public:
 
+	Music(const char* givenFileName)
+	{
+		alGenSources(1, &p_Source);
+		alGenBuffers(NUM_BUFFERS, p_Buffers);
+
+		std::size_t frame_size;
+
+		p_SndFile = sf_open(givenFileName, SFM_READ, &p_Sfinfo);
+		if (!p_SndFile)
+		{
+			throw("could not open provided music file -- check path");
+		}
+
+		/* Get the sound format, and figure out the OpenAL format */
+		if (p_Sfinfo.channels == 1)
+			p_Format = AL_FORMAT_MONO16;
+		else if (p_Sfinfo.channels == 2)
+			p_Format = AL_FORMAT_STEREO16;
+		else if (p_Sfinfo.channels == 3)
+		{
+			if (sf_command(p_SndFile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
+				p_Format = AL_FORMAT_BFORMAT2D_16;
+		}
+		else if (p_Sfinfo.channels == 4)
+		{
+			if (sf_command(p_SndFile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
+				p_Format = AL_FORMAT_BFORMAT3D_16;
+		}
+		if (!p_Format)
+		{
+			sf_close(p_SndFile);
+			p_SndFile = NULL;
+			throw("Unsupported channel count from file");
+		}
+
+		frame_size = ((size_t)BUFFER_SAMPLES * (size_t)p_Sfinfo.channels) * sizeof(short);
+		p_Membuf = static_cast<short*>(malloc(frame_size));
+
+		fileName = givenFileName;
+
+	}
+
+	~Music()
+	{
+		alDeleteSources(1, &p_Source);
+
+		if (p_SndFile)
+			sf_close(p_SndFile);
+
+		p_SndFile = nullptr;
+
+		free(p_Membuf);
+
+		alDeleteBuffers(NUM_BUFFERS, p_Buffers);
+	}
+
 	void Play()
 	{
 		ALsizei i;
@@ -117,6 +173,11 @@ public:
 		return v;
 	}
 
+	ALint getSource()
+	{
+		return p_Source;
+	}
+
 	void Mute()
 	{
 		SetVolume(0.0);
@@ -197,67 +258,6 @@ public:
 				throw("error restarting music playback");
 			}
 		}
-	}
-
-	ALint getSource()
-	{
-		return p_Source;
-	}
-
-	Music(const char* givenFileName)
-	{
-		alGenSources(1, &p_Source);
-		alGenBuffers(NUM_BUFFERS, p_Buffers);
-
-		std::size_t frame_size;
-
-		p_SndFile = sf_open(givenFileName, SFM_READ, &p_Sfinfo);
-		if (!p_SndFile)
-		{
-			throw("could not open provided music file -- check path");
-		}
-
-		/* Get the sound format, and figure out the OpenAL format */
-		if (p_Sfinfo.channels == 1)
-			p_Format = AL_FORMAT_MONO16;
-		else if (p_Sfinfo.channels == 2)
-			p_Format = AL_FORMAT_STEREO16;
-		else if (p_Sfinfo.channels == 3)
-		{
-			if (sf_command(p_SndFile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
-				p_Format = AL_FORMAT_BFORMAT2D_16;
-		}
-		else if (p_Sfinfo.channels == 4)
-		{
-			if (sf_command(p_SndFile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
-				p_Format = AL_FORMAT_BFORMAT3D_16;
-		}
-		if (!p_Format)
-		{
-			sf_close(p_SndFile);
-			p_SndFile = NULL;
-			throw("Unsupported channel count from file");
-		}
-
-		frame_size = ((size_t)BUFFER_SAMPLES * (size_t)p_Sfinfo.channels) * sizeof(short);
-		p_Membuf = static_cast<short*>(malloc(frame_size));
-
-		fileName = givenFileName;
-
-	}
-
-	~Music()
-	{
-		alDeleteSources(1, &p_Source);
-
-		if (p_SndFile)
-			sf_close(p_SndFile);
-
-		p_SndFile = nullptr;
-
-		free(p_Membuf);
-
-		alDeleteBuffers(NUM_BUFFERS, p_Buffers);
 	}
 
 };
