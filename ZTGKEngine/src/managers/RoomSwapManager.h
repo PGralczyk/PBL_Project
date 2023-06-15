@@ -193,6 +193,7 @@ public:
 
 	void GreatReset()
 	{
+		*lightVersion = true;
 		keyPressed = false;
 		controlPressed = false;
 		canClick = initialCanClick;
