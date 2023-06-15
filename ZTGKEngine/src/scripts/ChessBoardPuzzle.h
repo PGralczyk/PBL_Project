@@ -4,7 +4,6 @@
 #include "GraphNode.h"
 #include "RealtimeScript.h"
 #include "ApTime.h"
-#include "OtherTestRealtimeScript.h"
 #include "ChessPieceScript.h"
 #include "OneTimeActivatorScript.h"
 
@@ -223,4 +222,19 @@ public:
 		return (availablePieces > 0);
 	}
 
+	void GreatReset()
+	{
+		phase = 0;
+		solutionMultiplyer = 1;
+		for (int i = 0; i < 64; i++)
+		{
+			tileState[i] = 0;
+		}
+		prize1->GetNode()->isHoverable = false;
+		prize1->enabled = false;
+		prize2->GetNode()->isHoverable = false;
+		prize2->enabled = false;
+		prize3->GetNode()->isHoverable = false;
+		prize3->enabled = false;
+	}
 };

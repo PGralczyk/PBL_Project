@@ -16,6 +16,7 @@ private:
 	string soundToBePlayed;
 
 	SoundSource speaker;
+	bool initialState = true;
 
 public:
 	//Constructor, here assign all the fields from the private section
@@ -50,11 +51,22 @@ public:
 		}
 	}
 
+	void Start()
+	{
+		initialState = enabled;
+	}
+
 	void Update()
 	{
 		if (ApTime::instance().adviseWindow > 0)
 		{
 			node->forceHover = true;
 		}
+	}
+
+	void GreatReset()
+	{
+		enabled = initialState;
+		node->isHoverable = initialState;
 	}
 };

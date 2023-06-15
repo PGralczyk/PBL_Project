@@ -4,7 +4,6 @@
 #include "GraphNode.h"
 #include "RealtimeScript.h"
 #include "ApTime.h"
-#include "OtherTestRealtimeScript.h"
 #include "ChessBoardPuzzle.h"
 
 class GraphNode;
@@ -23,6 +22,7 @@ public:
 	int tileId = 100;
 	glm::vec3 goalPosition;
 	glm::vec3 brightWorldPosition;
+	glm::vec3 originalPosition;
 	GLFWwindow* window;
 	bool* poof;
 
@@ -36,6 +36,7 @@ public:
 	void Start()
 	{
 		brightWorldPosition = node->getTranslation();
+		originalPosition = node->getTranslation();
 	}
 
 	~ChessPieceScript() = default;
@@ -83,5 +84,13 @@ public:
 				node->isHoverable = false;
 			}
 		}
+	}
+
+	void GreatReset()
+	{
+		isBeingMoved = false;
+		tileId = 100;
+		brightWorldPosition = originalPosition;
+
 	}
 };

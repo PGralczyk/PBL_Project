@@ -56,13 +56,7 @@
     <ClInclude Include="src\scripts\RealtimeScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\TestRealtimeScript.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="src\ApTime.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scripts\OtherTestRealtimeScript.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="src\managers\RoomSwapManager.h">

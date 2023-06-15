@@ -62,4 +62,9 @@ public:
 			enabled = false;
 		}
 	}
+
+	void GreatReset()
+	{
+		enabled = true;
+	}
 };

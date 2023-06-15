@@ -4,7 +4,6 @@
 #include "GraphNode.h"
 #include "../scripts/RealtimeScript.h"
 #include "ApTime.h"
-#include "../scripts/OtherTestRealtimeScript.h"
 #include "../SoundBuffer.h"
 #include "../SoundSource.h"
 
@@ -26,6 +25,8 @@ private:
 	GraphNode* brightUI;
 	GraphNode* darkUI;
 
+	int wasTutorialUsed = 0;
+
 	bool keyPressed = false;
 	bool controlPressed = false;
 
@@ -34,6 +35,7 @@ private:
 	bool* singleClick;
 	bool* forceSwap;
 	bool canClick;
+	bool initialCanClick;
 
 	SoundSource speaker;
 	SoundSource doorSpeaker;
@@ -63,6 +65,7 @@ public:
 		canClick = _canClick;
 		tutorial = _tutorial;
 		otherTutorial = _otherTutorial;
+		initialCanClick = _canClick;
 	}
 
 	~RoomSwapManager() = default;
@@ -75,10 +78,10 @@ public:
 	void Update()
 	{
 		if (*poof) {
-			if (otherTutorial != nullptr)
+			if (wasTutorialUsed == 1)
 			{
 				otherTutorial->SetActive(true);
-				otherTutorial = nullptr;
+				wasTutorialUsed = 2;
 			}
 			darkWorld->SetActive(!darkWorld->GetActive());
 			brightWorld->SetActive(!brightWorld->GetActive());
@@ -100,10 +103,10 @@ public:
 		{
 			if (!keyPressed)
 			{
-				if (tutorial != nullptr)
+				if (wasTutorialUsed == 0 && tutorial != nullptr)
 				{
 					tutorial->SetActive(false);
-					tutorial = nullptr;
+					wasTutorialUsed = 1;
 				}
 
 				*forceSwap = false;
@@ -186,5 +189,13 @@ public:
 	void MakeClickable()
 	{
 		canClick = true;
+	}
+
+	void GreatReset()
+	{
+		keyPressed = false;
+		controlPressed = false;
+		canClick = initialCanClick;
+		wasTutorialUsed = 0;
 	}
 };

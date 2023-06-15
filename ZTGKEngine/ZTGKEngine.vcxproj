@@ -188,11 +188,9 @@
     <ClInclude Include="src\GraphNode.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
-    <ClInclude Include="src\scripts\OtherTestRealtimeScript.h" />
     <ClInclude Include="src\scripts\RealtimeScript.h" />
     <ClInclude Include="src\managers\RoomSwapManager.h" />
     <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\scripts\TestRealtimeScript.h" />
     <ClInclude Include="src\ApTime.h" />
     <ClInclude Include="src\UI\Text.h" />
     <ClInclude Include="src\scripts\TileScript.h" />

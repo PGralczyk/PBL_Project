@@ -11,10 +11,13 @@ protected:
 	Model* model;
 	glm::mat4* worldTransform;
 	glm::mat4* transform;
+	glm::mat4 initialTransform;
 
 	glm::mat4 staticTransform;
 	glm::vec3 translation = glm::vec3(0.0f);
 	glm::mat4 rotationMatrix = glm::mat4(1.0f);
+	glm::vec3 initialTranslation = glm::vec3(0.0f);
+	glm::mat4 initialRotationMatrix = glm::mat4(1.0f);
 	float zRotationAngle = 0.0f;
 	float staticRotateX = 0.0f;
 	float staticRotateZ = 0.0f;
@@ -31,6 +34,8 @@ protected:
 	std::vector<RealtimeScript*> realtimeScripts;
 
 	bool isActive = true;
+
+	bool initialState;
 
 public:
 	std::vector<GraphNode*> children;
@@ -266,5 +271,33 @@ public:
 	{
 		this->forceHover = true;
 		ApTime::instance().adviseWindow = 5.0f;
+	}
+
+	void GreatReset()
+	{
+		translation = initialTranslation;
+		rotationMatrix = initialRotationMatrix;
+		isActive = initialState;
+		*transform = initialTransform;
+		for (RealtimeScript* script : realtimeScripts)
+		{
+			script->GreatReset();
+		}
+		for (GraphNode* node : children)
+		{
+			node->GreatReset();
+		}
+	}
+
+	void SaveInitialState()
+	{
+		initialState = isActive;
+		initialTransform = *transform;
+		initialTranslation = translation;
+		initialRotationMatrix = rotationMatrix;
+		for (GraphNode* node : children)
+		{
+			node->SaveInitialState();
+		}
 	}
 };

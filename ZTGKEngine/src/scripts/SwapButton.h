@@ -12,7 +12,6 @@ class SwapButton;
 class SwapButton : public RealtimeScript {
 
 public:
-	int deactivate = 0;
 	bool* forceSwap;
 
 	//Constructor, here assign all the fields from the private section
@@ -26,5 +25,10 @@ public:
 	void OnMouseClicked()
 	{
 		*forceSwap = true;
+	}
+
+	void GreatReset()
+	{
+		*forceSwap = false;
 	}
 };

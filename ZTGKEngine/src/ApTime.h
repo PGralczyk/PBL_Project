@@ -55,14 +55,27 @@ public:
 	bool isFirstTime = true;
 	SoundSource* mainSpeaker;
 	std::map<string, Music*> gameMusic;
-
-	//Possible puzzle states:
-	//2 - show chess board,
-	//3 - show chandelier,
-	//4 - show crane,
-	//5 - show plants,
 	int currentPuzzleState = 0;
 	float adviseWindow = 0;
+
+	void GreatReset()
+	{
+		timeRatio = 1;
+		deltaTime = 0.0f;
+		lastFrame = 0.0f;
+		pickedElementId = "";
+		brightWorld = true;
+		isChessPosition = false;
+		isDeskPosition = true;
+		isBookPosition = false;
+		isEasyMode = false;
+		isBuzzzing = true;
+		canSwap = false;
+		shouldBtnWork = true;
+		isFirstTime = true;
+		currentPuzzleState = 0;
+		adviseWindow = 0;
+	}
 
 	//Updates each frame
 	void Update()

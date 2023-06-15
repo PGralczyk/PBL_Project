@@ -53,4 +53,9 @@ public:
 	}
 
 	~MenuButtonScript() = default;
+
+	void GreatReset()
+	{
+		keyPressed = false;
+	}
 };

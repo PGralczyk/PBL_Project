@@ -35,4 +35,9 @@ public:
 		}
 		deactivate++;
 	}
+
+	void GreatReset()
+	{
+		deactivate = 0;
+	}
 };

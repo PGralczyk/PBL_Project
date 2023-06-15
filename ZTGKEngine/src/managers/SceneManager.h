@@ -12,8 +12,6 @@
 #include "Model.h"
 #include "GraphNode.h"
 #include "Camera.h"
-#include "../scripts/TestRealtimeScript.h"
-#include "../scripts/OtherTestRealtimeScript.h"
 #include "ApTime.h"
 #include "RoomSwapManager.h"
 #include "ClickPicker.h"
@@ -361,6 +359,9 @@ public:
 		this->MenuSetup();
 		UI->AddChild(menu);
 		ExecuteStartScripts();
+		world->SaveInitialState();
+		UI->SaveInitialState();
+		menu->SaveInitialState();
 	}
 
 	void Update(int currentlyPicked, bool singleMouse, bool isHoldingMouseButton)
@@ -1628,6 +1629,14 @@ public:
 			UI->Draw(currentlyPicked);
 			glDepthFunc(GL_LESS);
 		}
+	}
+
+	void GreatReset()
+	{
+		ApTime::instance().GreatReset();
+		world->GreatReset();
+		UI->GreatReset();
+		menu->GreatReset();
 	}
 
 private:

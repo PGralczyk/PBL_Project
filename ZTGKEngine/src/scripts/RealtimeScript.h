@@ -56,6 +56,11 @@ public:
 
 	}
 
+	virtual void GreatReset()
+	{
+
+	}
+
 	GraphNode* GetNode()
 	{
 		return node;

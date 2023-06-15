@@ -33,4 +33,8 @@ public:
 		}
 	}
 
+	void GreatReset()
+	{
+		enabled = true;
+	}
 };

@@ -71,6 +71,11 @@ public:
 			toBeActivated->SetActive(true);
 		}
 	}
+
+	void GreatReset()
+	{
+		enabled = true;
+	}
 };
 
 class MagicalPlant : public RealtimeScript {

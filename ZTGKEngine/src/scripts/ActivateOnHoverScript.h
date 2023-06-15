@@ -84,4 +84,9 @@ public:
 		}
 		timer += ApTime::instance().deltaTime;
 	}
+
+	void GreatReset()
+	{
+		timer = 0;
+	}
 };

@@ -12,7 +12,6 @@ class GrowPlantScript : public RealtimeScript {
 private:
 	int growthGoal;
 	int growthState = 0;
-	glm::vec3 translation;
 	int* puzzleState;
 	GraphNode* flowerReference[5];
 
@@ -101,5 +100,13 @@ public:
 		{
 			node->forceHover = true;
 		}
+	}
+
+	void GreatReset()
+	{
+		growthState = 0;
+		*puzzleState = 0;
+		node->isHoverable = true;
+		enabled = true;
 	}
 };

@@ -528,9 +528,6 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    
-     
-
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
     {
         canChangeMusic = true;
@@ -559,6 +556,13 @@ void processInput(GLFWwindow* window)
         }
     }
     oldMouseButtonState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3);
+
+#pragma region Great Reset
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+        sceneManager.GreatReset();
+    }
+#pragma endregion
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

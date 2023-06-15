@@ -32,6 +32,8 @@ private:
 	SoundSource speaker;
 	SoundSource doorSpeaker;
 
+	glm::vec3 initialPosition;
+
 public:
 
 	//Constructor, here assign all the fields from the private section
@@ -45,6 +47,11 @@ public:
 		finalScreen = _finalScreen;
 		text = _text;
 		textShader = _textShader;
+	}
+
+	void Start()
+	{
+		initialPosition = node->getTranslation();
 	}
 
 	~DoorPuzzle() = default;
@@ -97,5 +104,11 @@ public:
 		{
 			node->forceHover = true;
 		}
+	}
+
+	void GreatReset()
+	{
+		*password = "";
+		*isWon = false;
 	}
 };

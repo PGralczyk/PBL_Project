@@ -154,5 +154,11 @@ public:
 			}
 		}
 	}
+
+	void GreatReset()
+	{
+		enabled = true;
+		node->isHoverable = true;
+	}
 };
 

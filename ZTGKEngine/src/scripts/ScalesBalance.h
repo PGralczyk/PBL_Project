@@ -70,4 +70,11 @@ public:
 	}
 
 	~ScalesBalance() = default;
+
+	void GreatReset()
+	{
+		this->rotateStatus = 0;
+		enabled = true;
+		*scalesPuzzleController = 3;
+	}
 };
