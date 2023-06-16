@@ -122,7 +122,7 @@ public:
 		menu->AddChild(playBtn);
 		menu->AddChild(playHover);
 		playHover->SetActive(false);
-		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover));
+		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover, true));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
 		playHover->AddScript(new MenuScript(playHover, menu, window, "play", 
 			firstTimeGameMode,
@@ -138,7 +138,7 @@ public:
 		menu->AddChild(creditsBtn);
 		menu->AddChild(creditsHover);
 		creditsHover->SetActive(false);
-		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover));
+		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover, true));
 		creditsHover->AddScript(new DeactivateOnMouseLeave(creditsHover));
 		creditsHover->AddScript(new MenuScript(creditsHover, credits, window, "goNext"));
 
@@ -147,7 +147,7 @@ public:
 		menu->AddChild(optionsBtn);
 		menu->AddChild(optionsHover);
 		optionsHover->SetActive(false);
-		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover));
+		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover, true));
 		optionsHover->AddScript(new DeactivateOnMouseLeave(optionsHover));
 		optionsHover->AddScript(new MenuScript(optionsHover, options, window, "goNext"));
 
@@ -156,7 +156,7 @@ public:
 		menu->AddChild(exitBtn);
 		menu->AddChild(exitHover);
 		exitHover->SetActive(false);
-		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover));
+		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover, true));
 		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
 		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit"));
 
@@ -174,7 +174,7 @@ public:
 		credits->AddChild(backCredBtn);
 		credits->AddChild(backCredHover);
 		backCredHover->SetActive(false);
-		backCredBtn->AddScript(new ActivateOnHoverScript(backCredBtn, backCredHover));
+		backCredBtn->AddScript(new ActivateOnHoverScript(backCredBtn, backCredHover, true));
 		backCredHover->AddScript(new DeactivateOnMouseLeave(backCredHover));
 		backCredHover->AddScript(new MenuScript(backCredHover, credits, window, "goBack"));
 
@@ -192,7 +192,7 @@ public:
 		options->AddChild(backOptBtn);
 		options->AddChild(backOptHover);
 		backOptHover->SetActive(false);
-		backOptBtn->AddScript(new ActivateOnHoverScript(backOptBtn, backOptHover));
+		backOptBtn->AddScript(new ActivateOnHoverScript(backOptBtn, backOptHover, true));
 		backOptHover->AddScript(new DeactivateOnMouseLeave(backOptHover));
 		backOptHover->AddScript(new MenuScript(backOptHover, options, window, "goBack"));
 
@@ -201,7 +201,7 @@ public:
 		options->AddChild(leftArrBtn);
 		options->AddChild(leftArrHover);
 		leftArrHover->SetActive(false);
-		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover));
+		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover, true));
 		leftArrHover->AddScript(new DeactivateOnMouseLeave(leftArrHover));
 		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, "leftArr", true));
 		leftArrHover->AddScript(new OptionsScript(leftArrHover, "leftArr"));
@@ -211,7 +211,7 @@ public:
 		options->AddChild(rightArrBtn);
 		options->AddChild(rightArrHover);
 		rightArrHover->SetActive(false);
-		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover));
+		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover, true));
 		rightArrHover->AddScript(new DeactivateOnMouseLeave(rightArrHover));
 		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, "rightArr", true));
 		rightArrHover->AddScript(new OptionsScript(rightArrHover, "rightArr"));
@@ -226,7 +226,7 @@ public:
 		options->AddChild(easyModeBtn);
 		options->AddChild(easyModeHover);
 		easyModeHover->SetActive(false);
-		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover));
+		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover, true));
 		easyModeHover->AddScript(new DeactivateOnMouseLeave(easyModeHover));
 		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, "easy", true));
 		easyModeHover->AddScript(new OptionsScript(easyModeHover, "easy"));
@@ -238,7 +238,7 @@ public:
 		options->AddChild(mediumModeBtn);
 		options->AddChild(mediumModeHover);
 		mediumModeHover->SetActive(false);
-		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover));
+		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover, true));
 		mediumModeHover->AddScript(new DeactivateOnMouseLeave(mediumModeHover));
 		mediumModeBtn->AddScript(new OptionsScript(mediumModeBtn, "medium", true));
 		mediumModeHover->AddScript(new OptionsScript(mediumModeHover, "medium"));
@@ -295,7 +295,7 @@ public:
 		firstTimeGameMode->AddChild(backGmBtn);
 		firstTimeGameMode->AddChild(backGmHover);
 		backGmHover->SetActive(false);
-		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover));
+		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover, true));
 		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
 		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame",
 			firstTimeGameMode,
@@ -313,7 +313,7 @@ public:
 		firstTimeGameMode->AddChild(easyGmBtn);
 		firstTimeGameMode->AddChild(easyGmHover);
 		easyGmHover->SetActive(false);
-		easyGmBtn->AddScript(new ActivateOnHoverScript(easyGmBtn, easyGmHover));
+		easyGmBtn->AddScript(new ActivateOnHoverScript(easyGmBtn, easyGmHover, true));
 		easyGmHover->AddScript(new DeactivateOnMouseLeave(easyGmHover));
 		easyGmBtn->AddScript(new OptionsScript(easyGmBtn, "easy", true));
 		easyGmHover->AddScript(new OptionsScript(easyGmHover, "easy"));
@@ -325,7 +325,7 @@ public:
 		firstTimeGameMode->AddChild(mediumGmBtn);
 		firstTimeGameMode->AddChild(mediumGmHover);
 		mediumGmHover->SetActive(false);
-		mediumGmBtn->AddScript(new ActivateOnHoverScript(mediumGmBtn, mediumGmHover));
+		mediumGmBtn->AddScript(new ActivateOnHoverScript(mediumGmBtn, mediumGmHover, true));
 		mediumGmHover->AddScript(new DeactivateOnMouseLeave(mediumGmHover));
 		mediumGmBtn->AddScript(new OptionsScript(mediumGmBtn, "medium", true));
 		mediumGmHover->AddScript(new OptionsScript(mediumGmHover, "medium"));
@@ -976,7 +976,7 @@ public:
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHintHover);
 		brightHintHover->SetActive(false);
-		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, &ApTime::instance().isEasyMode));
+		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, false, &ApTime::instance().isEasyMode));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
 		brightHintHover->AddScript(new HintButton(brightHintHover));
 
@@ -1042,7 +1042,7 @@ public:
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHintHover);
 		darkHintHover->SetActive(false);
-		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, &ApTime::instance().isEasyMode));
+		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, false, &ApTime::instance().isEasyMode));
 		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
 		darkHintHover->AddScript(new HintButton(darkHintHover));
 

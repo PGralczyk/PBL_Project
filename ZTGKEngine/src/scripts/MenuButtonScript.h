@@ -17,6 +17,8 @@ private:
 	bool keyPressed = false;
 	GLFWwindow* window;
 
+	SoundSource speaker;
+
 public:
 	//Constructor, here assign all the fields from the private section
 	MenuButtonScript(GraphNode* nodePointer, GraphNode* _other, GLFWwindow* _window, bool _isNotHover = false) : RealtimeScript(nodePointer)
@@ -49,6 +51,7 @@ public:
 
 	void OnMouseClicked()
 	{
+		speaker.Play(SoundBuffer::get()->getSound("paper"));
 		other->SetActive(true);
 	}
 

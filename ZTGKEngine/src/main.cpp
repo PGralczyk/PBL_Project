@@ -87,7 +87,7 @@ int main(void)
         -3.49246e-10, 0.956305, 0.292372, 0,
         -0.999999, 0.000509512, -0.00166654, 0,
         -0.0471941, -0.12073, -1.0546, 1);
-
+ 
     chessCameraPosition.position = { -0.0160157, 0.39291, 0.0695288 };
     chessCameraPosition.projection = glm::mat4(
         1.26872, 0, 0, 0,
@@ -170,10 +170,12 @@ int main(void)
     //Sound init
     SoundDevice* mysounddevice = SoundDevice::get();
 
-    SoundSource speaker;
-    SoundSource speaker2;
+    SoundSource mainMusicSpeaker;
+    SoundSource mainAmbientSpeaker;
+    //SoundSource speaker2;
 
-    ApTime::instance().mainSpeaker = &speaker;
+    ApTime::instance().mainMusicSpeaker = &mainMusicSpeaker;
+    ApTime::instance().mainAmbientSpeaker = &mainAmbientSpeaker;
 
 #pragma endregion
 
@@ -231,21 +233,29 @@ int main(void)
     SoundBuffer::get()->addSoundEffect("res/sounds/spell.ogg", "drawerOpen");
     SoundBuffer::get()->addSoundEffect("res/sounds/pourWater.wav", "tap");
     SoundBuffer::get()->addSoundEffect("res/sounds/wateringPlant.wav", "wateringPlant");
-    SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
-
-    Music lightBuzz("res/sounds/lightBuzz.wav");
-    Music pianoEmotional("res/sounds/piano_emotional.wav");
-    std::map<string, Music*> gameMusic;
-    gameMusic.insert({ "lightBuzz",  &lightBuzz});
-    gameMusic.insert({ "pianoEmotional", &pianoEmotional });
+    SoundBuffer::get()->addSoundEffect("res/sounds/hoverButton.wav", "hover");
+    SoundBuffer::get()->addSoundEffect("res/sounds/select.wav", "click");
+    SoundBuffer::get()->addSoundEffect("res/sounds/paper.wav", "paper");
     
-    ApTime::instance().gameMusic = gameMusic;
 
-    //SoundBuffer::get()->addSoundEffect("res/sounds/lightBuzz.wav", "lightBuzz");
-    //SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
 
-    gameMusic["lightBuzz"]->EnableLooping();
-    gameMusic["pianoEmotional"]->EnableLooping();
+    //Music Setup
+    SoundBuffer::get()->addSoundEffect("res/sounds/menu.wav", "menuTheme");
+    SoundBuffer::get()->addSoundEffect("res/sounds/lightBuzz.wav", "lightBuzz");
+    SoundBuffer::get()->addSoundEffect("res/sounds/piano_level.wav", "levelMusic");
+    SoundBuffer::get()->addSoundEffect("res/sounds/piano_final.wav", "finalMusic");
+   //Music lightBuzz("res/sounds/lightBuzz.wav");
+   // Music pianoEmotional("res/sounds/piano_emotional.wav");
+   // std::map<string, Music*> gameMusic;
+   // gameMusic.insert({ "lightBuzz",  &lightBuzz});
+   // gameMusic.insert({ "pianoEmotional", &pianoEmotional });
+    
+    //ApTime::instance().gameMusic = gameMusic;
+
+    
+
+    //gameMusic["lightBuzz"]->EnableLooping();
+    //gameMusic["pianoEmotional"]->EnableLooping();
 
     std::cout << "Volume: " << getGlobalVolume() << std::endl;
     setGlobalVolume(1.0);
@@ -274,8 +284,10 @@ int main(void)
     ApTime::instance().isEasyMode = false;
 
     //gameMusic["menuTheme"]->Play();
-    speaker.EnableLooping();
-    speaker.Play(SoundBuffer::get()->getSound("menuTheme"));
+    mainMusicSpeaker.EnableLooping();
+    mainAmbientSpeaker.EnableLooping();
+
+    mainMusicSpeaker.Play(SoundBuffer::get()->getSound("menuTheme"));
     sceneManager.Setup(window, &lightVersion, &SCR_WIDTH, &SCR_HEIGHT, &basicShader);
 
     sceneManager.Update(0, false, false);
@@ -294,21 +306,21 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         //music update
-        gameMusic["lightBuzz"]->UpdateBufferStream();
-        gameMusic["pianoEmotional"]->UpdateBufferStream();
+        //gameMusic["lightBuzz"]->UpdateBufferStream();
+        //gameMusic["pianoEmotional"]->UpdateBufferStream();
 
 
         if(!ApTime::instance().isBuzzzing && !buzzerChangeState)
         {
             //std::cout << "State buzzer change!" << std::endl;
             buzzerChangeState = true;
-            lightBuzz.Stop();
+            mainAmbientSpeaker.Stop();
             //std::cout << "Ambient Stopped!" << std::endl;
         }
         else if (buzzerChangeState)
         {
             //std::cout << "Ambient Replayed!" << std::endl;
-            lightBuzz.Replay();
+            mainAmbientSpeaker.Play(SoundBuffer::get()->getSound("lightBuzz"));
             buzzerChangeState = false;
         }
 

@@ -2,9 +2,13 @@
 #include <GLFW/glfw3.h>
 #include "Windows.h"
 #include <map>
+#include <AL/al.h>
+#include "./SoundSource.h"
+#include "./SoundBuffer.h"
 
 
 class SoundSource;
+class SoundBuffer;
 class Music;
 
 //WHAT IS THIS CLASS?
@@ -53,8 +57,9 @@ public:
 	bool canSwap = false;
 	bool shouldBtnWork = true;
 	bool isFirstTime = true;
-	SoundSource* mainSpeaker;
-	std::map<string, Music*> gameMusic;
+	SoundSource* mainMusicSpeaker;
+	SoundSource* mainAmbientSpeaker;
+	//std::map<string, Music*> gameMusic;
 	int currentPuzzleState = 0;
 	float adviseWindow = 0;
 
@@ -75,6 +80,14 @@ public:
 		isFirstTime = true;
 		currentPuzzleState = 0;
 		adviseWindow = 0;
+
+		mainMusicSpeaker->Stop();
+		mainAmbientSpeaker->Stop();
+
+		while ((mainMusicSpeaker->GetState() == AL_PLAYING || mainAmbientSpeaker->GetState() == AL_PLAYING) && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
+		{
+		}
+		mainMusicSpeaker->Play(SoundBuffer::get()->getSound("menuTheme"));
 	}
 
 	//Updates each frame

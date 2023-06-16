@@ -11,13 +11,17 @@ class ActivateOnHoverScript : public RealtimeScript {
 private:
 	GraphNode* other;
 	bool* shouldWork;
+	bool playSound;
+
+	SoundSource speaker;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	ActivateOnHoverScript(GraphNode* nodePointer, GraphNode* _other, bool* _shouldWork = &ApTime::instance().shouldBtnWork) : RealtimeScript(nodePointer)
+	ActivateOnHoverScript(GraphNode* nodePointer, GraphNode* _other, bool _playSound = false, bool* _shouldWork = &ApTime::instance().shouldBtnWork) : RealtimeScript(nodePointer)
 	{
 		other = _other;
 		shouldWork = _shouldWork;
+		playSound = _playSound;
 	}
 
 	~ActivateOnHoverScript() = default;
@@ -25,7 +29,13 @@ public:
 	void OnMouseHover()
 	{
 		if (*shouldWork)
+		{
 			other->SetActive(true);
+			if (playSound)
+			{
+				speaker.Play(SoundBuffer::get()->getSound("hover"));
+			}
+		}
 	}
 };
 
