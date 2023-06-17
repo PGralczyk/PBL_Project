@@ -139,7 +139,7 @@ public:
 
 	void Render(unsigned int currentlyPicked)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		world->Draw(currentlyPicked, renderingShadowMap);
 		/*if (!renderingShadowMap) 
 		{
@@ -378,7 +378,7 @@ public:
 		Scene1->AddChild(Scene1Dark);
 		Scene1Bright->AddChild(SceneOutsideBright);
 		Scene1Dark->AddChild(SceneOutsideDark);
-		world->AddChild(bulb);
+		//world->AddChild(bulb);
 		Scene1->AddChild(SceneBackground);
 		SceneBackground->Scale(0.1f);
 
@@ -666,7 +666,7 @@ public:
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
 		for (unsigned int i = 0; i < 6; ++i)
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
-				*SHD_WIDTH, *SHD_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+				*SHD_WIDTH, *SHD_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -676,14 +676,22 @@ public:
 		// Cubemap FBO setup
 
 		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		//glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, textureBuffers[0], 0);
+		//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemapTexture, 0);
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
 			std::cout << "Framebuffer not complete!" << std::endl;
+			std::cout << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+		}
 		//else std::cout << "Framebuffer for Shadow map is ok!" << std::endl;
-
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		defaultShader->use();
+		defaultShader->setInt("depthMap", 1);
 	}
 
 	void renderQuad()
@@ -759,6 +767,8 @@ public:
 		renderingShadowMap = true;
 		glViewport(0, 0, *SHD_WIDTH, *SHD_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "Framebuffer not complete!" << std::endl;
 		glClear(GL_DEPTH_BUFFER_BIT);
 		world->SetShaderForAll(shadowMapShader);
 		Render(currentlyPicked);
@@ -767,11 +777,13 @@ public:
 		glViewport(0, 0, *SCR_WIDTH, *SCR_HEIGHT);
 
 		//Set genereted texture as uniform value
-		defaultShader->use();
-		defaultShader->setInt("depthMap", 1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
+		
 		renderingShadowMap = false;
+		Render(currentlyPicked);
 	}
 
 private:

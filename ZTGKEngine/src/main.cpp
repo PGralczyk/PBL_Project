@@ -3,6 +3,17 @@
 #include "./UI/ApRectangle.h"
 #include <thread>
 
+extern "C"
+{
+    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+}
+
+extern "C"
+{
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -140,7 +151,8 @@ int main(void)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.00f);
+    //glClearColor(0.0f, 0.0f, 0.0f, 1.00f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.00f);
 
 #pragma region Resource and scene setup
 
@@ -166,8 +178,8 @@ int main(void)
     text.init("res/fonts/arial/arial.ttf");
     //-----------------------------------------------------------------------------
 
-    sceneManager.defaultShader = &defaultShader;
-    //sceneManager.defaultShader = &defaultShadowShader;
+    //sceneManager.defaultShader = &defaultShader;
+    sceneManager.defaultShader = &defaultShadowShader;
     sceneManager.lightShader = &lightShader;
     sceneManager.textureShader = &primitiveTextureShader;
     sceneManager.fadeShader = &fadeShader;
@@ -251,12 +263,12 @@ int main(void)
 
         glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
         glm::mat4 viewPrimitive = glm::mat4(1.0);
-        float near_plane = 1;
-        float far_plane = 35;
+        float near_plane = 0.1f;
+        float far_plane = 2.0f;
         glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHD_WIDTH / (float)SHD_HEIGHT, near_plane, far_plane);
         std::vector<glm::mat4> shadowTransforms;
-        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+        shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
         shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
         shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
         shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
@@ -313,9 +325,12 @@ int main(void)
 
         // default shader version with shadows setup
         defaultShadowShader.use();
-        defaultShadowShader.setMat4("projection", shadowProj);
-        defaultShadowShader.setMat4("view", shadowView);
-        defaultShadowShader.setVec3("viewPos", pointLight.position);
+        //defaultShadowShader.setMat4("projection", shadowProj);
+        //defaultShadowShader.setMat4("view", shadowView);
+        defaultShadowShader.setMat4("projection", projection);
+        defaultShadowShader.setMat4("view", view);
+        //defaultShadowShader.setVec3("viewPos", pointLight.position);
+        defaultShadowShader.setVec3("viewPos", camera.Position);
         defaultShadowShader.setVec3("pointLightPos", pointLight.position);
         if (lightVersion)
             defaultShadowShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
@@ -402,7 +417,8 @@ int main(void)
         currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
 
 #pragma endregion
-        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
 
         //Processing input here
         processInput(window);
@@ -446,9 +462,9 @@ int main(void)
         //glEnable(GL_DEPTH_TEST);
         //sceneManager.BlurRender(currentlyPicked);
  
-        //sceneManager.RenderToShadowMap(currentlyPicked);
+        sceneManager.RenderToShadowMap(currentlyPicked);
 
-        sceneManager.Render(currentlyPicked);
+        //sceneManager.Render(currentlyPicked);
           
         glDepthFunc(GL_LESS);
         glDisable(GL_BLEND);

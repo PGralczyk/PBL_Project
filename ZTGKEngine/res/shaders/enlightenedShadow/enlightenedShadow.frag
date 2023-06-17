@@ -34,10 +34,11 @@ float ShadowCalculation(vec3 fragPos)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // now test for shadows
-    float bias = 0.05; 
+    float bias = 0.005; 
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
 	//FragColor = vec4(vec3(closestDepth / far_plane), 1.0);  
+    //FragColor = vec4(closestDepth, 0.0, 0.0, 1.0);
 	
     return shadow;
 }
@@ -77,9 +78,9 @@ void main()
         diffuse  *= attenuation;
 		
 	// calculate shadow
-		float shadow = ShadowCalculation(fs_in.FragPos);
+	   float shadow = ShadowCalculation(fs_in.FragPos);
        vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
-	   
+	   //(1.0 - shadow) *
        if(isHoovered)
         {
            FragColor =  vec4(result, 1.0) + vec4(0.2, 0.2, 0.2, 0.0);
