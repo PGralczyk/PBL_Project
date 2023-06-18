@@ -159,7 +159,7 @@ public:
 		//BRIGHT_WORLD:
 		std::cout << "LOADING: scene structure" << std::endl;
 		GraphNode* Scene1Bright = new GraphNode();
-		GraphNode* bulb =  CreateNode("res/models/House.obj", defaultShader, false, false);
+		//GraphNode* bulb =  CreateNode("res/models/House.obj", defaultShader, false, false);
 
 		//DARK_WORLD:
 		GraphNode* Scene1Dark = new GraphNode();
@@ -385,8 +385,8 @@ public:
 		Scene1->AddChild(ChessMainObject);
 
 		Scene1->Scale(0.005f);
-		bulb->Scale(0.01f);
-		bulb->Translate(glm::vec3(0.4f, 0.5f, 0.0f));
+		//bulb->Scale(0.01f);
+		//bulb->Translate(glm::vec3(0.4f, 0.5f, 0.0f));
 		SceneOutsideBright->Translate(glm::vec3(-100.0f, 55.0f, 136.0f));
 		SceneOutsideBright->Scale(0.35f);
 		//SceneOutsideBright->Rotate(glm::vec3(0.4f, 0.5f, 0.0f));
@@ -762,11 +762,7 @@ public:
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cout << "Framebuffer not complete!" << std::endl;
 		glClear(GL_DEPTH_BUFFER_BIT);
-		//world->SetShaderForAll(shadowMapShader);
-		//Render(currentlyPicked);
 		RenderWithShader(*shadowMapShader, 0);
-		//world->SetShaderForAll(defaultShader);
-
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, *SCR_WIDTH, *SCR_HEIGHT);
