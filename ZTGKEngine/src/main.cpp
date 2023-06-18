@@ -264,7 +264,7 @@ int main(void)
         glm::mat4 projectionPrimitive = glm::ortho(0.0f, float(SCR_WIDTH), 0.0f, float(SCR_HEIGHT));
         glm::mat4 viewPrimitive = glm::mat4(1.0);
         float near_plane = 0.1f;
-        float far_plane = 2.0f;
+        float far_plane = 25.0f;
         glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHD_WIDTH / (float)SHD_HEIGHT, near_plane, far_plane);
         std::vector<glm::mat4> shadowTransforms;
         shadowTransforms.push_back(shadowProj * glm::lookAt(pointLight.position, pointLight.position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));

@@ -38,7 +38,7 @@ float ShadowCalculation(vec3 fragPos)
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
 	//FragColor = vec4(vec3(closestDepth / far_plane), 1.0);  
-    //FragColor = vec4(closestDepth, 0.0, 0.0, 1.0);
+    //FragColor = vec4(closestDepth, 1.0, 1.0, 1.0);
 	
     return shadow;
 }
@@ -82,12 +82,12 @@ void main()
        vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
 	   //(1.0 - shadow) *
        if(isHoovered)
-        {
-           FragColor =  vec4(result, 1.0) + vec4(0.2, 0.2, 0.2, 0.0);
-        }
-        else
-        {
-           FragColor = vec4(result, 1.0);
-        }
+       {
+          FragColor =  vec4(result, 1.0) + vec4(0.2, 0.2, 0.2, 0.0);
+       }
+       else
+       {
+          FragColor = vec4(result, 1.0);
+       }
     	
 }
