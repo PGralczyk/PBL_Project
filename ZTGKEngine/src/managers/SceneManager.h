@@ -54,6 +54,7 @@ private:
 	GraphNode* UIDark = new GraphNode();
 	GLFWwindow* window;
 	FadeOut* fade;
+	float* pixelz;
 	bool* isBright;
 	int objectId = 1;
 	unsigned int* SCR_HEIGHT;
@@ -93,6 +94,8 @@ public:
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
+	unsigned int noiseTBuffers[10];
+	unsigned int noiseStep;
 	unsigned int intermediateFBuffer;
 	unsigned int intermediateTBuffer;
 	unsigned int rbo;
@@ -351,6 +354,8 @@ public:
 		timeCounter = 0.0f;
 		phase = true;
 		poof = false;
+		pixelz = new float[*SCR_WIDTH * *SCR_HEIGHT * 4];
+		noiseStep = 0;
 		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
 		Loading("res/models/everest.png");
 		PostProcessSetup();
@@ -1406,6 +1411,17 @@ public:
 #pragma endregion
 	}
 
+	void generateNoise(float* noise) {
+		int threshold = *SCR_WIDTH * *SCR_HEIGHT * 4;
+		for (int y = 0; y < threshold; y+=4) {
+			float color = float((rand() % 20 - 10)) / 255.0f;
+				pixelz[y] = color;
+				pixelz[y+1] = color;
+				pixelz[y+2] = color;
+				pixelz[y+3] = 1.0f;
+		}
+	}
+
 	void PostProcessSetup()
 	{
 		//glDeleteBuffers(1, &rbo);
@@ -1413,6 +1429,16 @@ public:
 		//glDeleteBuffers(2, frameBuffers);
 		//glDeleteTextures(1, &intermediateTBuffer);
 		//glDeleteTextures(2, textureBuffers);
+		glGenTextures(10, noiseTBuffers);
+		for (int i = 0; i < 10; i++) {
+			generateNoise(pixelz);
+			glBindTexture(GL_TEXTURE_2D, noiseTBuffers[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, pixelz);
+
+			//glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_LUMINANCE, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
 		if (isFirstBuffer)
 		{
 			glGenRenderbuffers(1, &rbo);
@@ -1428,7 +1454,7 @@ public:
 			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-			glGenFramebuffers(2, &intermediateFBuffer);
+			glGenFramebuffers(1, &intermediateFBuffer); //change to 1?
 			glGenTextures(1, &intermediateTBuffer);
 			glGenFramebuffers(2, frameBuffers);
 			glGenTextures(2, textureBuffers);
@@ -1617,12 +1643,21 @@ public:
 		bloomMixShader->use();
 		bloomMixShader->setInt("scene", 0);
 		bloomMixShader->setInt("highlightParts", 1);
+		bloomMixShader->setInt("noise", 2);
 		bloomMixShader->setFloat("strength", 0.6);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[horizontal]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, noiseTBuffers[noiseStep]);
+		if (noiseStep >= 9) {
+			noiseStep = 0;
+		}
+		else {
+			noiseStep++;
+		}
 		renderQuad();
 		if (bufferNumber != 0) {
 			glDepthFunc(GL_ALWAYS);
