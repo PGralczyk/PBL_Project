@@ -73,6 +73,9 @@ private:
 
 	SoundSource mainSpeaker;
 
+	unsigned int depthCubemapTexture;
+	unsigned int depthCubemapFBO;
+
 public:
 	GraphNode* world;
 	GraphNode* Scene1 = new GraphNode();
@@ -88,6 +91,7 @@ public:
 	Shader* brightShader;
 	Shader* bloomMixShader;
 	Shader* textShader;
+	Shader* shadowMapShader;
 	Text* text;
 	GraphNode* DoorPuzzleObject;
 
@@ -1528,6 +1532,33 @@ public:
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
+		// Depth cube map setup here
+		glGenFramebuffers(1, &depthCubemapFBO);
+		glGenTextures(1, &depthCubemapTexture);
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
+		for (unsigned int i = 0; i < 6; ++i)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+				2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemapTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "Framebuffer not complete!" << std::endl;
+			std::cout << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		defaultShader->use();
+		defaultShader->setInt("depthMap", 1);
 	}
 
 	void renderQuad()
@@ -1604,6 +1635,14 @@ public:
 
 	void BloomRender(unsigned int currentlyPicked, unsigned int bufferNumber)
 	{
+		glViewport(0, 0, 2048, 2048);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		RenderWithShader(*shadowMapShader, 0);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, *SCR_WIDTH, *SCR_HEIGHT);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glClearColor(1.0f, 1.0f, 1.0f, 0.00f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1616,6 +1655,8 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
 		world->Draw(currentlyPicked);
 
 		brightShader->use();

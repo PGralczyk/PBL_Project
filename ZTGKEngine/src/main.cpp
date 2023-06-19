@@ -209,6 +209,9 @@ int main(void)
     Shader fadeShader("res/shaders/fade.vert", "res/shaders/fade.frag");
     Shader brightShader("res/shaders/bright/bright.vert", "res/shaders/bright/bright.frag");
     Shader bloomMixShader("res/shaders/bloomMixer/bloomMixer.vert", "res/shaders/bloomMixer/bloomMixer.frag");
+    Shader shadowMapShader("res/shaders/depthCube/depthCubeMap.vert", "res/shaders/depthCube/depthCubeMap.frag",
+        "res/shaders/depthCube/depthCubeMap.geo");
+
 
     //Sounds
     SoundBuffer::get()->addSoundEffect("res/sounds/test1.wav","test");
@@ -301,6 +304,28 @@ int main(void)
     //gameMusic["pianoEmotional"]->Play();
     //speaker2.Play(SoundBuffer::get()->getSound("lightBuzz"));
 #pragma region Game Loop
+    float near_plane = 0.01f;
+    float far_plane = 3.0f;
+    glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)2048 / (float)2048, near_plane, far_plane);
+    std::vector<glm::mat4> shadowTransforms;
+    shadowTransforms.push_back(shadowProj* glm::lookAt(pointLight.position, pointLight.position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+    shadowTransforms.push_back(shadowProj* glm::lookAt(pointLight.position, pointLight.position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+    shadowTransforms.push_back(shadowProj* glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    shadowTransforms.push_back(shadowProj* glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+    shadowTransforms.push_back(shadowProj* glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+    shadowTransforms.push_back(shadowProj* glm::lookAt(pointLight.position, pointLight.position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+
+    defaultShader.use();
+    defaultShader.setFloat("far_plane", far_plane);
+
+    shadowMapShader.use();
+    for (unsigned int i = 0; i < 6; ++i)
+        shadowMapShader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+    shadowMapShader.setFloat("far_plane", far_plane);
+    shadowMapShader.setVec3("lightPos", pointLight.position);
+
+    sceneManager.shadowMapShader = &shadowMapShader;
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
