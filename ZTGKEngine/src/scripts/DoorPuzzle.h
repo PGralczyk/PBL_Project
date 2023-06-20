@@ -62,6 +62,8 @@ public:
 		{
 			doorSpeaker.Play(SoundBuffer::get()->getSound("tuptup"));
 			finalScreen->SetActive(true);
+
+			ApTime::instance().isBuzzzing = !ApTime::instance().isBuzzzing;
 		}
 		else
 		{
@@ -77,7 +79,8 @@ public:
 		}
 		if (*password == passwordAnswer && !*isWon)
 		{
-			ApTime::instance().gameMusic["pianoEmotional"]->Stop();
+			//ApTime::instance().gameMusic["pianoEmotional"]->Stop();
+			ApTime::instance().mainMusicSpeaker->Stop();
 
 			speaker.Play(SoundBuffer::get()->getSound("correctCode"));
 			ALint state = AL_PLAYING;
@@ -92,13 +95,17 @@ public:
 			node->Rotate(30, glm::vec3(0.0f, 1.0f, 0.0f));
 			node->Translate(glm::vec3(-74.0f, 0.0f, 30.0f));
 
-			//ApTime::instance().mainSpeaker->Stop();
+			
 			
 			while (state == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
 			{
 				state = doorSpeaker.GetState();
 			}
-			ApTime::instance().gameMusic["pianoEmotional"]->Replay();
+			//ApTime::instance().gameMusic["pianoEmotional"]->Replay();
+			while (ApTime::instance().mainMusicSpeaker->GetState() == AL_PLAYING && (alGetError() == AL_NO_ERROR || alGetError() == AL_INVALID_NAME))
+			{
+			}
+			ApTime::instance().mainMusicSpeaker->Play(SoundBuffer::get()->getSound("finalMusic"));
 		}
 		if (ApTime::instance().currentPuzzleState == 7 && ApTime::instance().adviseWindow > 0)
 		{

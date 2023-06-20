@@ -54,6 +54,7 @@ private:
 	GraphNode* UIDark = new GraphNode();
 	GLFWwindow* window;
 	FadeOut* fade;
+	float* pixelz;
 	bool* isBright;
 	int objectId = 1;
 	unsigned int* SCR_HEIGHT;
@@ -72,6 +73,9 @@ private:
 
 	SoundSource mainSpeaker;
 
+	unsigned int depthCubemapTexture;
+	unsigned int depthCubemapFBO;
+
 public:
 	GraphNode* world;
 	GraphNode* Scene1 = new GraphNode();
@@ -87,12 +91,15 @@ public:
 	Shader* brightShader;
 	Shader* bloomMixShader;
 	Shader* textShader;
+	Shader* shadowMapShader;
 	Text* text;
 	GraphNode* DoorPuzzleObject;
 
 
 	unsigned int frameBuffers[2];
 	unsigned int textureBuffers[2];
+	unsigned int noiseTBuffers[10];
+	unsigned int noiseStep;
 	unsigned int intermediateFBuffer;
 	unsigned int intermediateTBuffer;
 	unsigned int rbo;
@@ -122,7 +129,7 @@ public:
 		menu->AddChild(playBtn);
 		menu->AddChild(playHover);
 		playHover->SetActive(false);
-		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover));
+		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover, true));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
 		playHover->AddScript(new MenuScript(playHover, menu, window, "play", 
 			firstTimeGameMode,
@@ -138,7 +145,7 @@ public:
 		menu->AddChild(creditsBtn);
 		menu->AddChild(creditsHover);
 		creditsHover->SetActive(false);
-		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover));
+		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover, true));
 		creditsHover->AddScript(new DeactivateOnMouseLeave(creditsHover));
 		creditsHover->AddScript(new MenuScript(creditsHover, credits, window, "goNext"));
 
@@ -147,7 +154,7 @@ public:
 		menu->AddChild(optionsBtn);
 		menu->AddChild(optionsHover);
 		optionsHover->SetActive(false);
-		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover));
+		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover, true));
 		optionsHover->AddScript(new DeactivateOnMouseLeave(optionsHover));
 		optionsHover->AddScript(new MenuScript(optionsHover, options, window, "goNext"));
 
@@ -156,7 +163,7 @@ public:
 		menu->AddChild(exitBtn);
 		menu->AddChild(exitHover);
 		exitHover->SetActive(false);
-		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover));
+		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover, true));
 		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
 		exitHover->AddScript(new MenuScript(exitHover, menu, window, "exit"));
 
@@ -174,7 +181,7 @@ public:
 		credits->AddChild(backCredBtn);
 		credits->AddChild(backCredHover);
 		backCredHover->SetActive(false);
-		backCredBtn->AddScript(new ActivateOnHoverScript(backCredBtn, backCredHover));
+		backCredBtn->AddScript(new ActivateOnHoverScript(backCredBtn, backCredHover, true));
 		backCredHover->AddScript(new DeactivateOnMouseLeave(backCredHover));
 		backCredHover->AddScript(new MenuScript(backCredHover, credits, window, "goBack"));
 
@@ -192,7 +199,7 @@ public:
 		options->AddChild(backOptBtn);
 		options->AddChild(backOptHover);
 		backOptHover->SetActive(false);
-		backOptBtn->AddScript(new ActivateOnHoverScript(backOptBtn, backOptHover));
+		backOptBtn->AddScript(new ActivateOnHoverScript(backOptBtn, backOptHover, true));
 		backOptHover->AddScript(new DeactivateOnMouseLeave(backOptHover));
 		backOptHover->AddScript(new MenuScript(backOptHover, options, window, "goBack"));
 
@@ -201,7 +208,7 @@ public:
 		options->AddChild(leftArrBtn);
 		options->AddChild(leftArrHover);
 		leftArrHover->SetActive(false);
-		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover));
+		leftArrBtn->AddScript(new ActivateOnHoverScript(leftArrBtn, leftArrHover, true));
 		leftArrHover->AddScript(new DeactivateOnMouseLeave(leftArrHover));
 		leftArrBtn->AddScript(new OptionsScript(leftArrBtn, "leftArr", true));
 		leftArrHover->AddScript(new OptionsScript(leftArrHover, "leftArr"));
@@ -211,7 +218,7 @@ public:
 		options->AddChild(rightArrBtn);
 		options->AddChild(rightArrHover);
 		rightArrHover->SetActive(false);
-		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover));
+		rightArrBtn->AddScript(new ActivateOnHoverScript(rightArrBtn, rightArrHover, true));
 		rightArrHover->AddScript(new DeactivateOnMouseLeave(rightArrHover));
 		rightArrBtn->AddScript(new OptionsScript(rightArrBtn, "rightArr", true));
 		rightArrHover->AddScript(new OptionsScript(rightArrHover, "rightArr"));
@@ -226,7 +233,7 @@ public:
 		options->AddChild(easyModeBtn);
 		options->AddChild(easyModeHover);
 		easyModeHover->SetActive(false);
-		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover));
+		easyModeBtn->AddScript(new ActivateOnHoverScript(easyModeBtn, easyModeHover, true));
 		easyModeHover->AddScript(new DeactivateOnMouseLeave(easyModeHover));
 		easyModeBtn->AddScript(new OptionsScript(easyModeBtn, "easy", true));
 		easyModeHover->AddScript(new OptionsScript(easyModeHover, "easy"));
@@ -238,7 +245,7 @@ public:
 		options->AddChild(mediumModeBtn);
 		options->AddChild(mediumModeHover);
 		mediumModeHover->SetActive(false);
-		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover));
+		mediumModeBtn->AddScript(new ActivateOnHoverScript(mediumModeBtn, mediumModeHover, true));
 		mediumModeHover->AddScript(new DeactivateOnMouseLeave(mediumModeHover));
 		mediumModeBtn->AddScript(new OptionsScript(mediumModeBtn, "medium", true));
 		mediumModeHover->AddScript(new OptionsScript(mediumModeHover, "medium"));
@@ -295,7 +302,7 @@ public:
 		firstTimeGameMode->AddChild(backGmBtn);
 		firstTimeGameMode->AddChild(backGmHover);
 		backGmHover->SetActive(false);
-		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover));
+		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover, true));
 		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
 		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame",
 			firstTimeGameMode,
@@ -316,7 +323,7 @@ public:
 		firstTimeGameMode->AddChild(easyGmChoosen);
 		easyGmHover->SetActive(false);
 		easyGmChoosen->SetActive(false);
-		easyGmBtn->AddScript(new ActivateOnHoverScript(easyGmBtn, easyGmHover));
+		easyGmBtn->AddScript(new ActivateOnHoverScript(easyGmBtn, easyGmHover, true));
 		easyGmHover->AddScript(new DeactivateOnMouseLeave(easyGmHover));
 		easyGmBtn->AddScript(new OptionsScript(easyGmBtn, "easy", true, easyGmChoosen));
 		easyGmHover->AddScript(new OptionsScript(easyGmHover, "easy"));
@@ -331,7 +338,7 @@ public:
 		firstTimeGameMode->AddChild(normalGmChoosen);
 		mediumGmHover->SetActive(false);
 		normalGmChoosen->SetActive(false);
-		mediumGmBtn->AddScript(new ActivateOnHoverScript(mediumGmBtn, mediumGmHover));
+		mediumGmBtn->AddScript(new ActivateOnHoverScript(mediumGmBtn, mediumGmHover, true));
 		mediumGmHover->AddScript(new DeactivateOnMouseLeave(mediumGmHover));
 		mediumGmBtn->AddScript(new OptionsScript(mediumGmBtn, "medium", true, normalGmChoosen));
 		mediumGmHover->AddScript(new OptionsScript(mediumGmHover, "medium"));
@@ -357,6 +364,8 @@ public:
 		timeCounter = 0.0f;
 		phase = true;
 		poof = false;
+		pixelz = new float[*SCR_WIDTH * *SCR_HEIGHT * 4];
+		noiseStep = 0;
 		fade = new FadeOut("res/models/particle.png", SCR_WIDTH, SCR_HEIGHT, fadeShader);
 		Loading("res/models/everest.png");
 		PostProcessSetup();
@@ -982,7 +991,7 @@ public:
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHintHover);
 		brightHintHover->SetActive(false);
-		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, &ApTime::instance().isEasyMode));
+		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, false, &ApTime::instance().isEasyMode));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
 		brightHintHover->AddScript(new HintButton(brightHintHover));
 
@@ -1048,7 +1057,7 @@ public:
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHintHover);
 		darkHintHover->SetActive(false);
-		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, &ApTime::instance().isEasyMode));
+		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, false, &ApTime::instance().isEasyMode));
 		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
 		darkHintHover->AddScript(new HintButton(darkHintHover));
 
@@ -1412,6 +1421,17 @@ public:
 #pragma endregion
 	}
 
+	void generateNoise(float* noise) {
+		int threshold = *SCR_WIDTH * *SCR_HEIGHT * 4;
+		for (int y = 0; y < threshold; y+=4) {
+			float color = float((rand() % 20 - 10)) / 255.0f;
+				pixelz[y] = color;
+				pixelz[y+1] = color;
+				pixelz[y+2] = color;
+				pixelz[y+3] = 1.0f;
+		}
+	}
+
 	void PostProcessSetup()
 	{
 		//glDeleteBuffers(1, &rbo);
@@ -1419,6 +1439,16 @@ public:
 		//glDeleteBuffers(2, frameBuffers);
 		//glDeleteTextures(1, &intermediateTBuffer);
 		//glDeleteTextures(2, textureBuffers);
+		glGenTextures(10, noiseTBuffers);
+		for (int i = 0; i < 10; i++) {
+			generateNoise(pixelz);
+			glBindTexture(GL_TEXTURE_2D, noiseTBuffers[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, pixelz);
+
+			//glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, *SCR_WIDTH, *SCR_HEIGHT, 0, GL_LUMINANCE, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
 		if (isFirstBuffer)
 		{
 			glGenRenderbuffers(1, &rbo);
@@ -1434,7 +1464,7 @@ public:
 			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-			glGenFramebuffers(2, &intermediateFBuffer);
+			glGenFramebuffers(1, &intermediateFBuffer); //change to 1?
 			glGenTextures(1, &intermediateTBuffer);
 			glGenFramebuffers(2, frameBuffers);
 			glGenTextures(2, textureBuffers);
@@ -1508,6 +1538,33 @@ public:
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
+		// Depth cube map setup here
+		glGenFramebuffers(1, &depthCubemapFBO);
+		glGenTextures(1, &depthCubemapTexture);
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
+		for (unsigned int i = 0; i < 6; ++i)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+				2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemapTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "Framebuffer not complete!" << std::endl;
+			std::cout << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		defaultShader->use();
+		defaultShader->setInt("depthMap", 1);
 	}
 
 	void renderQuad()
@@ -1584,6 +1641,14 @@ public:
 
 	void BloomRender(unsigned int currentlyPicked, unsigned int bufferNumber)
 	{
+		glViewport(0, 0, 2048, 2048);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthCubemapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		RenderWithShader(*shadowMapShader, 0);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, *SCR_WIDTH, *SCR_HEIGHT);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glClearColor(1.0f, 1.0f, 1.0f, 0.00f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1596,6 +1661,8 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemapTexture);
 		world->Draw(currentlyPicked);
 
 		brightShader->use();
@@ -1623,12 +1690,21 @@ public:
 		bloomMixShader->use();
 		bloomMixShader->setInt("scene", 0);
 		bloomMixShader->setInt("highlightParts", 1);
+		bloomMixShader->setInt("noise", 2);
 		bloomMixShader->setFloat("strength", 0.6);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[horizontal]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textureBuffers[!horizontal]);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, noiseTBuffers[noiseStep]);
+		if (noiseStep >= 9) {
+			noiseStep = 0;
+		}
+		else {
+			noiseStep++;
+		}
 		renderQuad();
 		if (bufferNumber != 0) {
 			glDepthFunc(GL_ALWAYS);

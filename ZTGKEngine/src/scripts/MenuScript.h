@@ -22,6 +22,8 @@ private:
 	GraphNode* piece4;
 	GraphNode* piece5;
 
+	SoundSource speaker;
+
 public:
 	//Constructor, here assign all the fields from the private section
 	MenuScript(GraphNode* nodePointer, GraphNode* _other, GLFWwindow* _window, string _buttonId, 
@@ -90,9 +92,13 @@ public:
 			firstTime->SetActive(false);
 			other->SetActive(false);
 			ApTime::instance().isFirstTime = false;
-			ApTime::instance().mainSpeaker->Stop();
-			ApTime::instance().gameMusic["pianoEmotional"]->Play();
+			ApTime::instance().mainMusicSpeaker->Stop();
+			//ApTime::instance().gameMusic["pianoEmotional"]->Play();
+			ApTime::instance().mainMusicSpeaker->Play(SoundBuffer::get()->getSound("levelMusic"));
+			ApTime::instance().mainAmbientSpeaker->Play(SoundBuffer::get()->getSound("lightBuzz"));
 		}
+
+		speaker.Play(SoundBuffer::get()->getSound("click"));
 	}
 
 	~MenuScript() = default;

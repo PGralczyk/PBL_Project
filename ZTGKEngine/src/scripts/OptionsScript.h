@@ -18,6 +18,8 @@ private:
 	bool isNotHover;
 	GraphNode* choosen;
 
+	SoundSource speaker;
+
 public:
 	//Constructor, here assign all the fields from the private section
 	OptionsScript(GraphNode* nodePointer, string _buttonId, bool _isNotHover = false, GraphNode* _choosen = new GraphNode()) : RealtimeScript(nodePointer)
@@ -89,6 +91,8 @@ public:
 			if (!isNotHover)
 				node->SetActive(false);
 		}
+
+		speaker.Play(SoundBuffer::get()->getSound("click"));
 	}
 
 	~OptionsScript() = default;
