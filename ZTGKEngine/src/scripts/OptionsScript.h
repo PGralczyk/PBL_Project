@@ -16,13 +16,15 @@ class OptionsScript : public RealtimeScript {
 private:
 	string buttonId;
 	bool isNotHover;
+	GraphNode* choosen;
 
 public:
 	//Constructor, here assign all the fields from the private section
-	OptionsScript(GraphNode* nodePointer, string _buttonId, bool _isNotHover = false) : RealtimeScript(nodePointer)
+	OptionsScript(GraphNode* nodePointer, string _buttonId, bool _isNotHover = false, GraphNode* _choosen = new GraphNode()) : RealtimeScript(nodePointer)
 	{
 		this->buttonId = _buttonId;
 		this->isNotHover = _isNotHover;
+		this->choosen = _choosen;
 	}
 
 	void Update()
@@ -30,16 +32,23 @@ public:
 		if (isNotHover)
 		{
 			node->isHoverable = true;
+			choosen->SetActive(false);
 
 			if (ApTime::instance().isEasyMode)
 			{
 				if (buttonId == "easy")
+				{
 					node->isHoverable = false;
+					choosen->SetActive(true);
+				}
 			}
 			else
 			{
 				if (buttonId == "medium")
+				{
 					node->isHoverable = false;
+					choosen->SetActive(true);
+				}
 			}
 			if (buttonId == "leftArr")
 			{
