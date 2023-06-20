@@ -46,7 +46,7 @@ public:
 			}
 			else
 			{
-				if (buttonId == "medium")
+				if (buttonId == "normal")
 				{
 					node->isHoverable = false;
 					choosen->SetActive(true);
@@ -85,7 +85,7 @@ public:
 			if (!isNotHover)
 				node->SetActive(false);
 		}
-		else if (buttonId == "medium")
+		else if (buttonId == "normal")
 		{
 			ApTime::instance().isEasyMode = false;
 			if (!isNotHover)
