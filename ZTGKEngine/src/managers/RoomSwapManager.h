@@ -99,21 +99,22 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap || *forceSwap))
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed || *forceSwap))
 		{
-			if (!keyPressed)
+			*forceSwap = false;
+			if (!ApTime::instance().isSwitching)
 			{
+				ApTime::instance().isSwitching = true;
 				if (wasTutorialUsed == 0 && tutorial != nullptr)
 				{
 					tutorial->SetActive(false);
 					wasTutorialUsed = 1;
 				}
 
-				*forceSwap = false;
 				*swapPostman = !*swapPostman;
 				ApTime::instance().adviseWindow = 0.0f;
 				keyPressed = true;
-				if (ApTime::instance().brightWorld) 
+				if (ApTime::instance().brightWorld)
 				{
 					speaker.Play(SoundBuffer::get()->getSound("plantGrow"));
 				}
@@ -160,7 +161,7 @@ public:
 
 			if (ApTime::instance().currentPuzzleState == 1 || ApTime::instance().currentPuzzleState == 6)
 			{
-				ApTime::instance().currentPuzzleState++;
+				ApTime::instance().currentPuzzleState = ApTime::instance().currentPuzzleState + 1;
 			}
 
 			ApTime::instance().isBuzzzing = !ApTime::instance().isBuzzzing;

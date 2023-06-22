@@ -131,6 +131,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)libraries\openal\include;$(SolutionDir)libraries\glad\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\glm\include;$(SolutionDir)libraries\stb_image\include;$(SolutionDir)libraries\assimp\include;$(SolutionDir)scripts;$(SolutionDir)utility;$(SolutionDir)libraries\libsndfile\include;$(SolutionDir)libraries\freetype\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +156,7 @@
     <ClInclude Include="src\FadeOut.h" />
     <ClInclude Include="src\Music.h" />
     <ClInclude Include="src\scripts\ActivateOnHoverScript.h" />
+    <ClInclude Include="src\scripts\BellHint.h" />
     <ClInclude Include="src\scripts\CameraChange.h" />
     <ClInclude Include="src\scripts\ChandelierScript.h" />
     <ClInclude Include="src\scripts\ChessBoardPuzzle.h" />

@@ -62,6 +62,7 @@ public:
 	//std::map<string, Music*> gameMusic;
 	int currentPuzzleState = 0;
 	float adviseWindow = 0;
+	bool isSwitching = false;
 
 	void GreatReset()
 	{

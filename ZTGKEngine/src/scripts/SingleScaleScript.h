@@ -150,7 +150,7 @@ public:
 				weightsTab[6]->SetActive(true);
 				weightsTab[7]->SetActive(true);
 				weightsTab[8]->SetActive(true);
-				*scalesPuzzleController = 3;
+				*scalesPuzzleController = -3;
 			}
 		}
 	}

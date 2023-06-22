@@ -18,7 +18,7 @@ class ChessBoardPuzzle : public RealtimeScript {
 private:
 	GraphNode* fields[64];
 	int tileState[64];
-	ChessPieceScript* pieces[10];
+	ChessPieceScript* pieces[5];
 	unsigned int phase = 0;
 	OneTimeActivatorScript* prize1;
 	OneTimeActivatorScript* prize2;
@@ -32,13 +32,13 @@ private:
 public:
 
 	//Constructor, here assign all the fields from the private section
-	ChessBoardPuzzle(GraphNode* nodePointer, GraphNode* givenFields[64], ChessPieceScript* givenPieces[10], GLFWwindow* _window) : RealtimeScript(nodePointer)
+	ChessBoardPuzzle(GraphNode* nodePointer, GraphNode* givenFields[64], ChessPieceScript* givenPieces[5], GLFWwindow* _window) : RealtimeScript(nodePointer)
 	{
 		for (int i = 0; i < 64; i++)
 		{
 			fields[i] = givenFields[i];
 		}
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			pieces[i] = givenPieces[i];
 		}
@@ -113,10 +113,7 @@ public:
 
 	void CheckSolution()
 	{
-		if (ApTime::instance().isEasyMode)
-		{
-			solutionMultiplyer = 0.5f;
-		}
+		solutionMultiplyer = 0.5f;
 		unsigned int correctPieces = 0;
 		for (ChessPieceScript* piece : pieces)
 		{
@@ -210,7 +207,7 @@ public:
 				availablePieces++;
 			}
 		}
-		availablePieces -= 3;
+		//availablePieces -= 3;
 
 		for (ChessPieceScript* piece : pieces)
 		{

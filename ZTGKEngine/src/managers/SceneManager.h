@@ -105,8 +105,6 @@ public:
 	unsigned int rbo;
 	bool* singleClick;
 
-	GraphNode* gameModePieces[5];
-
 	SceneManager() {};
 	~SceneManager()
 	{
@@ -132,14 +130,7 @@ public:
 		playHover->SetActive(false);
 		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover, true));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
-		playHover->AddScript(new MenuScript(playHover, menu, window, "play", 
-			firstTimeGameMode,
-			gameModePieces[0],
-			gameModePieces[1],
-			gameModePieces[2],
-			gameModePieces[3],
-			gameModePieces[4]
-		));
+		playHover->AddScript(new MenuScript(playHover, menu, window, "play", firstTimeGameMode));
 
 		GraphNode* creditsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
 		GraphNode* creditsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button_hover.png", textureShader);
@@ -303,14 +294,7 @@ public:
 		backGmHover->SetActive(false);
 		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover, true));
 		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
-		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame",
-			firstTimeGameMode,
-			gameModePieces[0],
-			gameModePieces[1],
-			gameModePieces[2],
-			gameModePieces[3],
-			gameModePieces[4]
-		));
+		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame", firstTimeGameMode));
 
 		GraphNode* easyGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/easyBtn.png", textureShader);
 		GraphNode* easyGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/easyHover.png", textureShader);
@@ -432,6 +416,7 @@ public:
 			}
 		}
 		else {
+			ApTime::instance().isSwitching = false;
 			BloomRender(currentlyPicked, 0);
 			glDepthFunc(GL_ALWAYS);
 			UI->Draw(currentlyPicked);
@@ -521,7 +506,7 @@ public:
 
 #pragma region Chess Pieces
 		//--------------------------Setting-chess-pieces--------------------------
-		ChessPieceScript* pieces[10];
+		ChessPieceScript* pieces[5];
 
 			//------------------------------------------------------------------------
 			Model* _whitePawn = new Model("res/models/pionek_bialy.fbx");
@@ -540,39 +525,20 @@ public:
 			whitePawnActivator->Rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 			whitePawnActivator->Scale(0.015f);
 
-			//------------------------------------------------------------------------
-			Model* _blackPawn = new Model("res/models/pionek_czarny.fbx");
-			_blackPawn->SetShader(defaultShader);
-			GraphNode* blackPawn = new GraphNode(_blackPawn, objectId++);
-			pieces[1] = new ChessPieceScript(blackPawn, window, &poof);
-			blackPawn->AddScript(pieces[1]);
-			blackPawn->Translate(glm::vec3(300.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackPawn);
-
-			//****************
-			GraphNode* blackPawnActivator = new GraphNode(_blackPawn, objectId++);
-			blackPawnActivator->AddScript(new OneTimeActivatorScript(blackPawnActivator, blackPawn));
-			blackPawn->SetActive(false);
-			blackPawnActivator->Translate(glm::vec3(14.0f, 4.0f, -64.0f));
-			blackPawnActivator->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-			blackPawnActivator->Scale(0.015f);
 			//Below is a parent for two pawn activators, so that they can be activated together
 			GraphNode* chandelierPrizes = new GraphNode();
 			Scene1Bright->AddChild(chandelierPrizes);
-			gameModePieces[0] = blackPawnActivator;
-			chandelierPrizes->AddChild(blackPawnActivator);
 			chandelierPrizes->AddChild(whitePawnActivator);
 			chandelierPrizes->SetActive(false);
 			chandelierPrizes->Translate(glm::vec3(18.0f, 0.0f, 40.0f));
 			whitePawnActivator->Scale(0.02f);
-			blackPawnActivator->Scale(0.02f);
 
 			//------------------------------------------------------------------------
 			Model* _whiteKing = new Model("res/models/krol_bialy.fbx");
 			_whiteKing->SetShader(defaultShader);
 			GraphNode* whiteKing = new GraphNode(_whiteKing, objectId++);
-			pieces[2] = new ChessPieceScript(whiteKing, window, &poof);
-			whiteKing->AddScript(pieces[2]);
+			pieces[1] = new ChessPieceScript(whiteKing, window, &poof);
+			whiteKing->AddScript(pieces[1]);
 			whiteKing->Translate(glm::vec3(500.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteKing);
 
@@ -583,76 +549,33 @@ public:
 			whiteKingActivator->Scale(0.015f);
 			whiteKingActivator->Translate(glm::vec3(20.0f, 73.0f, -123.0f));
 
-			//------------------------------------------------------------------------
-			Model* _blackKing = new Model("res/models/krol_czarny.fbx");
-			_blackKing->SetShader(defaultShader);
-			GraphNode* blackKing = CreateNode("res/models/krol_czarny.fbx", defaultShader);
-			pieces[3] = new ChessPieceScript(blackKing, window, &poof);
-			blackKing->AddScript(pieces[3]);
-			blackKing->Translate(glm::vec3(700.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(blackKing);
-
-			//****************
-			GraphNode* blackKingActivator = new GraphNode(_blackKing, objectId++);
-			blackKingActivator->AddScript(new OneTimeActivatorScript(blackKingActivator, blackKing));
-			blackKing->SetActive(false);
-			blackKingActivator->Scale(0.015f);
-			blackKingActivator->Translate(glm::vec3(20.0f, 73.0f, -126.0f));
 			//Parent for both king activators so that they can be activated at the same time
 			GraphNode* plantPuzzlePrizes = new GraphNode();
 			plantPuzzlePrizes->AddChild(whiteKingActivator);
-			gameModePieces[1] = blackKingActivator;
-			plantPuzzlePrizes->AddChild(blackKingActivator);
 			plantPuzzlePrizes->SetActive(false);
 
 			//------------------------------------------------------------------------
 			Model* _whiteQueen = new Model("res/models/krolowa_biala.fbx");
 			_whiteQueen->SetShader(defaultShader);
 			GraphNode* whiteQueen = new GraphNode(_whiteQueen, objectId++);
-			pieces[4] = new ChessPieceScript(whiteQueen, window, &poof);
-			whiteQueen->AddScript(pieces[4]);
+			pieces[2] = new ChessPieceScript(whiteQueen, window, &poof);
+			whiteQueen->AddScript(pieces[2]);
 			whiteQueen->Translate(glm::vec3(900.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteQueen);
 
 			//------------------------------------------------------------------------
-			Model* _blackQueen = new Model("res/models/krolowa_czarna.fbx");
-			_blackQueen->SetShader(defaultShader);
-			GraphNode* blackQueen = new GraphNode(_blackQueen, objectId++);
-			pieces[5] = new ChessPieceScript(blackQueen, window, &poof);
-			blackQueen->AddScript(pieces[5]);
-			blackQueen->Translate(glm::vec3(1100.0f, 100.0f, -230.0f));
-			gameModePieces[2] = blackQueen;
-			ChessMainObject->AddChild(blackQueen);
-
-			//------------------------------------------------------------------------
 			GraphNode* whiteKnight = CreateNode("res/models/konik_bialy.fbx", defaultShader);
-			pieces[6] = new ChessPieceScript(whiteKnight, window, &poof);
-			whiteKnight->AddScript(pieces[6]);
+			pieces[3] = new ChessPieceScript(whiteKnight, window, &poof);
+			whiteKnight->AddScript(pieces[3]);
 			whiteKnight->Translate(glm::vec3(1300.0f, 100.0f, -230.0f));
-			ChessMainObject->AddChild(whiteKnight);
-
-			//------------------------------------------------------------------------
-			GraphNode* blackKnight = CreateNode("res/models/konik_czarny.fbx", defaultShader);
-			pieces[7] = new ChessPieceScript(blackKnight, window, &poof);
-			blackKnight->AddScript(pieces[7]);
-			blackKnight->Translate(glm::vec3(1500.0f, 100.0f, -230.0f));
-			gameModePieces[3] = blackKnight;
-			ChessMainObject->AddChild(blackKnight);
+			ChessMainObject->AddChild(whiteKnight);;
 
 			//------------------------------------------------------------------------
 			GraphNode* whiteRook = CreateNode("res/models/wieza_biala.fbx", defaultShader);
-			pieces[8] = new ChessPieceScript(whiteRook, window, &poof);
-			whiteRook->AddScript(pieces[8]);
+			pieces[4] = new ChessPieceScript(whiteRook, window, &poof);
+			whiteRook->AddScript(pieces[4]);
 			whiteRook->Translate(glm::vec3(1700.0f, 100.0f, -230.0f));
 			ChessMainObject->AddChild(whiteRook);
-
-			//------------------------------------------------------------------------
-			GraphNode* blackRook = CreateNode("res/models/wieza_czarna.fbx", defaultShader);
-			pieces[9] = new ChessPieceScript(blackRook, window, &poof);
-			blackRook->AddScript(pieces[9]);
-			blackRook->Translate(glm::vec3(1900.0f, 100.0f, -230.0f));
-			gameModePieces[4] = blackRook;
-			ChessMainObject->AddChild(blackRook);
 			
 #pragma endregion
 
@@ -856,44 +779,44 @@ public:
 
 		GraphNode* GreenFlower1 = new GraphNode(greenFlower, objectId);
 		GreenFlower1->Scale(0.1f);
-		GreenFlower1->Translate(glm::vec3(0.0f, -5.0f, 0.0f));
+		GreenFlower1->Translate(glm::vec3(10.0f, -5.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower1);
 		GreenFlowers[0] = GreenFlower1;
 
 		GraphNode* GreenFlower2 = new GraphNode(greenFlower, objectId);
 		GreenFlower2->Scale(0.1f);
-		GreenFlower2->Translate(glm::vec3(0.0f, 5.0f, 0.0f));
+		GreenFlower2->Translate(glm::vec3(10.0f, 5.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower2);
 		GreenFlowers[1] = GreenFlower2;
 
 		GraphNode* GreenFlower3 = new GraphNode(greenFlower, objectId);
 		GreenFlower3->Scale(0.1f);
-		GreenFlower3->Translate(glm::vec3(0.0f, 15.0f, 0.0f));
+		GreenFlower3->Translate(glm::vec3(10.0f, 15.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower3);
 		GreenFlowers[2] = GreenFlower3;
 
 		GraphNode* GreenFlower4 = new GraphNode(greenFlower, objectId);
 		GreenFlower4->Scale(0.1f);
-		GreenFlower4->Translate(glm::vec3(0.0f, 25.0f, 0.0f));
+		GreenFlower4->Translate(glm::vec3(10.0f, 25.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower4);
 		GreenFlowers[3] = GreenFlower4;
 
 		GraphNode* GreenFlower5 = new GraphNode(greenFlower, objectId);
 		GreenFlower5->Scale(0.1f);
-		GreenFlower5->Translate(glm::vec3(0.0f, 35.0f, 0.0f));
+		GreenFlower5->Translate(glm::vec3(10.0f, 35.0f, 0.0f));
 		Scene1Dark->AddChild(GreenFlower5);
 		GreenFlowers[4] = GreenFlower5;
 #pragma endregion
 
 		GraphNode* GreenPot = CreateNode("res/models/zagadka_kwiaty/donica_zielona.fbx", defaultShader);
 		GreenPot->Scale(0.1f);
-		//GreenPot->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		GreenPot->Translate(glm::vec3(10.0f, 0.0f, 0.0f));
 		Scene1Bright->AddChild(GreenPot);
 		GreenPot->AddScript(new GrowPlantScript(GreenPot, 4, puzzleState, GreenFlowers, emptyCan));
 
 		GraphNode* GreenStripes = CreateNode("res/models/zagadka_kwiaty/donica_paski_zielona.fbx", defaultShader);
 		GreenStripes->Scale(0.1f);
-		//GreenStripes->Translate(glm::vec3(10.0f, 0.0f, -5.0f));
+		GreenStripes->Translate(glm::vec3(10.0f, 0.0f, 0.0f));
 		Scene1Dark->AddChild(GreenStripes);
 
 
@@ -1216,8 +1139,8 @@ public:
 		GraphNode* scalesPlant = CreateNode("res/models/pomidory.fbx", defaultShader);
 		scalesPlant->Scale(0.2f);
 		Scene2Dark->AddChild(scalesPlant);
-		//scalesPlant->Translate(glm::vec3(0.0f, 0.0f, -200.0f));
-		//scalesPlant->Rotate(-120.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		scalesPlant->Translate(glm::vec3(100.0f, 0.0f, -220.0f));
+		scalesPlant->Rotate(-45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 		GraphNode* ScalesPuzzle = new GraphNode();
@@ -1244,60 +1167,57 @@ public:
 		leftScales->AddChild(weight1l);
 		weight1l->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
 		weight1l->Scale(0.75);
-		weight1l->SetActive(false);
+		//weight1l->SetActive(false);
 
 		GraphNode* weight2l = new GraphNode(weight, objectId++);
 		leftScales->AddChild(weight2l);
 		weight2l->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
 		weight2l->Scale(0.75);
-		weight2l->SetActive(false);
+		//weight2l->SetActive(false);
 
 		GraphNode* weight3l = new GraphNode(weight, objectId++);
 		leftScales->AddChild(weight3l);
 		weight3l->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
 		weight3l->Scale(0.75);
-		weight3l->SetActive(false);
+		//weight3l->SetActive(false);
 
 		GraphNode* weight1r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight1r);
 		weight1r->Translate(glm::vec3(0.0f, 50.0f, 150.0f));
 		weight1r->Scale(0.75);
-		//weight1r->SetActive(false);
+		weight1r->SetActive(false);
 
 		GraphNode* weight2r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight2r);
 		weight2r->Translate(glm::vec3(0.0f, 50.0f, 120.0f));
 		weight2r->Scale(0.75);
-		//weight2r->SetActive(false);
+		weight2r->SetActive(false);
 
 		GraphNode* weight3r = new GraphNode(weight, objectId++);
 		rightScales->AddChild(weight3r);
 		weight3r->Translate(glm::vec3(0.0f, 50.0f, 90.0f));
 		weight3r->Scale(0.75);
-		//weight3r->SetActive(false);
+		weight3r->SetActive(false);
 
-		GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/odwaznik_4.png", textureShader);
-		//weight1->Scale(0.5);
-		weight1->Translate(glm::vec3(-150, 0, 0));
-		UI->AddChild(weight1);
-		weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
-		weight1->SetActive(false);
+	GraphNode* weight1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/odwaznik_4.png", textureShader);
+	weight1->Translate(glm::vec3(-90, 0, 0));
+	UI->AddChild(weight1);
+	weight1->AddScript(new InventoryItemScript(weight1, "weight4", window, singleClick));
+	weight1->SetActive(false);
 
-		GraphNode* weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/odwaznik_5.png", textureShader);
-		//weight2->Scale(0.5);
-		weight2->Translate(glm::vec3(-120, 0, 0));
-		UI->AddChild(weight2);
-		weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
-		weight2->SetActive(false);
+	GraphNode * weight2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		"res/models/odwaznik_5.png", textureShader);
+	weight2->Translate(glm::vec3(-70, 0, 0));
+	UI->AddChild(weight2);
+	weight2->AddScript(new InventoryItemScript(weight2, "weight5", window, singleClick));
+	weight2->SetActive(false);
 
-		GraphNode* weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/odwaznik_6.png", textureShader);
-		//weight3->Scale(0.5);
-		weight3->Translate(glm::vec3(-90, 0, 0));
-		UI->AddChild(weight3);
-		weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
-		weight3->SetActive(false);
+	GraphNode * weight3 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		"res/models/odwaznik_6.png", textureShader);
+	weight3->Translate(glm::vec3(-345, 0, 0));
+	UI->AddChild(weight3);
+	weight3->AddScript(new InventoryItemScript(weight3, "weight6", window, singleClick));
+	weight3->SetActive(false);
 
 		GraphNode* scalesTab[9];
 		scalesTab[0] = weight1l;
@@ -1314,7 +1234,7 @@ public:
 		GraphNode* scalesPuzzlePrizes = new GraphNode();
 
 		int* scalesPuzzleController = new int;
-		*scalesPuzzleController = 3;
+		*scalesPuzzleController = -3;
 		rotatingScales->AddScript(new ScalesBalance(rotatingScales, scalesPuzzleController, scalesPuzzlePrizes));
 		leftScales->AddScript(new SingleScaleScript(leftScales, scalesPuzzleController, true, scalesTab, manager2));
 		rightScales->AddScript(new SingleScaleScript(rightScales, scalesPuzzleController, false, scalesTab, manager2));
