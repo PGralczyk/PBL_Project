@@ -1141,6 +1141,7 @@ public:
 		Scene2Dark->AddChild(scalesPlant);
 		scalesPlant->Translate(glm::vec3(100.0f, 0.0f, -220.0f));
 		scalesPlant->Rotate(-45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		scalesPlant->AddScript(new CameraChange(scalesPlant, window, &ApTime::instance().isPlantPosition));
 
 
 		GraphNode* ScalesPuzzle = new GraphNode();

@@ -25,7 +25,8 @@ public:
 
 	void Update()
 	{
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) ||
+			(ApTime::instance().isSwitching && &ApTime::instance().isPlantPosition == toBeChanged))
 		{
 			*toBeChanged = false;
 		}

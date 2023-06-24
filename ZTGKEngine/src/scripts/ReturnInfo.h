@@ -19,7 +19,8 @@ public:
 	~ReturnInfo() = default;
 	void Update()
 	{
-		if (ApTime::instance().isBookPosition || ApTime::instance().isChessPosition || (ApTime::instance().isDeskPosition
+		if (ApTime::instance().isBookPosition || ApTime::instance().isChessPosition || ApTime::instance().isPlantPosition 
+			|| (ApTime::instance().isDeskPosition
 			&& ApTime::instance().canSwap))
 		{
 			tutorial->SetActive(true);

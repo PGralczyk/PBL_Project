@@ -67,7 +67,7 @@ struct CameraPosition {
     glm::mat4 projection;
     glm::mat4 view;
 
-} defaultCameraPosition, chessCameraPosition, deskCameraPosition, bookCameraPosition;
+} defaultCameraPosition, chessCameraPosition, deskCameraPosition, bookCameraPosition, plantCameraPosition;
 
 Text text;
 
@@ -88,17 +88,17 @@ int main(void)
         -0.999999, 0.000509512, -0.00166654, 0,
         -0.0471941, -0.12073, -1.0546, 1);
  
-    chessCameraPosition.position = { -0.0160157, 0.39291, 0.0695288 };
+    chessCameraPosition.position = { -0.154715, 0.479741, 0.0588093 };
     chessCameraPosition.projection = glm::mat4(
         1.26872, 0, 0, 0,
         0, 2.41421, 0, 0,
         0, 0, -1.002, -1,
         0, 0, -0.2002, 0);
     chessCameraPosition.view = glm::mat4(
-        0.00349655, -0.656054, 0.754706, 0,
-        2.32831e-10, 0.65471, 0.656058, 0,
-        -0.999994, -0.00229394, 0.00263888, 0,
-        0.0695844, -0.306881, -0.245869, 1
+        -0.00699499, -0.822123, 0.569267, 0,
+        2.56114e-09, 0.569281, 0.822143, 0,
+        -0.999976, 0.00575088, -0.00398211, 0,
+        0.0577256, -0.40064, -0.306108, 1
     );
 
     deskCameraPosition.position = { -0.205362, 0.372362, 0.308516 };
@@ -124,6 +124,18 @@ int main(void)
         3.72529e-09, 0.932954, 0.359995, 0,
         -0.996493, -0.0301221, 0.0780635, 0,
         -0.536333, -0.394583, 0.0892416, 1);
+
+    plantCameraPosition.position = { 0.517017, 0.19684, -0.264942 };
+    plantCameraPosition.projection = glm::mat4(
+        1.26872, 0, 0, 0,
+        0, 2.41421, 0, 0,
+        0, 0, -1.002, -1,
+        0, 0, -0.2002, 0);
+    plantCameraPosition.view = glm::mat4(
+        0.424191, -0.404064, 0.810429, 0,
+        0, 0.894935, 0.446197, 0,
+        -0.905573, -0.189273, 0.379623, 0,
+        -0.459238, -0.0173974, -0.406256, 1);
 
 #pragma endregion
 
@@ -377,6 +389,12 @@ int main(void)
             projection = bookCameraPosition.projection;
             view = bookCameraPosition.view;
             camera.Position = bookCameraPosition.position;
+        }
+        else if (ApTime::instance().isPlantPosition)
+        {
+            projection = plantCameraPosition.projection;
+            view = plantCameraPosition.view;
+            camera.Position = plantCameraPosition.position;
         }
         else
         {

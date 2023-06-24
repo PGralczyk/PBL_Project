@@ -52,6 +52,7 @@ public:
 	bool isChessPosition = false;
 	bool isDeskPosition = true;
 	bool isBookPosition = false;
+	bool isPlantPosition = false;
 	bool isEasyMode = false;
 	bool isBuzzzing = true;
 	bool canSwap = false;
@@ -81,6 +82,7 @@ public:
 		isFirstTime = true;
 		currentPuzzleState = 0;
 		adviseWindow = 0;
+		isPlantPosition = false;
 
 		mainMusicSpeaker->Stop();
 		mainAmbientSpeaker->Stop();
