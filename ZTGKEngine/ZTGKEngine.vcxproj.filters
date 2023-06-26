@@ -167,6 +167,9 @@
     <ClInclude Include="src\scripts\BellHint.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\scripts\GameFinisher.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blur.frag" />

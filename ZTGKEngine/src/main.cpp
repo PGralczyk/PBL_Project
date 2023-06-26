@@ -622,7 +622,7 @@ void processInput(GLFWwindow* window)
     oldMouseButtonState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3);
 
 #pragma region Great Reset
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS || (ApTime::instance().forceReset && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)))
     {
         sceneManager.GreatReset();
     }
