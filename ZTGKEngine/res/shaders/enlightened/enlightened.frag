@@ -31,7 +31,7 @@ float ShadowCalculation(vec3 fragPos)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // now test for shadows
-    float bias = 0.015; 
+    float bias = 0.0025; 
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
     //DUPpA DEBUGER BUT FOR SHADERS
@@ -74,6 +74,10 @@ void main()
         diffuse  *= attenuation;
 
         float shadow = ShadowCalculation(FragPos);
+        if(shadow == 1.0)
+        {
+            ambient = 0.3 * pointLightColor;
+        }
         vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular));
 
         if(isHoovered)

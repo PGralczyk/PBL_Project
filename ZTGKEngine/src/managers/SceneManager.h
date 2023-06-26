@@ -478,7 +478,7 @@ public:
 		//For door puzzle(Don't mind it)
 		if (DoorPuzzleObject->GetActive())
 		{
-			text->RenderText(*textShader, *password, 968, 770, 2, glm::vec3(1.0f, 0.0f, 0.0f));
+			text->RenderText(*textShader, *password, 968, 830, 2, glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 	}
 
@@ -931,6 +931,7 @@ public:
 		UI->AddChild(journal1);
 		journal1->SetActive(false);
 		journal1->AddScript(new DeactivateRMB(journal1, window, "bookClose"));
+		journal1->Translate(glm::vec3(0.0, 115.0, 0.0));
 
 		GraphNode* brightJournalHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_journal_hover_s1.png", textureShader);

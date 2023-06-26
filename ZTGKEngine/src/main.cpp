@@ -157,7 +157,7 @@ int main(void)
     //SCR_HEIGHT = videoStruct->height;
 
     /* Create a windowed mode window and its OpenGL context */
-    //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
+   // window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
     if (!window)
     {
