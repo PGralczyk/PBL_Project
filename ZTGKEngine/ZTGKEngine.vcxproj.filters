@@ -184,5 +184,8 @@
     <None Include="src\scripts\ShowMusicVolume.h">
       <Filter>Pliki nagłówkowe</Filter>
     </None>
+    <None Include="src\scripts\StoryScript.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </None>
   </ItemGroup>
 </Project>

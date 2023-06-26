@@ -46,6 +46,7 @@
 #include "../scripts/CameraChange.h";
 #include "../scripts/ReturnInfo.h";
 #include "../scripts/GameFinisher.h";
+#include "../scripts/StoryScript.h";
 
 class SceneManager
 {
@@ -116,11 +117,12 @@ public:
 
 	void MenuSetup()
 	{
-#pragma region Menu
-
 		GraphNode* credits = new GraphNode();
 		GraphNode* options = new GraphNode();
 		GraphNode* firstTimeGameMode = new GraphNode();
+		GraphNode* storyIntro = new GraphNode();
+
+#pragma region Main_Menu
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
 		menu->AddChild(backg);
@@ -166,11 +168,11 @@ public:
 		menu->AddChild(credits);
 		credits->SetActive(false);
 
-		GraphNode* creditsPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/awesome.jpg", textureShader);
+		GraphNode* creditsPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/Credits.png", textureShader);
 		credits->AddChild(creditsPNG);
 
-		GraphNode* backCredBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/backBtn.png", textureShader);
-		GraphNode* backCredHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/backHover.png", textureShader);
+		GraphNode* backCredBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/backCreditsBtn.png", textureShader);
+		GraphNode* backCredHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/optionsy/backCreditsHover.png", textureShader);
 		credits->AddChild(backCredBtn);
 		credits->AddChild(backCredHover);
 		backCredHover->SetActive(false);
@@ -289,14 +291,14 @@ public:
 		GraphNode* infoPNG = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/dificulty.png", textureShader);
 		firstTimeGameMode->AddChild(infoPNG);
 
-		GraphNode* backGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/startBtn.png", textureShader);
-		GraphNode* backGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/startHover.png", textureShader);
-		firstTimeGameMode->AddChild(backGmBtn);
-		firstTimeGameMode->AddChild(backGmHover);
-		backGmHover->SetActive(false);
-		backGmBtn->AddScript(new ActivateOnHoverScript(backGmBtn, backGmHover, true));
-		backGmHover->AddScript(new DeactivateOnMouseLeave(backGmHover));
-		backGmHover->AddScript(new MenuScript(backGmHover, menu, window, "startGame", firstTimeGameMode));
+		GraphNode* startGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/startBtn.png", textureShader);
+		GraphNode* startGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/startHover.png", textureShader);
+		firstTimeGameMode->AddChild(startGmBtn);
+		firstTimeGameMode->AddChild(startGmHover);
+		startGmHover->SetActive(false);
+		startGmBtn->AddScript(new ActivateOnHoverScript(startGmBtn, startGmHover, true));
+		startGmHover->AddScript(new DeactivateOnMouseLeave(startGmHover));
+		startGmHover->AddScript(new MenuScript(startGmHover, menu, window, "startGame", firstTimeGameMode));
 
 		GraphNode* easyGmBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/easyBtn.png", textureShader);
 		GraphNode* easyGmHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/startGame/easyHover.png", textureShader);
@@ -323,6 +325,55 @@ public:
 		normalGmHover->AddScript(new DeactivateOnMouseLeave(normalGmHover));
 		normalGmBtn->AddScript(new OptionsScript(normalGmBtn, "normal", true, normalGmChoosen));
 		normalGmHover->AddScript(new OptionsScript(normalGmHover, "normal"));
+
+#pragma endregion 
+
+#pragma region story
+
+		UI->AddChild(storyIntro);
+
+		GraphNode* storyBcg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/Wprowadzonko.png", textureShader);
+		storyIntro->AddChild(storyBcg);
+		storyBcg->SetActive(false);
+
+		GraphNode* uno = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/uno.png", textureShader);
+		storyIntro->AddChild(uno);
+		uno->SetActive(false);
+
+		GraphNode* segundo = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/segundo.png", textureShader);
+		storyIntro->AddChild(segundo);
+		segundo->SetActive(false);
+
+		GraphNode* tercero = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/tercero.png", textureShader);
+		storyIntro->AddChild(tercero);
+		tercero->SetActive(false);
+
+		GraphNode* cuarto = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/cuarto.png", textureShader);
+		storyIntro->AddChild(cuarto);
+		cuarto->SetActive(false);
+
+		GraphNode* quinto = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/quinto.png", textureShader);
+		storyIntro->AddChild(quinto);
+		quinto->SetActive(false);
+
+		GraphNode* sexto = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/sexto.png", textureShader);
+		storyIntro->AddChild(sexto);
+		sexto->SetActive(false);
+
+		GraphNode* septimo = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/septimo.png", textureShader);
+		storyIntro->AddChild(septimo);
+		septimo->SetActive(false);
+
+		storyIntro->AddScript(new StoryScript(storyIntro, window,
+			storyBcg,
+			uno, 
+			segundo, 
+			tercero, 
+			cuarto, 
+			quinto, 
+			sexto, 
+			septimo));
+		storyIntro->isHoverable = false;
 
 #pragma endregion 
 

@@ -6,15 +6,15 @@
 #include "SoundDevice.h"
 #include "Music.h"
 //#include "./utils/soundUtils.h"
-extern "C"
-{
-    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-}
-
-extern "C"
-{
-    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-}
+//extern "C"
+//{
+//    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+//}
+//
+//extern "C"
+//{
+//    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+//}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
