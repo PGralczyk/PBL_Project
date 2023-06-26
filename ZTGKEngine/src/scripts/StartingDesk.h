@@ -10,18 +10,27 @@ class StartingDesk;
 //A test of implementing realtime script
 class StartingDesk : public RealtimeScript {
 
+private:
+	GraphNode* hintTutorial;
+
 public:
 	GLFWwindow* window;
 
 	//Constructor, here assign all the fields from the private section
-	StartingDesk(GraphNode* nodePointer, GLFWwindow* _window, bool shouldBeNotHoverable = true) : RealtimeScript(nodePointer)
+	StartingDesk(GraphNode* nodePointer, GLFWwindow* _window, bool shouldBeNotHoverable = true, GraphNode* _hintTutorial = nullptr) : RealtimeScript(nodePointer)
 	{
 		window = _window;
+		hintTutorial = _hintTutorial;
 		if(shouldBeNotHoverable)
 			node->isHoverable = false;
 	}
 
 	~StartingDesk() = default;
+
+	void SetTutorial(GraphNode* tutorial)
+	{
+		hintTutorial = tutorial;
+	}
 
 	void Update()
 	{
@@ -29,6 +38,11 @@ public:
 		{
 			ApTime::instance().isDeskPosition = false;
 			node->isHoverable = true;
+			if (hintTutorial && ApTime::instance().canShowHintTutorial)
+			{
+				ApTime::instance().canShowHintTutorial = false;
+				hintTutorial->SetActive(true);
+			}
 		}
 
 		if (ApTime::instance().isDeskPosition)

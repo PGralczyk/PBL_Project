@@ -65,6 +65,7 @@ public:
 	float adviseWindow = 0;
 	bool isSwitching = false;
 	bool forceReset = false;
+	bool canShowHintTutorial = true;
 
 	void GreatReset()
 	{
@@ -85,6 +86,7 @@ public:
 		adviseWindow = 0;
 		isPlantPosition = false;
 		forceReset = false;
+		canShowHintTutorial = true;
 
 		mainMusicSpeaker->Stop();
 		mainAmbientSpeaker->Stop();

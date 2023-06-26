@@ -24,6 +24,8 @@ private:
 	GraphNode* otherScene;
 	GraphNode* brightUI;
 	GraphNode* darkUI;
+	GraphNode* brightCursor;
+	GraphNode* darkCursor;
 
 	int wasTutorialUsed = 0;
 
@@ -46,7 +48,7 @@ private:
 public:
 	//Constructor, here assign all the fields from the private section
 	RoomSwapManager(GraphNode* nodePointer, GraphNode* brightNode, GraphNode* darkNode, 
-		GraphNode* brightUInode, GraphNode* darkUInode,GLFWwindow* givenWindow, GraphNode* _currentScene,
+		GraphNode* brightUInode, GraphNode* darkUInode, GraphNode* brightCursorNode, GraphNode* darkCursorNode, GLFWwindow* givenWindow, GraphNode* _currentScene,
 		GraphNode* _otherScene, bool* givenVersion, bool* _singleClick, bool* _forceSwap, bool* swapPostman = nullptr,
 		bool* poof = nullptr, GraphNode* _tutorial = nullptr, GraphNode* _otherTutorial = nullptr, bool _canClick = true): RealtimeScript(nodePointer)
 	{
@@ -61,6 +63,8 @@ public:
 		singleClick = _singleClick;
 		brightUI = brightUInode;
 		darkUI = darkUInode;
+		brightCursor = brightCursorNode;
+		darkCursor = darkCursorNode;
 		forceSwap = _forceSwap;
 		canClick = _canClick;
 		tutorial = _tutorial;
@@ -80,13 +84,15 @@ public:
 		if (*poof) {
 			if (wasTutorialUsed == 1)
 			{
-				otherTutorial->SetActive(true);
+				//otherTutorial->SetActive(true);
 				wasTutorialUsed = 2;
 			}
 			darkWorld->SetActive(!darkWorld->GetActive());
 			brightWorld->SetActive(!brightWorld->GetActive());
 			brightUI->SetActive(!brightUI->GetActive());
 			darkUI->SetActive(!darkUI->GetActive());
+			brightCursor->SetActive(!brightCursor->GetActive());
+			darkCursor->SetActive(!darkCursor->GetActive());
 
 			if (brightWorld->GetActive())
 			{

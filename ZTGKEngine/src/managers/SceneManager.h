@@ -53,6 +53,9 @@ private:
 	GraphNode* UI;
 	GraphNode* UIBright = new GraphNode();
 	GraphNode* UIDark = new GraphNode();
+	GraphNode* Cursor = nullptr;
+	GraphNode* CursorBright = nullptr;
+	GraphNode* CursorDark = nullptr;
 	GLFWwindow* window;
 	FadeOut* fade;
 	float* pixelz;
@@ -82,6 +85,10 @@ public:
 	GraphNode* Scene1 = new GraphNode();
 	GraphNode* Scene2 = new GraphNode();
 	GraphNode* menu = new GraphNode();
+	HintButton* brightHintScript = nullptr;
+	HintButton* darkHintScript = nullptr;
+	StartingDesk* labDeskScript = nullptr;
+	StartingDesk* labDeskDarkScript = nullptr;
 	Shader* lightShader;
 	Shader* defaultShader;
 	Shader* textureShader;
@@ -95,6 +102,7 @@ public:
 	Shader* shadowMapShader;
 	Text* text;
 	GraphNode* DoorPuzzleObject;
+	
 
 
 
@@ -342,6 +350,18 @@ public:
 		UI->AddChild(UIBright);
 		UI->AddChild(UIDark);
 		UIDark->SetActive(false);
+
+		//cursor setup
+		Cursor = new GraphNode();
+		CursorBright  = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hud/normal_world/cursor_bright.png", textureShader);
+		CursorDark = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hud/fked_up_world/cursor_dark.png", textureShader);
+		Cursor->AddChild(CursorBright);
+		Cursor->AddChild(CursorDark);
+		CursorBright->SetActive(true);
+		CursorDark->SetActive(false);
+		//CursorBright->Scale(1.0);
+		//CursorDark->Scale(1.0);
+
 		timeCounter = 0.0f;
 		phase = true;
 		poof = false;
@@ -422,6 +442,7 @@ public:
 			BloomRender(currentlyPicked, 0);
 			glDepthFunc(GL_ALWAYS);
 			UI->Draw(currentlyPicked);
+			Cursor->Draw(currentlyPicked);
 			glDepthFunc(GL_LESS);
 		}
 		//For door puzzle(Don't mind it)
@@ -855,7 +876,7 @@ public:
 		UI->AddChild(returnTutorial);
 		UI->AddScript(new ReturnInfo(UI, returnTutorial));
 
-		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark,
+		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark, CursorBright, CursorDark,
 			window, Scene1, Scene2, isBright, singleClick, &forceSwap, &engageSwap, &poof);
 		door->AddScript(manager1);
 
@@ -914,7 +935,8 @@ public:
 		brightHintHover->SetActive(false);
 		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, false, &ApTime::instance().isEasyMode));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
-		brightHintHover->AddScript(new HintButton(brightHintHover));
+		brightHintScript = new HintButton(brightHintHover);
+		brightHintHover->AddScript(brightHintScript);
 
 		GraphNode* brightMenu = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_menu_s1.png", textureShader);
@@ -980,7 +1002,8 @@ public:
 		darkHintHover->SetActive(false);
 		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, false, &ApTime::instance().isEasyMode));
 		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
-		darkHintHover->AddScript(new HintButton(darkHintHover));
+		darkHintScript = new HintButton(darkHintHover);
+		darkHintHover->AddScript(darkHintScript);
 
 		GraphNode* darkMenu = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_menu_s2.png", textureShader);
@@ -1102,33 +1125,44 @@ public:
 #pragma endregion
 
 #pragma region plant and desk
-		GraphNode* labDesk = CreateNode("res/models/stol_lab.fbx", defaultShader);
-		labDesk->Scale(0.2f);
-		Scene2Bright->AddChild(labDesk);
-		labDesk->AddScript(new StartingDesk(labDesk, window));
-
-		GraphNode* labDeskDark = CreateNode("res/models/stol_lab_another_dimension.fbx", defaultShader);
-		labDeskDark->Scale(0.2f);
-		Scene2Dark->AddChild(labDeskDark);
-		labDeskDark->AddScript(new StartingDesk(labDeskDark, window, false));
 
 		GraphNode* SwapTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/swap_tutorial.png", textureShader);
 		SwapTutorial->SetActive(false);
 		UI->AddChild(SwapTutorial);
 
+		GraphNode* HintTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/hint_tutorial.png", textureShader);
+		UI->AddChild(HintTutorial);
+		HintTutorial->SetActive(false);
+		brightHintScript->SetTutorial(HintTutorial);
+		darkHintScript->SetTutorial(HintTutorial);
+		//HintTutorial->AddScript(new DeactivateAfterTime(HintTutorial, 8.0f));
+		
+
+		GraphNode* labDesk = CreateNode("res/models/stol_lab.fbx", defaultShader);
+		labDeskScript = new StartingDesk(labDesk, window);
+		labDesk->Scale(0.2f);
+		Scene2Bright->AddChild(labDesk);
+		labDesk->AddScript(labDeskScript);
+
+		GraphNode* labDeskDark = CreateNode("res/models/stol_lab_another_dimension.fbx", defaultShader);
+		labDeskDarkScript = new StartingDesk(labDeskDark, window, false);
+		labDeskDark->Scale(0.2f);
+		Scene2Dark->AddChild(labDeskDark);
+		labDeskDark->AddScript(labDeskDarkScript);
+
+		labDeskScript->SetTutorial(HintTutorial);
+		labDeskDarkScript->SetTutorial(HintTutorial);
+
 		GraphNode* labDeskPlant = CreateNode("res/models/sadzonka_lab.fbx", defaultShader);
 		labDeskPlant->Scale(0.2f);
 		Scene2->AddChild(labDeskPlant);
 		labDeskPlant->AddScript(new MagicalPlant(labDeskPlant, SwapTutorial));
 
-		GraphNode* HintTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/hint_tutorial.png", textureShader);
-		UI->AddChild(HintTutorial);
-		HintTutorial->SetActive(false);
-		HintTutorial->AddScript(new DeactivateAfterTime(HintTutorial, 8.0f));
+		
 
-		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark,
+		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark, CursorBright, CursorDark,
 			window, Scene2, Scene1, isBright, singleClick, &forceSwap, &engageSwap, &poof, SwapTutorial, HintTutorial, false);
 		door2->AddScript(manager2);
 #pragma endregion
