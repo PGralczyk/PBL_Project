@@ -64,6 +64,7 @@ public:
 	int currentPuzzleState = 0;
 	float adviseWindow = 0;
 	bool isSwitching = false;
+	bool forceReset = false;
 
 	void GreatReset()
 	{
@@ -83,6 +84,7 @@ public:
 		currentPuzzleState = 0;
 		adviseWindow = 0;
 		isPlantPosition = false;
+		forceReset = false;
 
 		mainMusicSpeaker->Stop();
 		mainAmbientSpeaker->Stop();

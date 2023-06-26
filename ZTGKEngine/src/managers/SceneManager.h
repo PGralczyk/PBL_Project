@@ -45,6 +45,7 @@
 #include "../scripts/ShowMusicVolume.h";
 #include "../scripts/CameraChange.h";
 #include "../scripts/ReturnInfo.h";
+#include "../scripts/GameFinisher.h";
 
 class SceneManager
 {
@@ -94,6 +95,7 @@ public:
 	Shader* shadowMapShader;
 	Text* text;
 	GraphNode* DoorPuzzleObject;
+
 
 
 	unsigned int frameBuffers[2];
@@ -1259,12 +1261,24 @@ public:
 			"res/models/kartkaSanctum.png", textureShader);
 		finalScreen->AddChild(paperSanctum);
 
+		GraphNode* thanksScreen = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/Thanks.png", textureShader);
+		thanksScreen->SetActive(false);
+		UI->AddChild(thanksScreen);
+
+		GraphNode* returnTutorial2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/return_info.png", textureShader);
+		returnTutorial2->SetActive(false);
+		UI->AddChild(returnTutorial2);
+
 		GraphNode* journal2 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/journal2.png", textureShader);
 		UI->AddChild(journal2);
 		journal2->SetActive(false);
+		journal2->AddScript(new GameFinisher(journal2, returnTutorial2, thanksScreen, window));
 
 		paperSanctum->AddScript(new OneTimeActivatorScript(paperSanctum, journal2, "bookOpen", false));
+		
 
 		*password = "";
 		bool* isWon = new bool;
