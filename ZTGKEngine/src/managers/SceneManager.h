@@ -404,14 +404,13 @@ public:
 
 		//cursor setup
 		Cursor = new GraphNode();
-		CursorBright  = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hud/normal_world/cursor_bright.png", textureShader);
-		CursorDark = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/hud/fked_up_world/cursor_dark.png", textureShader);
+		CursorBright  = CreateUiElement(0, 0, *SCR_WIDTH * 0.2, *SCR_HEIGHT * 0.2, "res/models/hud/normal_world/cursor_bright.png", textureShader);
+		CursorDark = CreateUiElement(0, 0, *SCR_WIDTH * 0.2, *SCR_HEIGHT * 0.2, "res/models/hud/fked_up_world/cursor_dark.png", textureShader);
 		Cursor->AddChild(CursorBright);
 		Cursor->AddChild(CursorDark);
 		CursorBright->SetActive(true);
 		CursorDark->SetActive(false);
-		//CursorBright->Scale(1.0);
-		//CursorDark->Scale(1.0);
+
 
 		timeCounter = 0.0f;
 		phase = true;
