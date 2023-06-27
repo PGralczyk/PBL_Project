@@ -48,6 +48,7 @@
 #include "../scripts/GameFinisher.h";
 #include "../scripts/StoryScript.h";
 #include "../scripts/FollowAfterCursorScript.h";
+#include "../scripts/BellHint.h";
 
 class SceneManager
 {
@@ -982,6 +983,7 @@ public:
 		GraphNode* brightHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHint);
+		brightHint->AddScript(new BellHint(brightHint));
 
 		GraphNode* brightHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
@@ -1049,6 +1051,7 @@ public:
 		GraphNode* darkHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_hint_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHint);
+		darkHint->AddScript(new BellHint(darkHint));
 
 		GraphNode* darkHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
