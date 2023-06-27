@@ -35,6 +35,9 @@ float lastX = SCR_WIDTH / 2.0f,
       lastY = SCR_HEIGHT / 2.0f,
       texOffset = 0;
 
+double overshootX,
+overshootY;
+
 bool isMouseActive = false,
       firstMouse = true,
       lightVersion = true,
@@ -522,8 +525,33 @@ int main(void)
         double mouseXd;
         double mouseYd;
         glfwGetCursorPos(window, &mouseXd, &mouseYd);
+
+        //Deal with boundless window
+        overshootX = mouseXd - ApTime::instance().offsetX;
+        overshootY = mouseYd - ApTime::instance().offsetY;
+
+        if (overshootX > SCR_WIDTH) 
+        {
+            ApTime::instance().offsetX = ApTime::instance().offsetX + overshootX - SCR_WIDTH;
+        }
+        else if (overshootX < 0) 
+        {
+            ApTime::instance().offsetX = ApTime::instance().offsetX + overshootX;
+        }
+
+        if (overshootY > SCR_HEIGHT) 
+        {
+            ApTime::instance().offsetY = ApTime::instance().offsetY + overshootY - SCR_HEIGHT;
+        } else if (overshootY < 0) 
+        {
+            ApTime::instance().offsetY = ApTime::instance().offsetY + overshootY;
+        }
+
+        ApTime::instance().withinWindowCursorPosX = mouseXd - ApTime::instance().offsetX;
+        ApTime::instance().withinWindowCursorPosY = mouseYd - ApTime::instance().offsetY;
+
         //Reading ObjectId fo pixel below the mouse
-        ClickPicker::PixelData pixel = picker.Read(mouseXd, SCR_HEIGHT - mouseYd);
+        ClickPicker::PixelData pixel = picker.Read(ApTime::instance().withinWindowCursorPosX, SCR_HEIGHT - ApTime::instance().withinWindowCursorPosY);
         //Saving id of the currently picked object
         currentlyPicked = pixel.ObjectID + 255 * pixel.DrawID;
 

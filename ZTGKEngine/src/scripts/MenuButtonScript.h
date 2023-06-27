@@ -37,9 +37,11 @@ public:
 			{
 				if (!keyPressed)
 				{
-
 					other->SetActive(!other->GetActive());
 					keyPressed = true;
+
+					ApTime::instance().isMenuOpen = true;
+					//ApTime::instance().mainAmbientSpeaker->Stop();
 				}
 			}
 			else
@@ -53,6 +55,8 @@ public:
 	{
 		speaker.Play(SoundBuffer::get()->getSound("paper"));
 		other->SetActive(true);
+		ApTime::instance().isMenuOpen = true;
+		//ApTime::instance().mainAmbientSpeaker->Stop();
 	}
 
 	~MenuButtonScript() = default;

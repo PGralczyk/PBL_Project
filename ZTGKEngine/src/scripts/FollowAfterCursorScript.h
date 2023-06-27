@@ -27,7 +27,9 @@ public:
 
 	void Update()
 	{
-		glfwGetCursorPos(window, &mouseX, &mouseY);
+		mouseX = ApTime::instance().withinWindowCursorPosX;
+		mouseY = ApTime::instance().withinWindowCursorPosY;
+
 		aspectX = float(*SCR_WIDTH) / 1920.0f;
 		aspectY = float(*SCR_HEIGHT) / 1009.0f;
 		node->setTranslate(glm::vec3(mouseX - 148 * aspectX, -mouseY + 924 * aspectY, node->getTranslation().z));

@@ -81,7 +81,7 @@ public:
 
 	void Update()
 	{
-		if (*poof) {
+		if (*poof && !ApTime::instance().isMenuOpen) {
 			if (wasTutorialUsed == 1)
 			{
 				//otherTutorial->SetActive(true);
@@ -105,7 +105,7 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed || *forceSwap))
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed && !ApTime::instance().isMenuOpen || *forceSwap))
 		{
 			*forceSwap = false;
 			if (!ApTime::instance().isSwitching)
@@ -205,5 +205,7 @@ public:
 		controlPressed = false;
 		canClick = initialCanClick;
 		wasTutorialUsed = 0;
+		darkCursor->SetActive(false);
+		brightCursor->SetActive(true);
 	}
 };

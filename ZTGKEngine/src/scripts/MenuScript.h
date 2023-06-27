@@ -40,6 +40,8 @@ public:
 			other->SetActive(true);
 		else if (buttonId == "play")
 		{
+			ApTime::instance().isMenuOpen = false;
+
 			if (!ApTime::instance().isFirstTime)
 				other->SetActive(false);
 			else
@@ -49,6 +51,7 @@ public:
 			glfwSetWindowShouldClose(window, true);
 		else if (buttonId == "startGame")
 		{
+			ApTime::instance().isMenuOpen = false;
 			firstTime->SetActive(false);
 			other->SetActive(false);
 			ApTime::instance().isFirstTime = false;
