@@ -155,13 +155,13 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    /*const GLFWvidmode* videoStruct = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    const GLFWvidmode* videoStruct = glfwGetVideoMode(glfwGetPrimaryMonitor());
     SCR_WIDTH = videoStruct->width;
-    SCR_HEIGHT = videoStruct->height;*/
+    SCR_HEIGHT = videoStruct->height;
 
     /* Create a windowed mode window and its OpenGL context */
-    //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
+    //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
