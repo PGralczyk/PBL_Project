@@ -454,6 +454,7 @@ int main(void)
         defaultShader.setMat4("view", view);
         defaultShader.setVec3("viewPos", camera.Position);
         defaultShader.setVec3("pointLightPos", pointLight.position);
+        defaultShader.setFloat("adviseWindow", ApTime::instance().adviseWindow);
         if (lightVersion)
             defaultShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
         else
@@ -482,6 +483,7 @@ int main(void)
         primitiveTextureShader.use();
         primitiveTextureShader.setMat4("projection", projectionPrimitive);
         primitiveTextureShader.setMat4("view", viewPrimitive);
+        primitiveTextureShader.setFloat("adviseWindow", ApTime::instance().adviseWindow);
 
         fadeShader.use(); // lol
         fadeShader.setMat4("projection", projectionPrimitive);

@@ -99,7 +99,6 @@ public:
 				node->SetActive(false);
 				break;
 			}
-
 		}
 	}
 

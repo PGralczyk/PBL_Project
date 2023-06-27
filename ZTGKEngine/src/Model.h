@@ -11,6 +11,7 @@
 
 #include "Mesh.h"
 #include "Shader.h"
+#include "ApTime.h"
 
 #include <string>
 #include <iostream>
@@ -68,7 +69,8 @@ public:
     void Draw(unsigned int currentlyPicked, unsigned int objectID, bool isHoverable, bool forceHover = false)
     {
         shader->use();
-        if ((objectID !=0 && currentlyPicked == objectID && isHoverable) || forceHover)
+        if ((objectID !=0 && currentlyPicked == objectID && isHoverable && ApTime::instance().adviseWindow == 0) 
+            || forceHover)
         {
             shader->setBool("isHoovered", true);
         }
