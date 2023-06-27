@@ -913,7 +913,7 @@ public:
 
 		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
 		Tap->Scale(0.1f);
-		Tap->Translate(glm::vec3(15.0f, 0.0f, 0.0f));
+		Tap->Translate(glm::vec3(80.0f, 0.0f, 10.0f));
 		Tap->Rotate(180 ,glm::vec3(0.0f, 1.0f, 0.0f));
 		Scene1Dark->AddChild(Tap);
 #pragma endregion
