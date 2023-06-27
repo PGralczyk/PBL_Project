@@ -115,8 +115,14 @@ public:
                     number = std::to_string(heightNr++);
 
                 //Specyfify the value of a uniform variable for the current program object
-                glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-                glActiveTexture(GL_TEXTURE0);
+                if (name == "texture_diffuse")
+                    glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+                else if (name == "texture_normal")
+                    glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), 4);
+                if (name == "texture_diffuse")
+                    glActiveTexture(GL_TEXTURE0);
+                else if (name == "texture_normal")
+                    glActiveTexture(GL_TEXTURE4);
                 glBindTexture(GL_TEXTURE_2D, textures[i].id);
             }
 
