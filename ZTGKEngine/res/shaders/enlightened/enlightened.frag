@@ -19,6 +19,8 @@ uniform float far_plane;
 
 uniform bool isHoovered;
 
+uniform float adviseWindow;
+
 
 float ShadowCalculation(vec3 fragPos)
 {
@@ -80,9 +82,15 @@ void main()
         }
         vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular));
 
-        if(isHoovered)
+        if(isHoovered && adviseWindow == 0)
         {
             FragColor = texture(texture_diffuse1, TexCoords) * vec4(result, 1.0) + vec4(0.2, 0.2, 0.2, 0.0);
+        }
+        else if(isHoovered && ((adviseWindow > 4.5 || (adviseWindow > 3.5 && adviseWindow < 4) ||
+        (adviseWindow > 2.5 && adviseWindow < 3) || (adviseWindow > 1.5 && adviseWindow < 2)
+        || (adviseWindow > 0.5 && adviseWindow < 1))))
+        {
+            FragColor = texture(texture_diffuse1, TexCoords) * vec4(result, 1.0) + vec4(0.5, 0.5, 0.0, 0.0);
         }
         else
         {

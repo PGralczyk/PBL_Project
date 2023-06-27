@@ -156,12 +156,12 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     const GLFWvidmode* videoStruct = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    SCR_WIDTH = videoStruct->width;
-    SCR_HEIGHT = videoStruct->height;
+    //SCR_WIDTH = videoStruct->width;
+    //SCR_HEIGHT = videoStruct->height;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
-    //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
+    //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", glfwGetPrimaryMonitor(), NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GAME", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -454,6 +454,7 @@ int main(void)
         defaultShader.setMat4("view", view);
         defaultShader.setVec3("viewPos", camera.Position);
         defaultShader.setVec3("pointLightPos", pointLight.position);
+        defaultShader.setFloat("adviseWindow", ApTime::instance().adviseWindow);
         if (lightVersion)
             defaultShader.setVec3("pointLightColor", glm::vec3({ pointLight.color[0], pointLight.color[1], pointLight.color[2] }));
         else
@@ -482,6 +483,7 @@ int main(void)
         primitiveTextureShader.use();
         primitiveTextureShader.setMat4("projection", projectionPrimitive);
         primitiveTextureShader.setMat4("view", viewPrimitive);
+        primitiveTextureShader.setFloat("adviseWindow", ApTime::instance().adviseWindow);
 
         fadeShader.use(); // lol
         fadeShader.setMat4("projection", projectionPrimitive);

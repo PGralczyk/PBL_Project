@@ -524,21 +524,19 @@ public:
 		ChessMainObject->AddChild(DrawerMainObject);
 		GraphNode* ChessBoardBottom = CreateNode("res/models/szachownica_spod.fbx", defaultShader);
 		DrawerMainObject->AddChild(ChessBoardBottom);
-		Model* drawerBase = new Model("res/models/szuflada.fbx");
 		Model* drawerFrame = new Model("res/models/szuflada_obudowa.fbx");
-		drawerBase->SetShader(defaultShader);
 		drawerFrame->SetShader(defaultShader);
 
 		GraphNode* drawer1 = new GraphNode(drawerFrame);
-		GraphNode* drawer1MovableSegment = new GraphNode(drawerBase, objectId++);
+		GraphNode* drawer1MovableSegment = CreateNode("res/models/szuflada1.fbx", defaultShader);
 		drawer1->AddChild(drawer1MovableSegment);
 
 		GraphNode* drawer2 = new GraphNode(drawerFrame);
-		GraphNode* drawer2MovableSegment = new GraphNode(drawerBase, objectId++);
+		GraphNode* drawer2MovableSegment = CreateNode("res/models/szuflada2.fbx", defaultShader);
 		drawer2->AddChild(drawer2MovableSegment);
 
 		GraphNode* drawer3 = new GraphNode(drawerFrame);
-		GraphNode* drawer3MovableSegment = new GraphNode(drawerBase, objectId++);
+		GraphNode* drawer3MovableSegment = CreateNode("res/models/szuflada3.fbx", defaultShader);
 		drawer3->AddChild(drawer3MovableSegment);
 
 		DrawerMainObject->AddChild(drawer1);
@@ -971,6 +969,7 @@ public:
 		bottomPanelBright->AddChild(brightPlant);
 		brightPlant->SetActive(false);
 		UI->AddScript(new ActivateOnBool(UI, brightPlant));
+		brightPlant->AddScript(new BellHint(brightPlant));
 
 		GraphNode* brightPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant__hover_s1.png", textureShader);
@@ -983,7 +982,6 @@ public:
 		GraphNode* brightHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHint);
-		brightHint->AddScript(new BellHint(brightHint));
 
 		GraphNode* brightHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
@@ -1039,6 +1037,7 @@ public:
 		GraphNode* darkPlant = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_plant_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkPlant);
+		darkPlant->AddScript(new BellHint(darkPlant));
 
 		GraphNode* darkPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_plant_hover_s2.png", textureShader);
@@ -1051,7 +1050,6 @@ public:
 		GraphNode* darkHint = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_hint_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHint);
-		darkHint->AddScript(new BellHint(darkHint));
 
 		GraphNode* darkHintHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);

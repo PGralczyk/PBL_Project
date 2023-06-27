@@ -31,7 +31,8 @@ public:
 			if ((ApTime::instance().currentPuzzleState == 3 && ApTime::instance().brightWorld) ||
 				ApTime::instance().currentPuzzleState == 4 && ApTime::instance().brightWorld ||
 				ApTime::instance().currentPuzzleState == 5 && !ApTime::instance().brightWorld ||
-				ApTime::instance().currentPuzzleState == 2 && !ApTime::instance().brightWorld
+				ApTime::instance().currentPuzzleState == 2 && !ApTime::instance().brightWorld ||
+				ApTime::instance().currentPuzzleState == 0 && !ApTime::instance().brightWorld
 				)
 			{
 				node->forceHover = true;
