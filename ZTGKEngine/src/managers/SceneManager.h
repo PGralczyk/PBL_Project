@@ -47,6 +47,7 @@
 #include "../scripts/ReturnInfo.h";
 #include "../scripts/GameFinisher.h";
 #include "../scripts/StoryScript.h";
+#include "../scripts/FollowAfterCursorScript.h";
 
 class SceneManager
 {
@@ -409,7 +410,9 @@ public:
 		Cursor->AddChild(CursorBright);
 		Cursor->AddChild(CursorDark);
 		CursorBright->SetActive(true);
+		CursorBright->AddScript(new FollowAfterCursorScript(CursorBright, window, SCR_WIDTH, SCR_HEIGHT));
 		CursorDark->SetActive(false);
+		CursorDark->AddScript(new FollowAfterCursorScript(CursorDark, window, SCR_WIDTH, SCR_HEIGHT));
 
 
 		timeCounter = 0.0f;
@@ -434,6 +437,7 @@ public:
 	{
 		world->Update(currentlyPicked, singleMouse, window);
 		UI->Update(currentlyPicked, singleMouse, window);
+		Cursor->Update(currentlyPicked, singleMouse, window);
 		if (poof)
 			poof = false;
 	}
