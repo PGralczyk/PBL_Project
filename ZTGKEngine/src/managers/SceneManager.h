@@ -345,10 +345,6 @@ public:
 
 		UI->AddChild(storyIntro);
 
-		GraphNode* storyBcg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/Wprowadzonko.png", textureShader);
-		storyIntro->AddChild(storyBcg);
-		storyBcg->SetActive(false);
-
 		GraphNode* uno = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/uno.png", textureShader);
 		storyIntro->AddChild(uno);
 		uno->SetActive(false);
@@ -369,23 +365,12 @@ public:
 		storyIntro->AddChild(quinto);
 		quinto->SetActive(false);
 
-		GraphNode* sexto = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/sexto.png", textureShader);
-		storyIntro->AddChild(sexto);
-		sexto->SetActive(false);
-
-		GraphNode* septimo = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/septimo.png", textureShader);
-		storyIntro->AddChild(septimo);
-		septimo->SetActive(false);
-
 		storyIntro->AddScript(new StoryScript(storyIntro, window,
-			storyBcg,
 			uno, 
 			segundo, 
 			tercero, 
 			cuarto, 
-			quinto, 
-			sexto, 
-			septimo));
+			quinto));
 		storyIntro->isHoverable = false;
 
 #pragma endregion 

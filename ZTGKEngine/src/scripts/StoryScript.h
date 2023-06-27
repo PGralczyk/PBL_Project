@@ -12,38 +12,29 @@ class StoryScript : public RealtimeScript {
 
 private:
 	GLFWwindow* window;
-	GraphNode* bcG;
 	GraphNode* uno;
 	GraphNode* segundo;
 	GraphNode* tercero;
 	GraphNode* cuarto;
 	GraphNode* quinto;
-	GraphNode* sexto;
-	GraphNode* septimo;
 	int counter = 1;
 	bool keyPressed = false;
 
 public:
 	//Constructor, here assign all the fields from the private section
 	StoryScript(GraphNode* nodePointer, GLFWwindow* _window,
-		GraphNode* _bcG,
 		GraphNode* _uno,
 		GraphNode* _segundo,
 		GraphNode* _tercero,
 		GraphNode* _cuarto,
-		GraphNode* _quinto,
-		GraphNode* _sexto,
-		GraphNode* _septimo) : RealtimeScript(nodePointer)
+		GraphNode* _quinto) : RealtimeScript(nodePointer)
 	{
 		window = _window;
-		bcG = _bcG;
 		uno = _uno;
 		segundo = _segundo;
 		tercero = _tercero;
 		cuarto = _cuarto;
 		quinto = _quinto;
-		sexto = _sexto;
-		septimo = _septimo;
 	}
 
 	void Update()
@@ -55,8 +46,6 @@ public:
 			tercero->SetActive(false);
 			cuarto->SetActive(false);
 			quinto->SetActive(false);
-			sexto->SetActive(false);
-			septimo->SetActive(false);
 
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 			{
@@ -74,7 +63,6 @@ public:
 			switch (counter)
 			{
 			case 1:
-				bcG->SetActive(true);
 				uno->SetActive(true);
 				break;
 			case 2:
@@ -89,17 +77,22 @@ public:
 			case 5:
 				quinto->SetActive(true);
 				break;
-			case 6:
-				sexto->SetActive(true);
-				break;
-			case 7:
-				septimo->SetActive(true);
-				break;
 			default:
 				node->SetActive(false);
 				break;
 			}
 		}
+	}
+
+	void GreatReset()
+	{
+		uno->SetActive(false);
+		segundo->SetActive(false);
+		tercero->SetActive(false);
+		cuarto->SetActive(false);
+		quinto->SetActive(false);
+		counter = 1;
+		keyPressed = false;
 	}
 
 	~StoryScript() = default;
