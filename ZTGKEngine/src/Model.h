@@ -116,7 +116,7 @@ private:
             //aiProcess_OptimizeMeshes | // join small meshes, if possible;
             aiProcess_PreTransformVertices | //-- fixes the transformation issue.
             //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
-            //aiProcess_GenSmoothNormals | // ?
+            aiProcess_GenSmoothNormals | // ?
             aiProcess_FlipUVs | // flip texture vertically
             0;
 
@@ -220,12 +220,12 @@ private:
         // 1. Diffuse maps
         vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        // 2. Normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal", scene);
-        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        // 3. Specular maps
+        // 2. Specular maps
         vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", scene);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        // 3. Normal maps
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", scene);
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. Height maps
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height", scene);
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
