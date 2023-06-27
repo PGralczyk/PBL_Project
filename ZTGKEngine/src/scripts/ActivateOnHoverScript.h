@@ -55,6 +55,7 @@ public:
 	{
 		window = _window;
 		soundToBePlayed = _soundToBePlayed;
+		node->isHoverable = false;
 	}
 
 	~DeactivateRMB() = default;

@@ -58,6 +58,7 @@ public:
 	bool canSwap = false;
 	bool shouldBtnWork = true;
 	bool isFirstTime = true;
+	bool canUseJournal = false;
 	SoundSource* mainMusicSpeaker;
 	SoundSource* mainAmbientSpeaker;
 	//std::map<string, Music*> gameMusic;
@@ -93,6 +94,7 @@ public:
 		forceReset = false;
 		canShowHintTutorial = true;
 		isMenuOpen = true;
+		canUseJournal = false;
 
 		mainMusicSpeaker->Stop();
 		mainAmbientSpeaker->Stop();

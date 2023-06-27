@@ -21,7 +21,7 @@ public:
 	{
 		if (ApTime::instance().isBookPosition || ApTime::instance().isChessPosition || ApTime::instance().isPlantPosition 
 			|| (ApTime::instance().isDeskPosition
-			&& ApTime::instance().canSwap))
+			&& ApTime::instance().canUseJournal))
 		{
 			tutorial->SetActive(true);
 		}

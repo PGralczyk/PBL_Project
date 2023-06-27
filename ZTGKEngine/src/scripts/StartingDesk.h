@@ -34,11 +34,11 @@ public:
 
 	void Update()
 	{
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) && ApTime::instance().canSwap)
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) && ApTime::instance().canUseJournal)
 		{
 			ApTime::instance().isDeskPosition = false;
 			node->isHoverable = true;
-			if (hintTutorial && ApTime::instance().canShowHintTutorial)
+			if (hintTutorial && ApTime::instance().canShowHintTutorial && ApTime::instance().isEasyMode)
 			{
 				ApTime::instance().canShowHintTutorial = false;
 				hintTutorial->SetActive(true);
@@ -62,25 +62,28 @@ public:
 };
 
 class ActivateOnBool : public RealtimeScript {
+private:
+	bool* condition;
 
 public:
 	GraphNode* toBeActivated;
 
 	//Constructor, here assign all the fields from the private section
-	ActivateOnBool(GraphNode* nodePointer, GraphNode* _toBeActivated) : RealtimeScript(nodePointer)
+	ActivateOnBool(GraphNode* nodePointer, GraphNode* _toBeActivated, bool* _condition) : RealtimeScript(nodePointer)
 	{
 		toBeActivated = _toBeActivated;
+		condition = _condition;
 	}
 
 	~ActivateOnBool() = default;
 
 	void Update()
 	{
-		if (toBeActivated->GetActive() && ApTime::instance().canSwap)
+		if (toBeActivated->GetActive() && *condition)
 		{
 			enabled = false;
 		}
-		else if (ApTime::instance().canSwap)
+		else if (*condition)
 		{
 			toBeActivated->SetActive(true);
 		}

@@ -48,6 +48,8 @@
 #include "../scripts/GameFinisher.h";
 #include "../scripts/StoryScript.h";
 #include "../scripts/FollowAfterCursorScript.h";
+#include "../scripts/JournalOnTableScript.h";
+
 
 class SceneManager
 {
@@ -58,6 +60,7 @@ private:
 	GraphNode* Cursor = nullptr;
 	GraphNode* CursorBright = nullptr;
 	GraphNode* CursorDark = nullptr;
+	GraphNode* journal1 = nullptr;
 	GLFWwindow* window;
 	FadeOut* fade;
 	float* pixelz;
@@ -911,7 +914,7 @@ public:
 
 		GraphNode* Tap = CreateNode("res/models/zagadka_kwiaty/kranik.fbx", defaultShader);
 		Tap->Scale(0.1f);
-		Tap->Translate(glm::vec3(90.0f, 0.0f, 10.0f));
+		Tap->Translate(glm::vec3(15.0f, 0.0f, 0.0f));
 		Tap->Rotate(180 ,glm::vec3(0.0f, 1.0f, 0.0f));
 		Scene1Dark->AddChild(Tap);
 #pragma endregion
@@ -923,12 +926,6 @@ public:
 		//door->Rotate(-150, glm::vec3(0.0, 1.0, 0.0));
 		door->Translate(glm::vec3(55.0, 0.0, 250.0));
 		Scene1->AddChild(door);
-
-		GraphNode* returnTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
-			"res/models/return_info.png", textureShader);
-		returnTutorial->SetActive(false);
-		UI->AddChild(returnTutorial);
-		UI->AddScript(new ReturnInfo(UI, returnTutorial));
 
 		RoomSwapManager* manager1 = new RoomSwapManager(door, Scene1Bright, Scene1Dark, UIBright, UIDark, CursorBright, CursorDark,
 			window, Scene1, Scene2, isBright, singleClick, &forceSwap, &engageSwap, &poof);
@@ -949,8 +946,9 @@ public:
 		GraphNode* brightJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_journal_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightJournal);
+		UI->AddScript(new ActivateOnBool(UI, brightJournal, &ApTime::instance().canUseJournal));
 
-		GraphNode* journal1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+		journal1 = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/journal1.png", textureShader);
 		UI->AddChild(journal1);
 		journal1->SetActive(false);
@@ -960,6 +958,7 @@ public:
 		GraphNode* brightJournalHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_journal_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightJournalHover);
+		brightJournal->SetActive(false);
 		brightJournalHover->SetActive(false);
 		brightJournal->AddScript(new ActivateOnHoverScript(brightJournal, brightJournalHover));
 		brightJournalHover->AddScript(new DeactivateOnMouseLeave(brightJournalHover));
@@ -969,7 +968,9 @@ public:
 			"res/models/hud/normal_world/hud_plant_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightPlant);
 		brightPlant->SetActive(false);
-		UI->AddScript(new ActivateOnBool(UI, brightPlant));
+		UI->AddScript(new ActivateOnBool(UI, brightPlant, &ApTime::instance().canSwap));
+		
+		
 
 		GraphNode* brightPlantHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/normal_world/hud_plant__hover_s1.png", textureShader);
@@ -1025,10 +1026,12 @@ public:
 		GraphNode* darkJournal = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_journal_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkJournal);
+		UI->AddScript(new ActivateOnBool(UI, darkJournal, &ApTime::instance().canUseJournal));
 
 		GraphNode* darkJournalHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
 			"res/models/hud/fked_up_world/hud_journal_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkJournalHover);
+		darkJournal->SetActive(false);
 		darkJournalHover->SetActive(false);
 		darkJournal->AddScript(new ActivateOnHoverScript(darkJournal, darkJournalHover));
 		darkJournalHover->AddScript(new DeactivateOnMouseLeave(darkJournalHover));
@@ -1076,6 +1079,12 @@ public:
 			"res/models/hud/fked_up_world/hud_leaves2_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkLeaves2);
 #pragma endregion
+
+		GraphNode* returnTutorial = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
+			"res/models/return_info.png", textureShader);
+		returnTutorial->SetActive(false);
+		UI->AddChild(returnTutorial);
+		UI->AddScript(new ReturnInfo(UI, returnTutorial));
 
 		//---------------------------------------------------------------------------
 		GraphNode* scissors = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT,
@@ -1214,6 +1223,10 @@ public:
 		Scene2->AddChild(labDeskPlant);
 		labDeskPlant->AddScript(new MagicalPlant(labDeskPlant, SwapTutorial));
 
+		GraphNode* labDeskJournal = CreateNode("res/models/dziennik.fbx", defaultShader);
+		labDeskJournal->Scale(0.2f);
+		Scene2Dark->AddChild(labDeskJournal);
+		labDeskJournal->AddScript(new JournalOnTableScript(labDeskJournal, journal1));
 		
 
 		RoomSwapManager* manager2 = new RoomSwapManager(door2, Scene2Bright, Scene2Dark, UIBright, UIDark, CursorBright, CursorDark,
