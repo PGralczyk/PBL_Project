@@ -66,6 +66,11 @@ public:
 	bool isSwitching = false;
 	bool forceReset = false;
 	bool canShowHintTutorial = true;
+	bool isMenuOpen = true;
+	double offsetX = 0.0;
+	double offsetY = 0.0;
+	double withinWindowCursorPosX = 0.0;
+	double withinWindowCursorPosY = 0.0;
 
 	void GreatReset()
 	{
@@ -87,6 +92,7 @@ public:
 		isPlantPosition = false;
 		forceReset = false;
 		canShowHintTutorial = true;
+		isMenuOpen = true;
 
 		mainMusicSpeaker->Stop();
 		mainAmbientSpeaker->Stop();
