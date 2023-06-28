@@ -92,7 +92,7 @@ public:
 				state = speaker.GetState();
 			}
 			doorSpeaker.Play(SoundBuffer::get()->getSound("vaultDoor"));
-
+			ApTime::instance().isGiantDoor = false;
 			*isWon = true;
 			puzzle->SetActive(false);
 			node->Rotate(30, glm::vec3(0.0f, 1.0f, 0.0f));

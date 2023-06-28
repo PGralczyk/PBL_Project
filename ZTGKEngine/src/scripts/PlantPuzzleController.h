@@ -12,6 +12,7 @@ class PlantPuzzleController : public RealtimeScript {
 private:
 	int* puzzleState;
 	GraphNode* prizes;
+	SoundSource speaker;
 public:
 	//Constructor, here assign all the fields from the private section
 	PlantPuzzleController(GraphNode* nodePointer, int* _puzzleState, GraphNode* _prizes) : RealtimeScript(nodePointer)
@@ -27,6 +28,7 @@ public:
 	{
 		if (*puzzleState == 3)
 		{
+			speaker.Play(SoundBuffer::get()->getSound("plantGrow"));
 			ApTime::instance().currentPuzzleState = 2;
 			prizes->SetActive(true);
 			enabled = false;
