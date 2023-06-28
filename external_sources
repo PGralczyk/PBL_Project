@@ -1,0 +1,41 @@
+Core: OpenGL
+
+Używane biblioteki:
+
+-Assimp https://github.com/assimp/assimp,
+
+-Glad https://github.com/Dav1dde/glad,
+
+-GLM https://github.com/g-truc/glm,
+
+-OpenAL  https://www.openal.org/,
+
+-stb_image https://github.com/nothings/stb
+
+-GLFW https://www.glfw.org/
+
+
+ingame final music      : https://pixabay.com/music/modern-classical-tense-piano-cinematic-111052/
+ingame music            : https://pixabay.com/music/modern-classical-tense-sad-piano-111679/
+menu music              : https://pixabay.com/music/ambient-awaiting-piano-119028/
+light buzz ambient      : https://pixabay.com/sound-effects/room-with-buzz-incandescent-light-bulb-23892/
+
+water sink              : https://pixabay.com/sound-effects/water-sink-68677/
+vault door              : https://freesound.org/people/strangehorizon/sounds/674965/
+book close              : https://freesound.org/people/SoundsForHim/sounds/399669/
+book open               : https://freesound.org/people/InspectorJ/sounds/416179/
+code type               : https://freesound.org/people/Blackstrobe/sounds/15720/
+correct                 : https://freesound.org/people/Tissman/sounds/522327/
+door closed             : https://pixabay.com/sound-effects/door-opening-and-closing-18398/
+door open               : https://pixabay.com/sound-effects/dorm-door-opening-6038/
+glass break             : https://pixabay.com/sound-effects/glass-breaking-93803/
+hotel bell              : https://freesound.org/people/Migaelvdw/sounds/543152/
+hover button            : https://pixabay.com/sound-effects/fast-simple-chop-5-6270/
+metal creak             : https://freesound.org/people/lostmaiden/sounds/366302/
+paper                   : https://pixabay.com/sound-effects/office-paper-crumple-folding-handling-6413/
+place chess piece       : https://pixabay.com/sound-effects/chess-pieces-60890/
+plant grow/grow reverse : https://freesound.org/people/IENBA/sounds/648958/
+watering plant          : https://pixabay.com/sound-effects/pouring-water-into-a-glass-116975/
+select                  : https://freesound.org/people/el_boss/sounds/628638/
+slash                   : https://pixabay.com/sound-effects/slashkut-108175/
+walking(tup tup)        : https://pixabay.com/sound-effects/concrete-footsteps-6752/
