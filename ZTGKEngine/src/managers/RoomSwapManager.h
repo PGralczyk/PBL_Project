@@ -142,7 +142,8 @@ public:
 			{
 				controlPressed = true;
 				ApTime::instance().adviseWindow = 3.0f;
-				otherTutorial->SetActive(false);
+				if(otherTutorial != nullptr)
+					otherTutorial->SetActive(false);
 				speaker.Play(SoundBuffer::get()->getSound("bell"));
 			}
 		}
