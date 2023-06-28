@@ -68,6 +68,7 @@ public:
 		else
 		{
 			puzzle->SetActive(true);
+			ApTime::instance().isGiantDoor = true;
 		}
 	}
 
@@ -75,6 +76,7 @@ public:
 	{
 		if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_RIGHT))
 		{
+			ApTime::instance().isGiantDoor = false;
 			puzzle->SetActive(false);
 		}
 		if (*password == passwordAnswer && !*isWon)

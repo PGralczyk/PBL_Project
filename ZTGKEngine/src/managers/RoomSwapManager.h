@@ -105,7 +105,8 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed && !ApTime::instance().isMenuOpen || *forceSwap))
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed && !ApTime::instance().isMenuOpen &&
+			!ApTime::instance().isGiantDoor || *forceSwap))
 		{
 			*forceSwap = false;
 			if (!ApTime::instance().isSwitching)
