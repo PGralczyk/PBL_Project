@@ -24,7 +24,10 @@ public:
 
 	void OnMouseClicked()
 	{
-		speaker.Play(SoundBuffer::get()->getSound("bookOpen"));
-		object->SetActive(true);
+		if (!(ApTime::instance().isMenuOpen))
+		{
+			speaker.Play(SoundBuffer::get()->getSound("bookOpen"));
+			object->SetActive(true);
+		}
 	}
 };
