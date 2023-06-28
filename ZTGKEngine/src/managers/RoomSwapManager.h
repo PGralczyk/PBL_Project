@@ -41,6 +41,7 @@ private:
 
 	SoundSource speaker;
 	SoundSource doorSpeaker;
+	SoundSource bellSpeaker;
 
 	GraphNode* tutorial;
 	GraphNode* otherTutorial;
@@ -144,7 +145,7 @@ public:
 				ApTime::instance().adviseWindow = 3.0f;
 				if(otherTutorial != nullptr)
 					otherTutorial->SetActive(false);
-				speaker.Play(SoundBuffer::get()->getSound("bell"));
+				bellSpeaker.Play(SoundBuffer::get()->getSound("bell"));
 			}
 		}
 		else
