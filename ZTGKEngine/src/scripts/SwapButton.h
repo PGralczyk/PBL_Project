@@ -24,7 +24,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (!(ApTime::instance().isMenuOpen))
+		if (!(ApTime::instance().isMenuOpen) && !ApTime::instance().isGiantDoor)
 		{
 			*forceSwap = true;
 		}

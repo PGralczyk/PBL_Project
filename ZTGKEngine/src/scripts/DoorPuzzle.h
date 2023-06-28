@@ -64,6 +64,7 @@ public:
 			finalScreen->SetActive(true);
 
 			ApTime::instance().isBuzzzing = !ApTime::instance().isBuzzzing;
+			ApTime::instance().isGiantDoor = true;
 		}
 		else
 		{

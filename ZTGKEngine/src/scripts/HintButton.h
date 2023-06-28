@@ -31,7 +31,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (!(ApTime::instance().isMenuOpen))
+		if (!(ApTime::instance().isMenuOpen) && !ApTime::instance().isGiantDoor)
 		{
 			speaker.Play(SoundBuffer::get()->getSound("bell"));
 			ApTime::instance().adviseWindow = 3.0f;

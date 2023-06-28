@@ -54,7 +54,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (!(ApTime::instance().isMenuOpen))
+		if (!(ApTime::instance().isMenuOpen) && !ApTime::instance().isGiantDoor)
 		{
 			speaker.Play(SoundBuffer::get()->getSound("paper"));
 			other->SetActive(true);
