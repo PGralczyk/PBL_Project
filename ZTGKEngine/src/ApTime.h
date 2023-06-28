@@ -73,6 +73,8 @@ public:
 	double offsetY = 0.0;
 	double withinWindowCursorPosX = 0.0;
 	double withinWindowCursorPosY = 0.0;
+	bool hitnWorks;
+	bool isMenuClosed;
 
 	void GreatReset()
 	{
@@ -111,6 +113,8 @@ public:
 	void Update()
 	{
 		UpdateDeltaTime();
+		hitnWorks = IsHintWork();
+		isMenuClosed = IsMenuClosed();
 	}
 
 	//It speeds up or slows down everything that uses delta time(0.5f = 2 times slower,
@@ -124,6 +128,16 @@ public:
 	float GetTimeRatio()
 	{
 		return timeRatio;
+	}
+
+	bool IsHintWork()
+	{
+		return !isMenuOpen && isEasyMode;
+	}
+
+	bool IsMenuClosed()
+	{
+		return !isMenuOpen;
 	}
 
 	static ApTime& instance()
