@@ -31,9 +31,12 @@ public:
 
 	void OnMouseClicked()
 	{
-		speaker.Play(SoundBuffer::get()->getSound("bell"));
-		ApTime::instance().adviseWindow = 3.0f;
+		if (!(ApTime::instance().isMenuOpen) && !ApTime::instance().isGiantDoor)
+		{
+			speaker.Play(SoundBuffer::get()->getSound("bell"));
+			ApTime::instance().adviseWindow = 3.0f;
 
-		if (hintTutorial) hintTutorial->SetActive(false);
+			if (hintTutorial) hintTutorial->SetActive(false);
+		}
 	}
 };

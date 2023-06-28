@@ -105,7 +105,8 @@ public:
 				ApTime::instance().brightWorld = false;
 			}
 		}
-		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed && !ApTime::instance().isMenuOpen || *forceSwap))
+		if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && ApTime::instance().canSwap && !keyPressed && !ApTime::instance().isMenuOpen &&
+			!(ApTime::instance().isGiantDoor) || *forceSwap))
 		{
 			*forceSwap = false;
 			if (!ApTime::instance().isSwitching)
@@ -161,7 +162,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (canClick)
+		if (canClick && !(ApTime::instance().isGiantDoor))
 		{
 			doorSpeaker.Play(SoundBuffer::get()->getSound("tuptup"));
 
@@ -180,11 +181,11 @@ public:
 			*lightVersion = true;
 			currentScene->SetActive(false);
 			otherScene->SetActive(true);
-			
 		}
 		else
 		{
-			doorSpeaker.Play(SoundBuffer::get()->getSound("doorClosed"));
+			if(!(ApTime::instance().isGiantDoor))
+				doorSpeaker.Play(SoundBuffer::get()->getSound("doorClosed"));
 		}
 	}
 

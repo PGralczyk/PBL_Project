@@ -526,7 +526,7 @@ public:
 		drawerFrame->SetShader(defaultShader);
 
 		GraphNode* drawer1 = new GraphNode(drawerFrame);
-		GraphNode* drawer1MovableSegment = CreateNode("res/models/szuflada1.fbx", defaultShader);
+		GraphNode* drawer1MovableSegment = CreateNode("res/models/szuflada3.fbx", defaultShader);
 		drawer1->AddChild(drawer1MovableSegment);
 
 		GraphNode* drawer2 = new GraphNode(drawerFrame);
@@ -534,7 +534,7 @@ public:
 		drawer2->AddChild(drawer2MovableSegment);
 
 		GraphNode* drawer3 = new GraphNode(drawerFrame);
-		GraphNode* drawer3MovableSegment = CreateNode("res/models/szuflada3.fbx", defaultShader);
+		GraphNode* drawer3MovableSegment = CreateNode("res/models/szuflada1.fbx", defaultShader);
 		drawer3->AddChild(drawer3MovableSegment);
 
 		DrawerMainObject->AddChild(drawer1);

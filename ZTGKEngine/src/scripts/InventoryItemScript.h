@@ -57,7 +57,7 @@ public:
 
 	void OnMouseClicked()
 	{
-		if (!(ApTime::instance().pickedElementId == this->elementId))
+		if (!(ApTime::instance().pickedElementId == this->elementId) && !(ApTime::instance().isMenuOpen))
 		{
 			ApTime::instance().pickedElementId = this->elementId;
 			speaker.Play(SoundBuffer::get()->getSound("selectItem"));
