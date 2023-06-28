@@ -18,7 +18,7 @@ private:
 	GraphNode* cuarto;
 	GraphNode* quinto;
 	GraphNode* sexto;
-	int counter = 1;
+	int counter = 0;
 	bool keyPressed = false;
 
 public:
@@ -102,7 +102,7 @@ public:
 		cuarto->SetActive(false);
 		quinto->SetActive(false);
 		sexto->SetActive(false);
-		counter = 1;
+		counter = 0;
 		keyPressed = false;
 	}
 

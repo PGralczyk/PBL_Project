@@ -142,6 +142,8 @@ public:
 			{
 				controlPressed = true;
 				ApTime::instance().adviseWindow = 3.0f;
+				otherTutorial->SetActive(false);
+				speaker.Play(SoundBuffer::get()->getSound("bell"));
 			}
 		}
 		else
@@ -178,6 +180,8 @@ public:
 			darkWorld->SetActive(false);
 			brightUI->SetActive(true);
 			darkUI->SetActive(false);
+			brightCursor->SetActive(true);
+			darkCursor->SetActive(false);
 			*lightVersion = true;
 			currentScene->SetActive(false);
 			otherScene->SetActive(true);
