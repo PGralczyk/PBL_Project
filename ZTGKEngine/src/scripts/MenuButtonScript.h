@@ -40,7 +40,7 @@ public:
 					other->SetActive(!other->GetActive());
 					keyPressed = true;
 
-					ApTime::instance().isMenuOpen = true;
+					ApTime::instance().isMenuOpen = !ApTime::instance().isMenuOpen;
 					//ApTime::instance().mainAmbientSpeaker->Stop();
 				}
 			}

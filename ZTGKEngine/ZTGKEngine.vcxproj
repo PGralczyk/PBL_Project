@@ -207,6 +207,7 @@
     <None Include="res\shaders\fade.vert" />
     <None Include="res\shaders\mixer.frag" />
     <None Include="res\shaders\mixer.vert" />
+    <None Include="src\scripts\MenuCotrollerScript.h" />
     <None Include="src\scripts\OptionsScript.h" />
     <None Include="src\scripts\ShowMusicVolume.h" />
     <None Include="src\scripts\StoryScript.h" />

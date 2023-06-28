@@ -49,6 +49,7 @@
 #include "../scripts/StoryScript.h";
 #include "../scripts/FollowAfterCursorScript.h";
 #include "../scripts/JournalOnTableScript.h";
+#include "../scripts/MenuCotrollerScript.h";
 
 #include "../scripts/BellHint.h";
 
@@ -135,16 +136,21 @@ public:
 		GraphNode* credits = new GraphNode();
 		GraphNode* options = new GraphNode();
 		GraphNode* firstTimeGameMode = new GraphNode();
+		GraphNode* mainMenu = new GraphNode();
+		menu->AddScript(new MenuControllerScript(menu, mainMenu, options, credits, firstTimeGameMode));
+		menu->isHoverable = false;
 
 #pragma region Main_Menu
 
 		GraphNode* backg = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_bg.png", textureShader);
 		menu->AddChild(backg);
 
+		menu->AddChild(mainMenu);
+
 		GraphNode* playBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_play_button.png", textureShader);
 		GraphNode* playHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_play_button_hover.png", textureShader);
-		menu->AddChild(playBtn);
-		menu->AddChild(playHover);
+		mainMenu->AddChild(playBtn);
+		mainMenu->AddChild(playHover);
 		playHover->SetActive(false);
 		playBtn->AddScript(new ActivateOnHoverScript(playBtn, playHover, true));
 		playHover->AddScript(new DeactivateOnMouseLeave(playHover));
@@ -152,8 +158,8 @@ public:
 
 		GraphNode* creditsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button.png", textureShader);
 		GraphNode* creditsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_credits_button_hover.png", textureShader);
-		menu->AddChild(creditsBtn);
-		menu->AddChild(creditsHover);
+		mainMenu->AddChild(creditsBtn);
+		mainMenu->AddChild(creditsHover);
 		creditsHover->SetActive(false);
 		creditsBtn->AddScript(new ActivateOnHoverScript(creditsBtn, creditsHover, true));
 		creditsHover->AddScript(new DeactivateOnMouseLeave(creditsHover));
@@ -161,8 +167,8 @@ public:
 
 		GraphNode* optionsBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button.png", textureShader);
 		GraphNode* optionsHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_options_button_hover.png", textureShader);
-		menu->AddChild(optionsBtn);
-		menu->AddChild(optionsHover);
+		mainMenu->AddChild(optionsBtn);
+		mainMenu->AddChild(optionsHover);
 		optionsHover->SetActive(false);
 		optionsBtn->AddScript(new ActivateOnHoverScript(optionsBtn, optionsHover, true));
 		optionsHover->AddScript(new DeactivateOnMouseLeave(optionsHover));
@@ -170,8 +176,8 @@ public:
 
 		GraphNode* exitBtn = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button.png", textureShader);
 		GraphNode* exitHover = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/menu/menu_exit_button_hover.png", textureShader);
-		menu->AddChild(exitBtn);
-		menu->AddChild(exitHover);
+		mainMenu->AddChild(exitBtn);
+		mainMenu->AddChild(exitHover);
 		exitHover->SetActive(false);
 		exitBtn->AddScript(new ActivateOnHoverScript(exitBtn, exitHover, true));
 		exitHover->AddScript(new DeactivateOnMouseLeave(exitHover));
@@ -363,12 +369,17 @@ public:
 		storyIntro->AddChild(quinto);
 		quinto->SetActive(false);
 
+		GraphNode* sexto = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/sexto.png", textureShader);
+		storyIntro->AddChild(sexto);
+		sexto->SetActive(false);
+
 		storyIntro->AddScript(new StoryScript(storyIntro, window,
 			uno, 
 			segundo, 
 			tercero, 
 			cuarto, 
-			quinto));
+			quinto,
+			sexto));
 		storyIntro->isHoverable = false;
 
 #pragma endregion 
@@ -422,7 +433,8 @@ public:
 
 	void Update(int currentlyPicked, bool singleMouse, bool isHoldingMouseButton)
 	{
-		world->Update(currentlyPicked, singleMouse, window);
+		if (!ApTime::instance().isMenuOpen)
+			world->Update(currentlyPicked, singleMouse, window);
 		UI->Update(currentlyPicked, singleMouse, window);
 		Cursor->Update(currentlyPicked, singleMouse, window);
 		if (poof)
@@ -942,7 +954,7 @@ public:
 		bottomPanelBright->AddChild(brightJournalHover);
 		brightJournal->SetActive(false);
 		brightJournalHover->SetActive(false);
-		brightJournal->AddScript(new ActivateOnHoverScript(brightJournal, brightJournalHover));
+		brightJournal->AddScript(new ActivateOnHoverScript(brightJournal, brightJournalHover, false, &ApTime::instance().isMenuClosed));
 		brightJournalHover->AddScript(new DeactivateOnMouseLeave(brightJournalHover));
 		brightJournalHover->AddScript(new JournalScript(brightJournalHover, journal1));
 
@@ -957,7 +969,7 @@ public:
 			"res/models/hud/normal_world/hud_plant__hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightPlantHover);
 		brightPlantHover->SetActive(false);
-		brightPlant->AddScript(new ActivateOnHoverScript(brightPlant, brightPlantHover));
+		brightPlant->AddScript(new ActivateOnHoverScript(brightPlant, brightPlantHover, false, &ApTime::instance().isMenuClosed));
 		brightPlantHover->AddScript(new DeactivateOnMouseLeave(brightPlantHover));
 		brightPlantHover->AddScript(new SwapButton(brightPlantHover, &forceSwap));
 
@@ -969,7 +981,7 @@ public:
 			"res/models/hud/normal_world/hud_hint_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightHintHover);
 		brightHintHover->SetActive(false);
-		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, false, &ApTime::instance().isEasyMode));
+		brightHint->AddScript(new ActivateOnHoverScript(brightHint, brightHintHover, false, &ApTime::instance().hitnWorks));
 		brightHintHover->AddScript(new DeactivateOnMouseLeave(brightHintHover));
 		brightHintScript = new HintButton(brightHintHover);
 		brightHintHover->AddScript(brightHintScript);
@@ -982,7 +994,7 @@ public:
 			"res/models/hud/normal_world/hud_menu_hover_s1.png", textureShader);
 		bottomPanelBright->AddChild(brightMenuHover);
 		brightMenuHover->SetActive(false);
-		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover));
+		brightMenu->AddScript(new ActivateOnHoverScript(brightMenu, brightMenuHover, false, &ApTime::instance().isMenuClosed));
 		brightMenu->AddScript(new MenuButtonScript(brightMenu, menu, window, true));
 		brightMenuHover->AddScript(new DeactivateOnMouseLeave(brightMenuHover));
 		brightMenuHover->AddScript(new MenuButtonScript(brightMenuHover, menu, window));
@@ -1014,7 +1026,7 @@ public:
 		bottomPanelDark->AddChild(darkJournalHover);
 		darkJournal->SetActive(false);
 		darkJournalHover->SetActive(false);
-		darkJournal->AddScript(new ActivateOnHoverScript(darkJournal, darkJournalHover));
+		darkJournal->AddScript(new ActivateOnHoverScript(darkJournal, darkJournalHover, false, &ApTime::instance().isMenuClosed));
 		darkJournalHover->AddScript(new DeactivateOnMouseLeave(darkJournalHover));
 		darkJournalHover->AddScript(new JournalScript(darkJournalHover, journal1));
 
@@ -1027,7 +1039,7 @@ public:
 			"res/models/hud/fked_up_world/hud_plant_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkPlantHover);
 		darkPlantHover->SetActive(false);
-		darkPlant->AddScript(new ActivateOnHoverScript(darkPlant, darkPlantHover));
+		darkPlant->AddScript(new ActivateOnHoverScript(darkPlant, darkPlantHover, false, &ApTime::instance().isMenuClosed));
 		darkPlantHover->AddScript(new DeactivateOnMouseLeave(darkPlantHover));
 		darkPlantHover->AddScript(new SwapButton(darkPlantHover, &forceSwap));
 
@@ -1039,7 +1051,7 @@ public:
 			"res/models/hud/fked_up_world/hud_hint_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkHintHover);
 		darkHintHover->SetActive(false);
-		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, false, &ApTime::instance().isEasyMode));
+		darkHint->AddScript(new ActivateOnHoverScript(darkHint, darkHintHover, false, &ApTime::instance().hitnWorks));
 		darkHintHover->AddScript(new DeactivateOnMouseLeave(darkHintHover));
 		darkHintScript = new HintButton(darkHintHover);
 		darkHintHover->AddScript(darkHintScript);
@@ -1052,7 +1064,7 @@ public:
 			"res/models/hud/fked_up_world/hud_menu_hover_s2.png", textureShader);
 		bottomPanelDark->AddChild(darkMenuHover);
 		darkMenuHover->SetActive(false);
-		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover));
+		darkMenu->AddScript(new ActivateOnHoverScript(darkMenu, darkMenuHover, false, &ApTime::instance().isMenuClosed));
 		darkMenu->AddScript(new MenuButtonScript(darkMenu, menu, window, true));
 		darkMenuHover->AddScript(new DeactivateOnMouseLeave(darkMenuHover));
 		darkMenuHover->AddScript(new MenuButtonScript(darkMenuHover, menu, window));

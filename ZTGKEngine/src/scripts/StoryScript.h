@@ -17,6 +17,7 @@ private:
 	GraphNode* tercero;
 	GraphNode* cuarto;
 	GraphNode* quinto;
+	GraphNode* sexto;
 	int counter = 1;
 	bool keyPressed = false;
 
@@ -27,7 +28,8 @@ public:
 		GraphNode* _segundo,
 		GraphNode* _tercero,
 		GraphNode* _cuarto,
-		GraphNode* _quinto) : RealtimeScript(nodePointer)
+		GraphNode* _quinto,
+		GraphNode* _sexto) : RealtimeScript(nodePointer)
 	{
 		window = _window;
 		uno = _uno;
@@ -35,6 +37,7 @@ public:
 		tercero = _tercero;
 		cuarto = _cuarto;
 		quinto = _quinto;
+		sexto = _sexto;
 	}
 
 	void Update()
@@ -46,6 +49,7 @@ public:
 			tercero->SetActive(false);
 			cuarto->SetActive(false);
 			quinto->SetActive(false);
+			sexto->SetActive(false);
 
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 			{
@@ -62,6 +66,9 @@ public:
 
 			switch (counter)
 			{
+			case 0:
+				uno->SetActive(true);
+				break;
 			case 1:
 				uno->SetActive(true);
 				break;
@@ -77,6 +84,9 @@ public:
 			case 5:
 				quinto->SetActive(true);
 				break;
+			case 6:
+				sexto->SetActive(true);
+				break;
 			default:
 				node->SetActive(false);
 				break;
@@ -91,6 +101,7 @@ public:
 		tercero->SetActive(false);
 		cuarto->SetActive(false);
 		quinto->SetActive(false);
+		sexto->SetActive(false);
 		counter = 1;
 		keyPressed = false;
 	}
