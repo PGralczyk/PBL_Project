@@ -37,6 +37,11 @@ public:
 			}
 		}
 	}
+
+	void Update()
+	{
+		node->isHoverable = *shouldWork;
+	}
 };
 
 class JournalScript;

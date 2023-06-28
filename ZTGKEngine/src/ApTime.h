@@ -68,6 +68,7 @@ public:
 	bool forceReset = false;
 	bool canShowHintTutorial = true;
 	bool isMenuOpen = true;
+	bool isGiantDoor = false;
 	double offsetX = 0.0;
 	double offsetY = 0.0;
 	double withinWindowCursorPosX = 0.0;
@@ -95,6 +96,7 @@ public:
 		canShowHintTutorial = true;
 		isMenuOpen = true;
 		canUseJournal = false;
+		isGiantDoor = false;
 
 		mainMusicSpeaker->Stop();
 		mainAmbientSpeaker->Stop();
