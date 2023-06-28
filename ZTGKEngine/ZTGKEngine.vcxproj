@@ -153,6 +153,7 @@
     <ClCompile Include="src\utils\textureUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\FadeOut.h" />
     <ClInclude Include="src\Music.h" />
     <ClInclude Include="src\scripts\ActivateOnHoverScript.h" />
@@ -211,6 +212,12 @@
     <None Include="src\scripts\OptionsScript.h" />
     <None Include="src\scripts\ShowMusicVolume.h" />
     <None Include="src\scripts\StoryScript.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ZTGKEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\models\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
