@@ -35,8 +35,9 @@ public:
 
 			if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 			{
-				if (!keyPressed)
+				if (!keyPressed && !(ApTime::instance().isMenuOpen))
 				{
+					speaker.Play(SoundBuffer::get()->getSound("paper"));
 					other->SetActive(!other->GetActive());
 					keyPressed = true;
 
@@ -53,10 +54,13 @@ public:
 
 	void OnMouseClicked()
 	{
-		speaker.Play(SoundBuffer::get()->getSound("paper"));
-		other->SetActive(true);
-		ApTime::instance().isMenuOpen = true;
-		//ApTime::instance().mainAmbientSpeaker->Stop();
+		if (!(ApTime::instance().isMenuOpen))
+		{
+			speaker.Play(SoundBuffer::get()->getSound("paper"));
+			other->SetActive(true);
+			ApTime::instance().isMenuOpen = true;
+			//ApTime::instance().mainAmbientSpeaker->Stop();
+		}
 	}
 
 	~MenuButtonScript() = default;

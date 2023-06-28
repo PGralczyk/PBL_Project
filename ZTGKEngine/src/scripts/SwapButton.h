@@ -24,7 +24,10 @@ public:
 
 	void OnMouseClicked()
 	{
-		*forceSwap = true;
+		if (!(ApTime::instance().isMenuOpen))
+		{
+			*forceSwap = true;
+		}
 	}
 
 	void GreatReset()
