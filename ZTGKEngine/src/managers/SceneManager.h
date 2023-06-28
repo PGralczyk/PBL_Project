@@ -130,10 +130,11 @@ public:
 
 	void MenuSetup()
 	{
+		GraphNode* storyIntro = new GraphNode();
+		UI->AddChild(storyIntro);
 		GraphNode* credits = new GraphNode();
 		GraphNode* options = new GraphNode();
 		GraphNode* firstTimeGameMode = new GraphNode();
-		GraphNode* storyIntro = new GraphNode();
 
 #pragma region Main_Menu
 
@@ -343,11 +344,8 @@ public:
 
 #pragma region story
 
-		UI->AddChild(storyIntro);
-
 		GraphNode* uno = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/uno.png", textureShader);
 		storyIntro->AddChild(uno);
-		uno->SetActive(false);
 
 		GraphNode* segundo = CreateUiElement(0, 0, *SCR_WIDTH, *SCR_HEIGHT, "res/models/wprowFab/segundo.png", textureShader);
 		storyIntro->AddChild(segundo);

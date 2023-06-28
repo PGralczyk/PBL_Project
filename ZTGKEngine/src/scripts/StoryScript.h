@@ -86,7 +86,7 @@ public:
 
 	void GreatReset()
 	{
-		uno->SetActive(false);
+		uno->SetActive(true);
 		segundo->SetActive(false);
 		tercero->SetActive(false);
 		cuarto->SetActive(false);
